@@ -1,0 +1,10 @@
+<resources>
+    <!-- AppCompat main theme colors -->
+    <color name="primary">#fff47920</color>
+    <color name="primaryDark">#fff47920</color>
+    <color name="accent">#fffcaf17</color>
+    <color name="navbar">#fff47920</color>
+    <color name="windowBackground">#ececec</color>
+
+    <color name="primary_text">#ff222222</color>
+</resources>
