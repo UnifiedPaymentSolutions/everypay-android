@@ -1,33 +1,205 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:context=".MainActivity">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    >
 
     <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:orientation="horizontal"
         >
 
-        <ImageView
-            android:src="@drawable/logo"
-            android:layout_width="wrap_content"
+        <TextView
+            android:text="1. Get API credentials from your server"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
+            android:textSize="@dimen/main_step_textsize"
+            android:layout_gravity="center_vertical"
             />
 
-        <Button
-            android:id="@+id/start"
-            android:text="@string/start_payment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp"
+        <ImageView
+            android:id="@+id/credentials_good"
+            android:src="@drawable/ic_check_black_24dp"
+            android:layout_width="@dimen/main_step_icon_size"
+            android:layout_height="@dimen/main_step_icon_size"
+            android:layout_gravity="center_vertical"
+            android:visibility="gone"
+            />
+
+        <ImageView
+            android:id="@+id/credentials_bad"
+            android:src="@drawable/ic_clear_black_24dp"
+            android:layout_width="@dimen/main_step_icon_size"
+            android:layout_height="@dimen/main_step_icon_size"
+            android:layout_gravity="center_vertical"
+            android:visibility="gone"
+            />
+
+        <ProgressBar
+            android:id="@+id/credentials_progress"
+            android:layout_width="@dimen/main_step_icon_size"
+            android:layout_height="@dimen/main_step_icon_size"
+            android:indeterminate="true"
+            android:visibility="gone"
             />
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp"
+        >
 
-</RelativeLayout>
+        <TextView
+            android:text="2. Ask user for card details"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="@dimen/main_step_textsize"
+            />
+
+        <ImageView
+            android:id="@+id/card_good"
+            android:src="@drawable/ic_check_black_24dp"
+            android:layout_width="@dimen/main_step_icon_size"
+            android:layout_height="@dimen/main_step_icon_size"
+            android:layout_gravity="center_vertical"
+            android:visibility="gone"
+            />
+
+        <ImageView
+            android:id="@+id/card_bad"
+            android:src="@drawable/ic_clear_black_24dp"
+            android:layout_width="@dimen/main_step_icon_size"
+            android:layout_height="@dimen/main_step_icon_size"
+            android:layout_gravity="center_vertical"
+            android:visibility="gone"
+            />
+
+        <ProgressBar
+            android:id="@+id/card_progress"
+            android:layout_width="@dimen/main_step_icon_size"
+            android:layout_height="@dimen/main_step_icon_size"
+            android:indeterminate="true"
+            android:visibility="gone"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp"
+        >
+
+        <TextView
+            android:text="3. Save card details with EveryPay API"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="@dimen/main_step_textsize"
+            />
+
+        <ImageView
+            android:id="@+id/token_good"
+            android:src="@drawable/ic_check_black_24dp"
+            android:layout_width="@dimen/main_step_icon_size"
+            android:layout_height="@dimen/main_step_icon_size"
+            android:layout_gravity="center_vertical"
+            android:visibility="gone"
+            />
+
+        <ImageView
+            android:id="@+id/token_bad"
+            android:src="@drawable/ic_clear_black_24dp"
+            android:layout_width="@dimen/main_step_icon_size"
+            android:layout_height="@dimen/main_step_icon_size"
+            android:layout_gravity="center_vertical"
+            android:visibility="gone"
+            />
+
+        <ProgressBar
+            android:id="@+id/token_progress"
+            android:layout_width="@dimen/main_step_icon_size"
+            android:layout_height="@dimen/main_step_icon_size"
+            android:indeterminate="true"
+            android:visibility="gone"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp"
+        >
+
+        <TextView
+            android:text="4. Send card token to your server"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="@dimen/main_step_textsize"
+            />
+
+        <ImageView
+            android:id="@+id/payment_good"
+            android:src="@drawable/ic_check_black_24dp"
+            android:layout_width="@dimen/main_step_icon_size"
+            android:layout_height="@dimen/main_step_icon_size"
+            android:layout_gravity="center_vertical"
+            android:visibility="gone"
+            />
+
+        <ImageView
+            android:id="@+id/payment_bad"
+            android:src="@drawable/ic_clear_black_24dp"
+            android:layout_width="@dimen/main_step_icon_size"
+            android:layout_height="@dimen/main_step_icon_size"
+            android:layout_gravity="center_vertical"
+            android:visibility="gone"
+            />
+
+        <ProgressBar
+            android:id="@+id/payment_progress"
+            android:layout_width="@dimen/main_step_icon_size"
+            android:layout_height="@dimen/main_step_icon_size"
+            android:indeterminate="true"
+            android:visibility="gone"
+            />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/start"
+        android:text="Start"
+        android:background="@color/primary"
+        android:textColor="@color/primary_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="center_horizontal"
+        />
+
+    <TextView
+        android:id="@+id/log"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="16dp"
+        android:textSize="14dp"
+        />
+
+</LinearLayout>

@@ -17,8 +17,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".PaymentActivity"
-            android:label="@string/app_name"
+            android:name=".CardFormActivity"
+            android:label="@string/card_form_title"
             android:theme="@style/FloatingDialogTheme"
             />
     </application>
