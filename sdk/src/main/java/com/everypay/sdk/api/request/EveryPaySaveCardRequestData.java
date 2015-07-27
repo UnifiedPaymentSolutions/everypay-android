@@ -1,12 +1,12 @@
 package com.everypay.sdk.api.request;
 
-import com.everypay.sdk.api.response.MerchantGetCredentialsResponseData;
+import com.everypay.sdk.api.response.MerchantParamsResponseData;
 
 
 public class EveryPaySaveCardRequestData {
     public String hmac;
     public String nonce;
-    public String timestamp;
+    public long timestamp;
     public String apiUsername;  // Merchant ID
 
     String ccNumber;
@@ -14,7 +14,7 @@ public class EveryPaySaveCardRequestData {
     int ccMonth;
     String ccHolderName;
 
-    public EveryPaySaveCardRequestData(MerchantGetCredentialsResponseData credentials) {
+    public EveryPaySaveCardRequestData(MerchantParamsResponseData credentials) {
         this.hmac = credentials.hmac;
         this.nonce = credentials.nonce;
         this.timestamp = credentials.timestamp;

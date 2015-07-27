@@ -2,9 +2,12 @@ package com.everypay.everypay;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.everypay.sdk.EveryPay;
 import com.everypay.sdk.EveryPayListener;
@@ -14,25 +17,7 @@ public class MainActivity extends AppCompatActivity {
 
     EveryPay ep;
 
-
-    ImageView credentialsGood;
-    ImageView credentialsBad;
-    ProgressBar credentialsProgress;
-
-    ImageView cardGood;
-    ImageView cardBad;
-    ProgressBar cardProgress;
-
-    ImageView tokenGood;
-    ImageView tokenBad;
-    ProgressBar tokenProgress;
-
-    ImageView paymentGood;
-    ImageView paymentBad;
-    ProgressBar paymentProgress;
-
-    ImageView[] good;
-    ImageView[] bad;
+    StepStatusViews[] statuses;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,52 +30,79 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void attachUiEvents() {
-        credentialsGood = (ImageView)findViewById(R.id.credentials_good);
-        credentialsBad = (ImageView)findViewById(R.id.credentials_bad);
-        credentialsProgress = (ProgressBar)findViewById(R.id.credentials_progress);
+        statuses = new StepStatusViews[StepType.values().length];
+        statuses[0] = new StepStatusViews(R.id.credentials_good, R.id.credentials_bad, R.id.credentials_progress);
+        statuses[1] = new StepStatusViews(R.id.card_good, R.id.card_bad, R.id.card_progress);
+        statuses[2] = new StepStatusViews(R.id.token_good, R.id.token_bad, R.id.token_progress);
+        statuses[3] = new StepStatusViews(R.id.payment_good, R.id.payment_bad, R.id.payment_progress);
 
-        cardGood = (ImageView)findViewById(R.id.card_good);
-        cardBad = (ImageView)findViewById(R.id.card_bad);
-        cardProgress = (ProgressBar)findViewById(R.id.card_progress);
-
-        tokenGood = (ImageView)findViewById(R.id.token_good);
-        tokenBad = (ImageView)findViewById(R.id.token_bad);
-        tokenProgress = (ProgressBar)findViewById(R.id.token_progress);
-
-        paymentGood = (ImageView)findViewById(R.id.payment_good);
-        paymentBad = (ImageView)findViewById(R.id.payment_bad);
-        paymentProgress = (ProgressBar)findViewById(R.id.payment_progress);
-
-        good = new ImageView[] { credentialsGood, cardGood, tokenGood, paymentGood };
-        bad = new ImageView[] { credentialsBad, cardBad, tokenBad, paymentBad };
-
-        for (ImageView img : good)
-            img.setColorFilter(getResources().getColor(R.color.tint_good));
-        for (ImageView img : bad)
-            img.setColorFilter(getResources().getColor(R.color.tint_bad));
-
+        for (StepStatusViews views : statuses) {
+            views.good.setColorFilter(getResources().getColor(R.color.tint_good));
+            views.bad.setColorFilter(getResources().getColor(R.color.tint_bad));
+        }
+        hideAllStatusViews();
 
         findViewById(R.id.start).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hideAllStatusViews();
+
                 ep.startFullPaymentFlow(new EveryPayListener() {
                     @Override
-                    public void stepSuccess(StepType step) {
+                    public void stepStarted(StepType step) {
+                        hideStatusViews(step);
+                        statuses[step.ordinal()].progress.setVisibility(View.VISIBLE);
+                    }
 
+                    @Override
+                    public void stepSuccess(StepType step) {
+                        hideStatusViews(step);
+                        statuses[step.ordinal()].good.setVisibility(View.VISIBLE);
                     }
 
                     @Override
                     public void fullSuccess() {
-
+                        Toast.makeText(MainActivity.this, "Payment completed!", Toast.LENGTH_LONG).show();
                     }
 
                     @Override
-                    public void stepFailure(StepType step) {
-
+                    public void stepFailure(StepType step, Exception e) {
+                        Log.e(EveryPay.TAG, "Error", e);
+                        hideStatusViews(step);
+                        statuses[step.ordinal()].bad.setVisibility(View.VISIBLE);
+                        Toast.makeText(MainActivity.this, "Step " + step + " failed: " + e, Toast.LENGTH_LONG).show();
+                        ((Button)findViewById(R.id.start)).setText("Restart");
                     }
                 });
             }
         });
+    }
+
+    private void hideAllStatusViews() {
+        for (StepStatusViews views : statuses) {
+            views.good.setVisibility(View.GONE);
+            views.bad.setVisibility(View.GONE);
+            views.progress.setVisibility(View.GONE);
+        }
+    }
+
+    private void hideStatusViews(StepType step) {
+        StepStatusViews views = statuses[step.ordinal()];
+        views.good.setVisibility(View.GONE);
+        views.bad.setVisibility(View.GONE);
+        views.progress.setVisibility(View.GONE);
+    }
+
+    private class StepStatusViews {
+        public ImageView good;
+        public ImageView bad;
+        public ProgressBar progress;
+
+        public StepStatusViews(int goodId, int badId, int progressId) {
+            good = (ImageView)findViewById(goodId);
+            bad = (ImageView)findViewById(badId);
+            progress = (ProgressBar)findViewById(progressId);
+        }
     }
 
 }

@@ -12,6 +12,6 @@ public class App extends Application {
         super.onCreate();
 
         EveryPay ep = EveryPay.getInstance();
-        ep.configure("hello", "http://example.org", "http://example.net");
+        ep.configure("hello", EveryPay.EVERYPAY_API_URL_TESTING, EveryPay.MERCHANT_API_URL_TESTING);
     }
 }
