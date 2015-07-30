@@ -5,14 +5,14 @@ import com.everypay.sdk.BuildConfig;
 
 import retrofit.RestAdapter;
 
-public class MerchantApi {
+public class EverypayApi {
 
-    public static MerchantApiCalls getMerchantApi(String merchantApiUrl) {
+    public static EverypayApiCalls getEverypayApi(String everyPayApiUrl) {
         return new RestAdapter.Builder()
-                .setEndpoint(merchantApiUrl)
+                .setEndpoint(everyPayApiUrl)
                 .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.BASIC)
                 .build()
-                .create(MerchantApiCalls.class);
+                .create(EverypayApiCalls.class);
     }
 
 }

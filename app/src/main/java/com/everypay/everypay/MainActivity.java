@@ -1,5 +1,6 @@
 package com.everypay.everypay;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -9,13 +10,15 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.everypay.sdk.EveryPay;
-import com.everypay.sdk.EveryPayListener;
+import com.everypay.sdk.Card;
+import com.everypay.sdk.Everypay;
+import com.everypay.sdk.EverypayListener;
 import com.everypay.sdk.steps.StepType;
+import com.everypay.sdk.views.CardFormActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    EveryPay ep;
+    Everypay ep;
 
     StepStatusViews[] statuses;
 
@@ -24,15 +27,60 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ep = EveryPay.getInstance();
+        ep = Everypay.getInstance();
 
         attachUiEvents();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CardFormActivity.REQUEST_CODE) {
+            hideStatusViews(StepType.CARD_INPUT);
+
+            Card card = CardFormActivity.getCardFromResult(resultCode, data);
+            if (card != null) {
+                statuses[0].good.setVisibility(View.VISIBLE);
+                Everypay.getInstance().startFullPaymentFlow(this, card, new EverypayListener() {
+
+                    @Override
+                    public void stepStarted(StepType step) {
+                        hideStatusViews(step);
+                        statuses[step.ordinal() + 1].progress.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void stepSuccess(StepType step) {
+                        hideStatusViews(step);
+                        statuses[step.ordinal() + 1].good.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void fullSuccess() {
+                        toast("Payment successful!");
+                    }
+
+                    @Override
+                    public void stepFailure(StepType step, Exception e) {
+                        Log.e(Everypay.TAG, "Error", e);
+                        hideStatusViews(step);
+                        statuses[step.ordinal() + 1].bad.setVisibility(View.VISIBLE);
+                        toast("Step %s failed: %s", step, e);
+                        ((Button)findViewById(R.id.start)).setText("Restart");
+                    }
+                });
+            } else {
+                statuses[0].bad.setVisibility(View.VISIBLE);
+                toast("No valid card entered.");
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
     private void attachUiEvents() {
         statuses = new StepStatusViews[StepType.values().length];
-        statuses[0] = new StepStatusViews(R.id.credentials_good, R.id.credentials_bad, R.id.credentials_progress);
-        statuses[1] = new StepStatusViews(R.id.card_good, R.id.card_bad, R.id.card_progress);
+        statuses[0] = new StepStatusViews(R.id.card_good, R.id.card_bad, R.id.card_progress);
+        statuses[1] = new StepStatusViews(R.id.credentials_good, R.id.credentials_bad, R.id.credentials_progress);
         statuses[2] = new StepStatusViews(R.id.token_good, R.id.token_bad, R.id.token_progress);
         statuses[3] = new StepStatusViews(R.id.payment_good, R.id.payment_bad, R.id.payment_progress);
 
@@ -46,34 +94,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 hideAllStatusViews();
-
-                ep.startFullPaymentFlow(new EveryPayListener() {
-                    @Override
-                    public void stepStarted(StepType step) {
-                        hideStatusViews(step);
-                        statuses[step.ordinal()].progress.setVisibility(View.VISIBLE);
-                    }
-
-                    @Override
-                    public void stepSuccess(StepType step) {
-                        hideStatusViews(step);
-                        statuses[step.ordinal()].good.setVisibility(View.VISIBLE);
-                    }
-
-                    @Override
-                    public void fullSuccess() {
-                        Toast.makeText(MainActivity.this, "Payment completed!", Toast.LENGTH_LONG).show();
-                    }
-
-                    @Override
-                    public void stepFailure(StepType step, Exception e) {
-                        Log.e(EveryPay.TAG, "Error", e);
-                        hideStatusViews(step);
-                        statuses[step.ordinal()].bad.setVisibility(View.VISIBLE);
-                        Toast.makeText(MainActivity.this, "Step " + step + " failed: " + e, Toast.LENGTH_LONG).show();
-                        ((Button)findViewById(R.id.start)).setText("Restart");
-                    }
-                });
+                statuses[0].progress.setVisibility(View.VISIBLE);
+                CardFormActivity.startForResult(MainActivity.this);
             }
         });
     }
@@ -91,6 +113,11 @@ public class MainActivity extends AppCompatActivity {
         views.good.setVisibility(View.GONE);
         views.bad.setVisibility(View.GONE);
         views.progress.setVisibility(View.GONE);
+    }
+
+    private void toast(String fmt, Object... args) {
+        String msg = String.format(fmt, args);
+        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }
 
     private class StepStatusViews {

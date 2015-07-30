@@ -1,13 +1,10 @@
 package com.everypay.sdk.api;
 
-import com.everypay.sdk.api.request.EveryPaySaveCardRequestData;
-import com.everypay.sdk.api.response.EveryPaySaveCardResponseData;
-
 import retrofit.http.Body;
 import retrofit.http.POST;
 
-public interface EveryPayApiCalls {
+public interface EverypayApiCalls {
 
-    @POST("/mobile/savecard")
-    EveryPaySaveCardResponseData saveCard(@Body EveryPaySaveCardRequestData params);
+    @POST("/single_use_tokens")
+    EverypayTokenResponseData saveCard(@Body EverypayTokenRequestData params);
 }

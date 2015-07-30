@@ -1,4 +1,4 @@
-package com.everypay.sdk.api.response;
+package com.everypay.sdk.api.merchant;
 
 
 public class MerchantParamsResponseData {

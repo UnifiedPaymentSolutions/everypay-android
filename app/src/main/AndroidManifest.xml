@@ -17,7 +17,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CardFormActivity"
+            android:name="com.everypay.sdk.views.CardFormActivity"
             android:label="@string/card_form_title"
             android:theme="@style/FloatingDialogTheme"
             />

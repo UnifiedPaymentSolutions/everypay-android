@@ -1,0 +1,11 @@
+<resources>
+    <!-- AppCompat main theme colors -->
+    <color name="ep_primary">#fff47920</color>
+    <color name="ep_accent">#fffcaf17</color>
+    <color name="ep_window_background">#ececec</color>
+    <color name="ep_primary_text">#ff222222</color>
+
+    <color name="ep_card_field_normal">#ff222222</color>
+    <color name="ep_card_field_invalid">#3c0005</color>
+    <color name="ep_card_field_valid">#133b00</color>
+</resources>

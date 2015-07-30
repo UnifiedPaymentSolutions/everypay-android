@@ -1,3 +1,16 @@
 <resources>
+    <string name="card_form_title">Enter Card Details</string>
 
+    <string name="cc_holder_name">Name on Card</string>
+    <string name="cc_number">Card Number</string>
+    <string name="cc_month">Month</string>
+    <string name="cc_year">Year</string>
+    <string name="cc_cvc">CVC</string>
+
+    <string name="cc_holder_name_missing">Please enter a name.</string>
+    <string name="cc_number_invalid">Please enter a valid card number.</string>
+    <string name="cc_month_invalid">Please enter a valid month.</string>
+    <string name="cc_year_invalid">Please enter a valid year.</string>
+    <string name="cc_cvc_invalid">Please enter a valid security code.</string>
+    <string name="cc_other_invalid">Not a valid card (should not happen?).</string>
 </resources>

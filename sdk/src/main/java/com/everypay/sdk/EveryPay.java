@@ -1,28 +1,33 @@
 package com.everypay.sdk;
 
-import com.everypay.sdk.api.MerchantApi;
-import com.everypay.sdk.api.MerchantApiCalls;
+import android.app.Activity;
 
-public class EveryPay {
+import com.everypay.sdk.api.EverypayApi;
+import com.everypay.sdk.api.EverypayApiCalls;
+import com.everypay.sdk.api.merchant.MerchantApi;
+import com.everypay.sdk.api.merchant.MerchantApiCalls;
+
+public class Everypay {
 
     public static final String TAG = "everypay";
 
     public static final String EVERYPAY_API_URL_TESTING = "https://gw-staging.every-pay.com";
-    public static final String API_URL_LIVE = "http://example.com";
+    public static final String EVERYPAY_API_URL_LIVE = "http://gw.every-pay.com";
 
     public static final String MERCHANT_API_URL_TESTING = "https://igwshop-staging.every-pay.com";
 
 
-    private static EveryPay instance;
-    public static synchronized EveryPay getInstance() {
+    private static Everypay instance;
+    public static synchronized Everypay getInstance() {
         if (instance == null)
-            instance = new EveryPay();
+            instance = new Everypay();
         return instance;
     }
 
     private boolean configured = false;
     private String merchantId;
     private MerchantApiCalls merchantApi;
+    private EverypayApiCalls everypayApi;
 
     public void configure(String merchantId, String everyPayApiUrl, String merchantApiUrl) {
         if (configured)
@@ -30,12 +35,13 @@ public class EveryPay {
         this.configured = true;
         this.merchantId = merchantId;
         this.merchantApi = MerchantApi.getMerchantApi(merchantApiUrl);
+        this.everypayApi = EverypayApi.getEverypayApi(everyPayApiUrl);
     }
 
-    public void startFullPaymentFlow(EveryPayListener callback) {
+    public void startFullPaymentFlow(Activity activity, Card card, EverypayListener callback) {
         if (!configured)
             throw new RuntimeException("EveryPay SDK not configured.");
-        new EveryPayTask(callback).execute();
+        new EverypaySession(activity, card, callback).execute();
     }
 
     public String getMerchantId() {
@@ -44,6 +50,10 @@ public class EveryPay {
 
     public MerchantApiCalls getMerchantApi() {
         return merchantApi;
+    }
+
+    public EverypayApiCalls getEverypayApi() {
+        return everypayApi;
     }
 
 }

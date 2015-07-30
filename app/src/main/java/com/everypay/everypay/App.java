@@ -2,7 +2,7 @@ package com.everypay.everypay;
 
 import android.app.Application;
 
-import com.everypay.sdk.EveryPay;
+import com.everypay.sdk.Everypay;
 
 
 public class App extends Application {
@@ -11,7 +11,7 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
 
-        EveryPay ep = EveryPay.getInstance();
-        ep.configure("hello", EveryPay.EVERYPAY_API_URL_TESTING, EveryPay.MERCHANT_API_URL_TESTING);
+        Everypay ep = Everypay.getInstance();
+        ep.configure("hello", Everypay.EVERYPAY_API_URL_TESTING, Everypay.MERCHANT_API_URL_TESTING);
     }
 }
