@@ -1,8 +1,18 @@
 package com.everypay.sdk.api;
 
-/**
- * Created by mattias on 22/07/15.
- */
+
+import android.text.TextUtils;
+
 public class EverypayTokenResponseData {
-    String single_cc_token;
+    public SingleUseTokenResponseData singleUseToken;
+
+    public String getToken() {
+        if (singleUseToken != null && !TextUtils.isEmpty(singleUseToken.singleCcToken))
+            return singleUseToken.singleCcToken;
+        return "";
+    }
+
+    public static class SingleUseTokenResponseData {
+        String singleCcToken;
+    }
 }

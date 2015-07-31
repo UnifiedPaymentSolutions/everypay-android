@@ -31,6 +31,7 @@ public class CardFormActivity extends AppCompatActivity {
 
     EditText holderName;
     EditText number;
+    EditText cvc;
     EditText month;
     EditText year;
     Button done;
@@ -46,6 +47,7 @@ public class CardFormActivity extends AppCompatActivity {
 
         holderName = (EditText)findViewById(R.id.cc_holder_name);
         number = (EditText)findViewById(R.id.cc_number);
+        cvc = (EditText)findViewById(R.id.cc_cvc);
         month = (EditText)findViewById(R.id.cc_month);
         year = (EditText)findViewById(R.id.cc_year);
         done = (Button)findViewById(R.id.btn_done);
@@ -73,18 +75,21 @@ public class CardFormActivity extends AppCompatActivity {
                 }
             }
         });
+
     }
 
     private Card visualValidate(boolean toastFirstError) {
         Card card = new Card.Builder()
                 .name(holderName.getText().toString().trim())
                 .number(number.getText().toString().trim())
+                .cvc(cvc.getText().toString().trim())
                 .expMonth(month.getText().toString().trim())
                 .expYear(year.getText().toString().trim())
                 .build();
 
         toastFirstError = visualValidateField(card.validateName(), holderName, toastFirstError, R.string.cc_holder_name_missing);
         toastFirstError = visualValidateField(card.validateNumber(), number, toastFirstError, R.string.cc_number_invalid);
+        toastFirstError = visualValidateField(card.validateCVC(), cvc, toastFirstError, R.string.cc_cvc_invalid);
         toastFirstError = visualValidateField(card.validateExpMonth(), month, toastFirstError, R.string.cc_month_invalid);
         toastFirstError = visualValidateField(card.validateExpYear(), year, toastFirstError, R.string.cc_year_invalid);
 

@@ -64,7 +64,6 @@ public class EverypaySession extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... params) {
         Step lastStep = null;
         try {
-
             lastStep = merchantParamsStep;
             callStepStarted(merchantParamsStep);
             MerchantParamsResponseData paramsResponse = merchantParamsStep.run(activity, ep);
