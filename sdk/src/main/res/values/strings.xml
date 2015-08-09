@@ -7,10 +7,60 @@
     <string name="cc_year">Year</string>
     <string name="cc_cvc">CVC</string>
 
-    <string name="cc_holder_name_missing">Please enter a name.</string>
-    <string name="cc_number_invalid">Please enter a valid card number.</string>
-    <string name="cc_month_invalid">Please enter a valid month.</string>
-    <string name="cc_year_invalid">Please enter a valid year.</string>
-    <string name="cc_cvc_invalid">Please enter a valid security code.</string>
-    <string name="cc_other_invalid">Not a valid card (should not happen?).</string>
+    <string name="cc_error_name_missing">Please enter the name on the card.</string>
+    <string name="cc_error_number_missing">Please enter the card number.</string>
+    <string name="cc_error_number_invalid">The card number is not valid.</string>
+    <string name="cc_error_number_short">The card number is too short.</string>
+    <string name="cc_error_number_long">The card number is too long.</string>
+    <string name="cc_error_month_missing">Please enter the expiry month.</string>
+    <string name="cc_error_month_invalid">The expiry month is not valid.</string>
+    <string name="cc_error_year_missing">Please enter the expiry year.</string>
+    <string name="cc_error_year_invalid">The expiry year is not valid.</string>
+    <string name="cc_error_year_short">The expiry year is too short, please enter 4 digits.</string>
+    <string name="cc_error_expired">The expiry date has passed.</string>
+    <string name="cc_error_cvc_missing">Please enter the security code.</string>
+    <string name="cc_error_cvc_invalid">The security code is not valid, should be 3 digits.</string>
+    <string name="cc_error_cvc_invalid_american_express">The security code is not valid, should be 4 digits for American Express.</string>
+
+    <string-array name="cc_month_values" translatable="false">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+    </string-array>
+
+    <string-array name="cc_month_names">
+        <item>01 - Jan</item>
+        <item>02 - Feb</item>
+        <item>03 - March</item>
+        <item>04 - April</item>
+        <item>05 - May</item>
+        <item>06 - June</item>
+        <item>07 - July</item>
+        <item>08 - Aug</item>
+        <item>09 - Sep</item>
+        <item>10 - Oct</item>
+        <item>11 - Nov</item>
+        <item>12 - Dec</item>
+    </string-array>
+
+    <string-array name="cc_year_values" translatable="false">
+        <item>2015</item>
+        <item>2016</item>
+        <item>2017</item>
+        <item>2018</item>
+        <item>2019</item>
+        <item>2020</item>
+        <item>2021</item>
+        <item>2022</item>
+    </string-array>
+
 </resources>

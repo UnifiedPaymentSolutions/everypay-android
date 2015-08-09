@@ -8,6 +8,7 @@ import android.util.Log;
 import com.everypay.sdk.api.EverypayTokenResponseData;
 import com.everypay.sdk.api.merchant.MerchantParamsResponseData;
 import com.everypay.sdk.api.merchant.MerchantPaymentResponseData;
+import com.everypay.sdk.model.Card;
 import com.everypay.sdk.steps.EverypayTokenStep;
 import com.everypay.sdk.steps.MerchantParamsStep;
 import com.everypay.sdk.steps.MerchantPaymentStep;

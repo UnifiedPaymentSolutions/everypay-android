@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.everypay.sdk.Card;
+import com.everypay.sdk.model.Card;
 import com.everypay.sdk.Everypay;
 import com.everypay.sdk.EverypayListener;
 import com.everypay.sdk.steps.StepType;
@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                 ((Button)findViewById(R.id.start)).setText("Restart");
                 hideAllStatusViews();
                 statuses[0].progress.setVisibility(View.VISIBLE);
-                CardFormActivity.startForResult(MainActivity.this);
+                CardFormActivity.startForResult(MainActivity.this, "Enter Card Details");
             }
         });
     }

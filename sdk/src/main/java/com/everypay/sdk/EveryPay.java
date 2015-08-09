@@ -6,6 +6,7 @@ import com.everypay.sdk.api.EverypayApi;
 import com.everypay.sdk.api.EverypayApiCalls;
 import com.everypay.sdk.api.merchant.MerchantApi;
 import com.everypay.sdk.api.merchant.MerchantApiCalls;
+import com.everypay.sdk.model.Card;
 
 public class Everypay {
 
