@@ -1,5 +1,13 @@
 # EveryPay Android SDK
 
+* [Adding the SDK to your project](https://github.com/UnifiedPaymentSolutions/everypay-android/blob/master/README.md#adding-the-sdk-to-your-project)
+* [Overview](https://github.com/UnifiedPaymentSolutions/everypay-android/blob/master/README.md#overview)
+* [Integrating the SDK](https://github.com/UnifiedPaymentSolutions/everypay-android/blob/master/README.md#integrating-the-sdk)
+* [Required Android permissions](https://github.com/UnifiedPaymentSolutions/everypay-android/blob/master/README.md#required-android-permissions)
+* [Customising the app <-> merchant server communication](https://github.com/UnifiedPaymentSolutions/everypay-android/blob/master/README.md#customising-the-app---merchant-server-communication)
+* [Customising the card input form](https://github.com/UnifiedPaymentSolutions/everypay-android/blob/master/README.md#customising-the-card-input-form)
+* [Customising everything](https://github.com/UnifiedPaymentSolutions/everypay-android/blob/master/README.md#customising-everything)
+
 ## Adding the SDK to your project
 
 To add the SDK to your Android Studio project, please add the following line to your `app/build.gradle` file:
