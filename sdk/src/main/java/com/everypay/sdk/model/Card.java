@@ -186,14 +186,6 @@ public class Card implements Parcelable {
         normalize();
     }
 
-    public int getExpMonthInt() {
-        try {
-            return Integer.parseInt(expMonth);
-        } catch (NumberFormatException e) {
-            return 0;
-        }
-    }
-
     public String getExpYear() {
         return expYear;
     }
@@ -201,14 +193,6 @@ public class Card implements Parcelable {
     public void setExpYear(String expYear) {
         this.expYear = expYear;
         normalize();
-    }
-
-    public int getExpYearInt() {
-        try {
-            return Integer.parseInt(expYear);
-        } catch (NumberFormatException e) {
-            return 0;
-        }
     }
 
     public CardType getType() {

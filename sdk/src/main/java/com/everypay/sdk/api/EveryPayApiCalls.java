@@ -5,6 +5,6 @@ import retrofit.http.POST;
 
 public interface EverypayApiCalls {
 
-    @POST("/single_use_tokens")
+    @POST("/encrypted_payment_instruments")
     EverypayTokenResponseData saveCard(@Body EverypayTokenRequestData params);
 }

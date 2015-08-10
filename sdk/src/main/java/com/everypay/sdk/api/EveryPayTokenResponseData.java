@@ -4,15 +4,15 @@ package com.everypay.sdk.api;
 import android.text.TextUtils;
 
 public class EverypayTokenResponseData {
-    public SingleUseTokenResponseData singleUseToken;
+    public EncryptedTokenResponseData encryptedPaymentInstrument;
 
     public String getToken() {
-        if (singleUseToken != null && !TextUtils.isEmpty(singleUseToken.singleCcToken))
-            return singleUseToken.singleCcToken;
+        if (encryptedPaymentInstrument != null && !TextUtils.isEmpty(encryptedPaymentInstrument.ccTokenEncrypted))
+            return encryptedPaymentInstrument.ccTokenEncrypted;
         return "";
     }
 
-    public static class SingleUseTokenResponseData {
-        String singleCcToken;
+    public static class EncryptedTokenResponseData {
+        String ccTokenEncrypted;
     }
 }
