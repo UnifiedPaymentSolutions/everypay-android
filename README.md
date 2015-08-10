@@ -1,5 +1,7 @@
 # EveryPay Android SDK
 
+> Warning: the Android SDK is still in an alpha stage. Significant API changes may happen before a 1.0 release.
+
 * [Adding the SDK to your project](https://github.com/UnifiedPaymentSolutions/everypay-android/blob/master/README.md#adding-the-sdk-to-your-project)
 * [Overview](https://github.com/UnifiedPaymentSolutions/everypay-android/blob/master/README.md#overview)
 * [Integrating the SDK](https://github.com/UnifiedPaymentSolutions/everypay-android/blob/master/README.md#integrating-the-sdk)
