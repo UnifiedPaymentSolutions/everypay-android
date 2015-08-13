@@ -10,12 +10,12 @@ public class EverypayTokenRequestData {
 
     public EncryptedTokenRequestData encryptedPaymentInstrument;
 
-    public EverypayTokenRequestData(MerchantParamsResponseData params, Card card, Map<String, Object> collectorResult) {
-        this.encryptedPaymentInstrument = new EncryptedTokenRequestData(params, card, collectorResult);
+    public EverypayTokenRequestData(MerchantParamsResponseData params, Card card, Map<String, Object> deviceInfo) {
+        this.encryptedPaymentInstrument = new EncryptedTokenRequestData(params, card, deviceInfo);
     }
 
     private static class EncryptedTokenRequestData {
-        public EncryptedTokenRequestData(MerchantParamsResponseData params, Card card, Map<String, Object> collectorResult) {
+        public EncryptedTokenRequestData(MerchantParamsResponseData params, Card card, Map<String, Object> deviceInfo) {
             this.apiUsername = params.apiUsername;
             this.accountId = params.accountId;
             this.userIp = params.userIp;
@@ -29,7 +29,7 @@ public class EverypayTokenRequestData {
             this.ccMonth = card.getExpMonth();
             this.ccVerification = card.getCVC();
 
-            //this.deviceFingerprint = collectorResult;
+            this.deviceInfo = deviceInfo;
         }
 
         public String apiUsername;  // Merchant ID
@@ -46,7 +46,7 @@ public class EverypayTokenRequestData {
         public String ccYear;
         public String ccVerification;
 
-        //Map<String, Object> deviceFingerprint;
+        Map<String, Object> deviceInfo;
     }
 
 }

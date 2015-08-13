@@ -1,10 +1,13 @@
 package com.everypay.sdk.steps;
 
-import android.app.Activity;
+import android.content.Context;
 
 import com.everypay.sdk.Everypay;
+import com.everypay.sdk.api.merchant.MerchantApiCalls;
 import com.everypay.sdk.api.merchant.MerchantParamsRequestData;
 import com.everypay.sdk.api.merchant.MerchantParamsResponseData;
+
+import java.util.Map;
 
 public class MerchantParamsStep extends Step {
 
@@ -13,7 +16,13 @@ public class MerchantParamsStep extends Step {
         return StepType.MERCHANT_PARAMS;
     }
 
-    public MerchantParamsResponseData run(Activity activity, Everypay ep) {
-        return ep.getMerchantApi().callGetParams(new MerchantParamsRequestData());
+    private MerchantApiCalls merchantApi;
+
+    public MerchantParamsStep(MerchantApiCalls merchantApi) {
+        this.merchantApi = merchantApi;
+    }
+
+    public MerchantParamsResponseData run(Context activity, Everypay ep, Map<String, Object> deviceInfo) {
+        return merchantApi.callGetParams(new MerchantParamsRequestData(deviceInfo));
     }
 }

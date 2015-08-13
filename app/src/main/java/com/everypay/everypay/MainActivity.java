@@ -4,17 +4,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.everypay.sdk.model.Card;
 import com.everypay.sdk.Everypay;
 import com.everypay.sdk.EverypayListener;
+import com.everypay.sdk.model.Card;
 import com.everypay.sdk.steps.StepType;
 import com.everypay.sdk.views.CardFormActivity;
+
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ep = Everypay.getInstance();
+        ep = Everypay.getDefault();
 
         attachUiEvents();
     }
@@ -37,10 +40,10 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == CardFormActivity.REQUEST_CODE) {
             hideStatusViews(StepType.CARD_INPUT);
 
-            Card card = CardFormActivity.getCardFromResult(resultCode, data);
-            if (card != null) {
+            Pair<Card, Map<String, Object>> result = CardFormActivity.getCardAndDeviceInfoFromResult(resultCode, data);
+            if (result != null) {
                 statuses[0].good.setVisibility(View.VISIBLE);
-                Everypay.getInstance().startFullPaymentFlow(this, card, new EverypayListener() {
+                Everypay.getDefault().startFullPaymentFlow(result.first, result.second, new EverypayListener() {
 
                     @Override
                     public void stepStarted(StepType step) {

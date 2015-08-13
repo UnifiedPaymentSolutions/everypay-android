@@ -1,14 +1,13 @@
 package com.everypay.sdk.steps;
 
 
-import android.app.Activity;
+import android.content.Context;
 
-import com.everypay.sdk.model.Card;
 import com.everypay.sdk.Everypay;
 import com.everypay.sdk.api.EverypayTokenRequestData;
 import com.everypay.sdk.api.EverypayTokenResponseData;
 import com.everypay.sdk.api.merchant.MerchantParamsResponseData;
-import com.everypay.sdk.collector.DeviceCollector;
+import com.everypay.sdk.model.Card;
 
 import java.util.Map;
 
@@ -18,9 +17,7 @@ public class EverypayTokenStep extends Step {
         return StepType.EVERYPAY_TOKEN;
     }
 
-    public EverypayTokenResponseData run(Activity activity, Everypay ep, MerchantParamsResponseData paramsResponse, Card card) {
-        DeviceCollector collector = new DeviceCollector(activity.getApplicationContext());
-        Map<String, Object> collectorResult = collector.collect();
-        return ep.getEverypayApi().saveCard(new EverypayTokenRequestData(paramsResponse, card, collectorResult));
+    public EverypayTokenResponseData run(Context activity, Everypay ep, MerchantParamsResponseData paramsResponse, Card card, Map<String, Object> deviceInfo) {
+        return ep.getEverypayApi().saveCard(new EverypayTokenRequestData(paramsResponse, card, deviceInfo));
     }
 }

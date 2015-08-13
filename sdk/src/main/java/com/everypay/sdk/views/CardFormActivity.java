@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,10 +18,15 @@ import android.widget.Toast;
 
 import com.everypay.sdk.Everypay;
 import com.everypay.sdk.R;
+import com.everypay.sdk.collector.DeviceCollector;
 import com.everypay.sdk.model.Card;
 import com.everypay.sdk.model.CardError;
 import com.everypay.sdk.model.CardType;
+import com.everypay.sdk.util.CustomGson;
 import com.everypay.sdk.util.Reflect;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class CardFormActivity extends AppCompatActivity {
@@ -33,9 +39,9 @@ public class CardFormActivity extends AppCompatActivity {
         activity.startActivityForResult(intent, REQUEST_CODE);
     }
 
-    public static Card getCardFromResult(int resultCode, Intent data) {
+    public static Pair<Card, Map<String, Object>> getCardAndDeviceInfoFromResult(int resultCode, Intent data) {
         if (resultCode == RESULT_OK && data != null) {
-            return (Card)data.getParcelableExtra("card");
+            return new Pair<>((Card)data.getParcelableExtra("card"), (Map<String, Object>)CustomGson.getInstance().fromJson(data.getStringExtra("deviceInfo"), new HashMap<String, Object>().getClass()));
         }
         return null;
     }
@@ -52,6 +58,7 @@ public class CardFormActivity extends AppCompatActivity {
     int colorInvalid;
 
     Card partialCard;
+    DeviceCollector collector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +78,8 @@ public class CardFormActivity extends AppCompatActivity {
         colorInvalid = getResources().getColor(R.color.ep_card_field_invalid);
 
         partialCard = new Card();
+        collector = new DeviceCollector(this);
+        collector.start();
 
         attachUiEvents();
         setResult(RESULT_CANCELED, null);
@@ -125,6 +134,7 @@ public class CardFormActivity extends AppCompatActivity {
                 if (validateWithToast()) {
                     Intent result = new Intent();
                     result.putExtra("card", partialCard);
+                    result.putExtra("deviceInfo", CustomGson.getInstance().toJson(collector.collectWithTimeout()));
                     setResult(RESULT_OK, result);
                     finish();
                 } else {
