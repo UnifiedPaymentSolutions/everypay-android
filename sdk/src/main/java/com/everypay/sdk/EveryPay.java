@@ -48,6 +48,11 @@ public class Everypay {
         return new Builder(context);
     }
 
+    public Everypay setDefault() {
+        defaultInstance = this;
+        return this;
+    }
+
     public EverypayApiCalls getEverypayApi() {
         return everypayApi;
     }
@@ -60,7 +65,7 @@ public class Everypay {
         return  merchantPaymentStep;
     }
 
-    public void startFullPaymentFlow(Card card, Map<String, Object> deviceInfo, EverypayListener callback) {
+    public void startFullPaymentFlow(Card card, String deviceInfo, EverypayListener callback) {
         new EverypaySession(context, this, card, deviceInfo, callback).execute();
     }
 
@@ -106,10 +111,6 @@ public class Everypay {
             if (merchantPaymentStep == null)
                 merchantPaymentStep = new MerchantPaymentStep(merchantApi);
             return new Everypay(context.getApplicationContext(), everypayUrl, merchantParamsStep, merchantPaymentStep);
-        }
-
-        public void setDefault() {
-            defaultInstance = build();
         }
 
     }

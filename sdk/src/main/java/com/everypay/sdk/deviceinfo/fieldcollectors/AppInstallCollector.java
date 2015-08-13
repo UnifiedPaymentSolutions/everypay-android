@@ -1,12 +1,12 @@
-package com.everypay.sdk.collector.fieldcollectors;
+package com.everypay.sdk.deviceinfo.fieldcollectors;
 
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
-import com.everypay.sdk.collector.FieldError;
-import com.everypay.sdk.collector.InfoField;
+import com.everypay.sdk.deviceinfo.FieldError;
+import com.everypay.sdk.deviceinfo.InfoField;
 
 import java.util.UUID;
 

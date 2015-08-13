@@ -11,6 +11,6 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
 
-        Everypay.with(this).setEverypayApiBaseUrl(Everypay.EVERYPAY_API_URL_TESTING).setMerchantApiBaseUrl(Everypay.MERCHANT_API_URL_TESTING).setDefault();
+        Everypay.with(this).setEverypayApiBaseUrl(Everypay.EVERYPAY_API_URL_TESTING).setMerchantApiBaseUrl(Everypay.MERCHANT_API_URL_TESTING).build().setDefault();
     }
 }

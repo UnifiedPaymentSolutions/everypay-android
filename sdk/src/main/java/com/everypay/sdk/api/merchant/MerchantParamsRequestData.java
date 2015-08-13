@@ -1,11 +1,9 @@
 package com.everypay.sdk.api.merchant;
 
-import java.util.Map;
-
 public class MerchantParamsRequestData {
-    Map<String, Object> deviceInfo;
+    String deviceInfo;
 
-    public MerchantParamsRequestData(Map<String, Object> deviceInfo) {
+    public MerchantParamsRequestData(String deviceInfo) {
         this.deviceInfo = deviceInfo;
     }
 }

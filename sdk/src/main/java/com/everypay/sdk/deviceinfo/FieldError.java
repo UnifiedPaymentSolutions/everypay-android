@@ -1,4 +1,4 @@
-package com.everypay.sdk.collector;
+package com.everypay.sdk.deviceinfo;
 
 
 public enum FieldError {

@@ -1,9 +1,9 @@
-package com.everypay.sdk.collector.fieldcollectors;
+package com.everypay.sdk.deviceinfo.fieldcollectors;
 
 
 import android.content.Context;
 
-import com.everypay.sdk.collector.InfoField;
+import com.everypay.sdk.deviceinfo.InfoField;
 
 public interface FieldCollector {
 

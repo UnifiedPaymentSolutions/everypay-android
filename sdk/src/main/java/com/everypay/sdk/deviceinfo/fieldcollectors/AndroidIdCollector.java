@@ -1,11 +1,11 @@
-package com.everypay.sdk.collector.fieldcollectors;
+package com.everypay.sdk.deviceinfo.fieldcollectors;
 
 
 import android.content.Context;
 import android.provider.Settings;
 
-import com.everypay.sdk.collector.FieldError;
-import com.everypay.sdk.collector.InfoField;
+import com.everypay.sdk.deviceinfo.FieldError;
+import com.everypay.sdk.deviceinfo.InfoField;
 
 public class AndroidIdCollector implements FieldCollector {
 

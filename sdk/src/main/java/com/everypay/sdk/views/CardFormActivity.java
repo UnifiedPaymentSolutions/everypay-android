@@ -17,15 +17,11 @@ import android.widget.Toast;
 
 import com.everypay.sdk.Everypay;
 import com.everypay.sdk.R;
-import com.everypay.sdk.collector.DeviceCollector;
+import com.everypay.sdk.deviceinfo.DeviceCollector;
 import com.everypay.sdk.model.Card;
 import com.everypay.sdk.model.CardError;
 import com.everypay.sdk.model.CardType;
-import com.everypay.sdk.util.CustomGson;
 import com.everypay.sdk.util.Reflect;
-
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class CardFormActivity extends Activity {
@@ -38,9 +34,9 @@ public class CardFormActivity extends Activity {
         activity.startActivityForResult(intent, REQUEST_CODE);
     }
 
-    public static Pair<Card, Map<String, Object>> getCardAndDeviceInfoFromResult(int resultCode, Intent data) {
+    public static Pair<Card, String> getCardAndDeviceInfoFromResult(int resultCode, Intent data) {
         if (resultCode == RESULT_OK && data != null) {
-            return new Pair<>((Card)data.getParcelableExtra("card"), (Map<String, Object>)CustomGson.getInstance().fromJson(data.getStringExtra("deviceInfo"), new HashMap<String, Object>().getClass()));
+            return new Pair<>((Card)data.getParcelableExtra("card"), data.getStringExtra("deviceInfo"));
         }
         return null;
     }
@@ -133,7 +129,7 @@ public class CardFormActivity extends Activity {
                 if (validateWithToast()) {
                     Intent result = new Intent();
                     result.putExtra("card", partialCard);
-                    result.putExtra("deviceInfo", CustomGson.getInstance().toJson(collector.collectWithTimeout()));
+                    result.putExtra("deviceInfo", collector.collectWithTimeout());
                     setResult(RESULT_OK, result);
                     finish();
                 } else {

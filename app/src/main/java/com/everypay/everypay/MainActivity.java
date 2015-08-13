@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.everypay.sdk.Everypay;
 import com.everypay.sdk.EverypayListener;
+import com.everypay.sdk.deviceinfo.DeviceInfo;
 import com.everypay.sdk.model.Card;
 import com.everypay.sdk.steps.StepType;
 import com.everypay.sdk.views.CardFormActivity;
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == CardFormActivity.REQUEST_CODE) {
             hideStatusViews(StepType.CARD_INPUT);
 
-            Pair<Card, Map<String, Object>> result = CardFormActivity.getCardAndDeviceInfoFromResult(resultCode, data);
+            Pair<Card, String> result = CardFormActivity.getCardAndDeviceInfoFromResult(resultCode, data);
             if (result != null) {
                 statuses[0].good.setVisibility(View.VISIBLE);
                 Everypay.getDefault().startFullPaymentFlow(result.first, result.second, new EverypayListener() {

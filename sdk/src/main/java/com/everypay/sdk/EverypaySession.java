@@ -21,7 +21,7 @@ public class EverypaySession extends AsyncTask<Void, Void, Void> {
     private Handler handler;
     private Context context;
     private Everypay ep;
-    private Map<String, Object> deviceInfo;
+    private String deviceInfo;
     private EverypayListener listener;
 
     private Card card;
@@ -32,7 +32,7 @@ public class EverypaySession extends AsyncTask<Void, Void, Void> {
     private MerchantPaymentStep merchantPaymentStep;
 
 
-    public EverypaySession(Context context, Everypay ep, Card card, Map<String, Object> deviceInfo, EverypayListener listener) {
+    public EverypaySession(Context context, Everypay ep, Card card, String deviceInfo, EverypayListener listener) {
         this.handler = new Handler();
         this.context = context;
         this.ep = ep;

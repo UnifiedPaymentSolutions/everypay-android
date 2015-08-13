@@ -1,21 +1,19 @@
 package com.everypay.sdk.api;
 
-import com.everypay.sdk.model.Card;
 import com.everypay.sdk.api.merchant.MerchantParamsResponseData;
-
-import java.util.Map;
+import com.everypay.sdk.model.Card;
 
 
 public class EverypayTokenRequestData {
 
     public EncryptedTokenRequestData encryptedPaymentInstrument;
 
-    public EverypayTokenRequestData(MerchantParamsResponseData params, Card card, Map<String, Object> deviceInfo) {
+    public EverypayTokenRequestData(MerchantParamsResponseData params, Card card, String deviceInfo) {
         this.encryptedPaymentInstrument = new EncryptedTokenRequestData(params, card, deviceInfo);
     }
 
     private static class EncryptedTokenRequestData {
-        public EncryptedTokenRequestData(MerchantParamsResponseData params, Card card, Map<String, Object> deviceInfo) {
+        public EncryptedTokenRequestData(MerchantParamsResponseData params, Card card, String deviceInfo) {
             this.apiUsername = params.apiUsername;
             this.accountId = params.accountId;
             this.userIp = params.userIp;
@@ -46,7 +44,7 @@ public class EverypayTokenRequestData {
         public String ccYear;
         public String ccVerification;
 
-        Map<String, Object> deviceInfo;
+        String deviceInfo;
     }
 
 }

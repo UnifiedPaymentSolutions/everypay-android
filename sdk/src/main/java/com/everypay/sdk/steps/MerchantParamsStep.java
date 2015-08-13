@@ -7,8 +7,6 @@ import com.everypay.sdk.api.merchant.MerchantApiCalls;
 import com.everypay.sdk.api.merchant.MerchantParamsRequestData;
 import com.everypay.sdk.api.merchant.MerchantParamsResponseData;
 
-import java.util.Map;
-
 public class MerchantParamsStep extends Step {
 
     @Override
@@ -22,7 +20,7 @@ public class MerchantParamsStep extends Step {
         this.merchantApi = merchantApi;
     }
 
-    public MerchantParamsResponseData run(Context activity, Everypay ep, Map<String, Object> deviceInfo) {
+    public MerchantParamsResponseData run(Context activity, Everypay ep, String deviceInfo) {
         return merchantApi.callGetParams(new MerchantParamsRequestData(deviceInfo));
     }
 }

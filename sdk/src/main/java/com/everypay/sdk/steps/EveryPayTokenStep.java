@@ -17,7 +17,7 @@ public class EverypayTokenStep extends Step {
         return StepType.EVERYPAY_TOKEN;
     }
 
-    public EverypayTokenResponseData run(Context activity, Everypay ep, MerchantParamsResponseData paramsResponse, Card card, Map<String, Object> deviceInfo) {
+    public EverypayTokenResponseData run(Context activity, Everypay ep, MerchantParamsResponseData paramsResponse, Card card, String deviceInfo) {
         return ep.getEverypayApi().saveCard(new EverypayTokenRequestData(paramsResponse, card, deviceInfo));
     }
 }
