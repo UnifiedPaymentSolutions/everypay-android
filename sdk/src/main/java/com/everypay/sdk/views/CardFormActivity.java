@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -29,7 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class CardFormActivity extends AppCompatActivity {
+public class CardFormActivity extends Activity {
 
     public static final int REQUEST_CODE = 13423;
 
@@ -115,14 +114,14 @@ public class CardFormActivity extends AppCompatActivity {
         month.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showSelectDialog(month, "ExpMonth", R.string.cc_month, R.array.cc_month_values, R.array.cc_month_names);
+                showSelectDialog(month, "ExpMonth", R.string.ep_cc_month, R.array.ep_cc_month_values, R.array.ep_cc_month_names);
             }
         });
 
         year.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showSelectDialog(year, "ExpYear", R.string.cc_year, R.array.cc_year_values, R.array.cc_year_values);
+                showSelectDialog(year, "ExpYear", R.string.ep_cc_year, R.array.ep_cc_year_values, R.array.ep_cc_year_values);
             }
         });
 

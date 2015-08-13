@@ -20,7 +20,7 @@
             android:id="@+id/cc_holder_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/cc_holder_name"
+            android:hint="@string/ep_cc_holder_name"
             />
 
         <LinearLayout
@@ -39,7 +39,7 @@
                     android:id="@+id/cc_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/cc_number"
+                    android:hint="@string/ep_cc_number"
                     android:inputType="number"
                     />
 
@@ -59,7 +59,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="@string/cc_cvc"
+                android:hint="@string/ep_cc_cvc"
                 android:inputType="number"
                 android:layout_marginLeft="8dp"
                 android:gravity="center_horizontal"
@@ -77,7 +77,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="@string/cc_month"
+                android:hint="@string/ep_cc_month"
                 android:inputType="number"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
@@ -88,7 +88,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="@string/cc_year"
+                android:hint="@string/ep_cc_year"
                 android:inputType="number"
                 android:layout_marginLeft="8dp"
                 android:focusable="false"

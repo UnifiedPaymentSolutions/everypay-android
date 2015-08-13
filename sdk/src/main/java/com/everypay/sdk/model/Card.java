@@ -42,69 +42,69 @@ public class Card implements Parcelable {
 
     public void validateName(Context context) throws CardError {
         if (TextUtils.isEmpty(name))
-            CardError.raise(context, true, R.string.cc_error_name_missing);
+            CardError.raise(context, true, R.string.ep_cc_error_name_missing);
     }
 
     public void validateNumber(Context context) throws CardError {
         if (TextUtils.isEmpty(number))
-            CardError.raise(context, true, R.string.cc_error_number_missing);
+            CardError.raise(context, true, R.string.ep_cc_error_number_missing);
 
         CardType type = getType();
         if (number.length() < type.getLength())
-            CardError.raise(context, true, R.string.cc_error_number_short);
+            CardError.raise(context, true, R.string.ep_cc_error_number_short);
         if (number.length() > type.getLength())
-            CardError.raise(context, false, R.string.cc_error_number_long);
+            CardError.raise(context, false, R.string.ep_cc_error_number_long);
 
         if (!isValidLuhnNumber(number))
-            CardError.raise(context, false, R.string.cc_error_number_invalid);
+            CardError.raise(context, false, R.string.ep_cc_error_number_invalid);
     }
 
     public void validateExpiryDate(Context context) throws CardError {
         int month = validateExpMonth(context);
         int year = validateExpYear(context);
         if (DateUtils.hasMonthPassed(year, month)) {
-            CardError.raise(context, false, R.string.cc_error_expired);
+            CardError.raise(context, false, R.string.ep_cc_error_expired);
         }
     }
 
     public int validateExpMonth(Context context) throws CardError {
         if (TextUtils.isEmpty(expMonth))
-            CardError.raise(context, true, R.string.cc_error_month_missing);
+            CardError.raise(context, true, R.string.ep_cc_error_month_missing);
 
         // normalize() already gets rid of non-digits.
         int month = Integer.parseInt(expMonth, 10);
         if (month < 1)
-            CardError.raise(context, true, R.string.cc_error_month_invalid);
+            CardError.raise(context, true, R.string.ep_cc_error_month_invalid);
         if (month > 12)
-            CardError.raise(context, false, R.string.cc_error_month_invalid);
+            CardError.raise(context, false, R.string.ep_cc_error_month_invalid);
         return month;
     }
 
     public int validateExpYear(Context context) throws CardError {
         if (TextUtils.isEmpty(expYear))
-            CardError.raise(context, true, R.string.cc_error_year_missing);
+            CardError.raise(context, true, R.string.ep_cc_error_year_missing);
 
         // normalize() already gets rid of non-digits.
         if (expYear.length() < 4)
-            CardError.raise(context, true, R.string.cc_error_year_short);
+            CardError.raise(context, true, R.string.ep_cc_error_year_short);
 
         int year = Integer.parseInt(expYear, 10);
         if (year < 1900 || year > 2100)
-            CardError.raise(context, false, R.string.cc_error_year_invalid);
+            CardError.raise(context, false, R.string.ep_cc_error_year_invalid);
         return year;
     }
 
     public void validateCVC(Context context) throws CardError {
         if (TextUtils.isEmpty(cvc))
-            CardError.raise(context, true, R.string.cc_error_cvc_missing);
+            CardError.raise(context, true, R.string.ep_cc_error_cvc_missing);
 
         // normalize() already gets rid of non-digits.
         if (getType() == CardType.AMERICAN_EXPRESS) {
             if (cvc.length() != 4)
-                CardError.raise(context, cvc.length() < 4, R.string.cc_error_cvc_invalid_american_express);
+                CardError.raise(context, cvc.length() < 4, R.string.ep_cc_error_cvc_invalid_american_express);
         } else {
             if (cvc.length() != 3)
-                CardError.raise(context, cvc.length() < 3, R.string.cc_error_cvc_invalid);
+                CardError.raise(context, cvc.length() < 3, R.string.ep_cc_error_cvc_invalid);
         }
     }
 
