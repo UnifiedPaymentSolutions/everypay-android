@@ -1,6 +1,9 @@
 apply plugin: 'com.android.library'
 
 
+version = '0.1'
+
+
 android {
     compileSdkVersion 22
     buildToolsVersion '22.0.1'
@@ -44,3 +47,31 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.4.0'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
 }
+
+
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'android-sdk'
+
+    publishedGroupId = 'com.everypay.sdk'
+    libraryName = 'EveryPay'
+    artifact = 'android-sdk'
+
+    libraryDescription = 'EveryPay Android SDK'
+
+    siteUrl = 'https://github.com/UnifiedPaymentSolutions/everypay-android'
+    gitUrl = 'https://github.com/UnifiedPaymentSolutions/everypay-android.git'
+
+    libraryVersion = version
+
+    developerId = 'linnap'
+    developerName = 'Mattias Linnap'
+    developerEmail = 'linnap@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
