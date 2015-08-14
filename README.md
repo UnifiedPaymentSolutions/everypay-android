@@ -18,7 +18,7 @@ To add the SDK to your Android Studio project, please add the following line to 
 dependencies {
     ... Other dependencies ...
     
-    compile 'com.every-pay:everypay-android:0.1'
+    compile 'com.everypay.sdp:android-sdk:0.1'
 }
 ```
 
