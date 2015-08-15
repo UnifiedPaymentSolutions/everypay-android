@@ -170,13 +170,15 @@ After your custom card form has returned a Card model and the device info string
 
 In a complex app it's possible that you might need to customise most of the SDK: both the merchant server <-> app communication steps (you might already have your own APIs), the card input form, and perhaps the ways how the success/failure events are tied to the UI.
 
-In this case it might make more sense to skip the Everypay class and the provided steps, and just run step 3 (Everypay API call) directly from your code.
+In this case it might make more sense to skip the provided steps and `startFullPaymentFlow()`, and just run step 3 (Everypay API call) directly from your code.
 
 It is provided as a Retrofit API call in both synchronous and asynchronous versions:
 
 ```
-p.getEverypayApi().saveCard(new EverypayTokenRequestData(paramsResponse, card, deviceInfo));
+EverypayTokenResponseData respWithToken = Everypay.getDefault().getEverypayApi().saveCard(new EverypayTokenRequestData(paramsResponse, card, deviceInfo));
 
+Everypay.getDefault().getEverypayApi().saveCard(new EverypayTokenRequestData(paramsResponse, card, deviceInfo), callback);
+```
 
 
 
