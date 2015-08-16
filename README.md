@@ -2,13 +2,16 @@
 
 > Warning: the Android SDK is still in an alpha stage. Significant API changes may happen before a 1.0 release.
 
-* [Adding the SDK to your project](https://github.com/UnifiedPaymentSolutions/everypay-android/blob/master/README.md#adding-the-sdk-to-your-project)
-* [Overview](https://github.com/UnifiedPaymentSolutions/everypay-android/blob/master/README.md#overview)
-* [Integrating the SDK](https://github.com/UnifiedPaymentSolutions/everypay-android/blob/master/README.md#integrating-the-sdk)
+* [Overview](https://github.com/UnifiedPaymentSolutions/everypay-android#overview)
+* Integrating the SDK
+  * [Add the SDK to your Android Studio project](https://github.com/UnifiedPaymentSolutions/everypay-android#add-the-sdk-to-your-android-studio-project)
+  * [Configure the SDK parameters](https://github.com/UnifiedPaymentSolutions/everypay-android#configure-the-sdk-parameters)
+  * [Add a listener for payment flow events](https://github.com/UnifiedPaymentSolutions/everypay-android#add-a-listener-for-payment-api-events)
+  * [Start the payment flow](https://github.com/UnifiedPaymentSolutions/everypay-android#start-the-payment-flow)
 * [Required Android permissions](https://github.com/UnifiedPaymentSolutions/everypay-android/blob/master/README.md#required-android-permissions)
-* [Customising the app <-> merchant server communication](https://github.com/UnifiedPaymentSolutions/everypay-android/blob/master/README.md#customising-the-app---merchant-server-communication)
-* [Customising the card input form](https://github.com/UnifiedPaymentSolutions/everypay-android/blob/master/README.md#customising-the-card-input-form)
-* [Customising everything](https://github.com/UnifiedPaymentSolutions/everypay-android/blob/master/README.md#customising-everything)
+* [Customising the app <-> merchant server communication steps](https://github.com/UnifiedPaymentSolutions/everypay-android#customising-the-app---merchant-server-communication-steps)
+* [Customising the card input form](https://github.com/UnifiedPaymentSolutions/everypay-android#customising-the-card-input-form)
+* [Customising everything](https://github.com/UnifiedPaymentSolutions/everypay-android#customising-everything)
 
 
 ## Overview
@@ -55,7 +58,7 @@ Everypay.with(this).setEverypayApiBaseUrl(Everypay.EVERYPAY_API_URL_TESTING).set
 Everypay ep = Everypay.getDefault();
 ```
 
-### Add a listener for payment API events
+### Add a listener for payment flow events
 
 ```
 EverypayListener epListener = new EverypayListener() {
