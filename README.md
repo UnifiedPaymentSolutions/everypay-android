@@ -6,7 +6,7 @@
 * Integrating the SDK
   * [Add the SDK to your Android Studio project](https://github.com/UnifiedPaymentSolutions/everypay-android#add-the-sdk-to-your-android-studio-project)
   * [Configure the SDK parameters](https://github.com/UnifiedPaymentSolutions/everypay-android#configure-the-sdk-parameters)
-  * [Add a listener for payment flow events](https://github.com/UnifiedPaymentSolutions/everypay-android#add-a-listener-for-payment-api-events)
+  * [Add a listener for payment flow events](https://github.com/UnifiedPaymentSolutions/everypay-android#add-a-listener-for-payment-flow-events)
   * [Start the payment flow](https://github.com/UnifiedPaymentSolutions/everypay-android#start-the-payment-flow)
 * [Required Android permissions](https://github.com/UnifiedPaymentSolutions/everypay-android/blob/master/README.md#required-android-permissions)
 * [Customising the app <-> merchant server communication steps](https://github.com/UnifiedPaymentSolutions/everypay-android#customising-the-app---merchant-server-communication-steps)
