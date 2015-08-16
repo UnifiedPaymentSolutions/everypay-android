@@ -8,7 +8,7 @@
   * [Configure the SDK parameters](https://github.com/UnifiedPaymentSolutions/everypay-android#configure-the-sdk-parameters)
   * [Add a listener for payment flow events](https://github.com/UnifiedPaymentSolutions/everypay-android#add-a-listener-for-payment-flow-events)
   * [Start the payment flow](https://github.com/UnifiedPaymentSolutions/everypay-android#start-the-payment-flow)
-* [Required Android permissions](https://github.com/UnifiedPaymentSolutions/everypay-android/blob/master/README.md#required-android-permissions)
+* [Required Android permissions](https://github.com/UnifiedPaymentSolutions/everypay-android#required-android-permissions)
 * [Customising the app <-> merchant server communication steps](https://github.com/UnifiedPaymentSolutions/everypay-android#customising-the-app---merchant-server-communication-steps)
 * [Customising the card input form](https://github.com/UnifiedPaymentSolutions/everypay-android#customising-the-card-input-form)
 * [Customising everything](https://github.com/UnifiedPaymentSolutions/everypay-android#customising-everything)
