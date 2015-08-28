@@ -2,13 +2,16 @@
 
 > Warning: the Android SDK is still in an alpha stage. Significant API changes may happen before a 1.0 release.
 
-* [Adding the SDK to your project](https://github.com/UnifiedPaymentSolutions/everypay-android/blob/master/README.md#adding-the-sdk-to-your-project)
-* [Overview](https://github.com/UnifiedPaymentSolutions/everypay-android/blob/master/README.md#overview)
-* [Integrating the SDK](https://github.com/UnifiedPaymentSolutions/everypay-android/blob/master/README.md#integrating-the-sdk)
-* [Required Android permissions](https://github.com/UnifiedPaymentSolutions/everypay-android/blob/master/README.md#required-android-permissions)
-* [Customising the app <-> merchant server communication](https://github.com/UnifiedPaymentSolutions/everypay-android/blob/master/README.md#customising-the-app---merchant-server-communication)
-* [Customising the card input form](https://github.com/UnifiedPaymentSolutions/everypay-android/blob/master/README.md#customising-the-card-input-form)
-* [Customising everything](https://github.com/UnifiedPaymentSolutions/everypay-android/blob/master/README.md#customising-everything)
+* [Overview](https://github.com/UnifiedPaymentSolutions/everypay-android#overview)
+* Integrating the SDK
+  * [Add the SDK to your Android Studio project](https://github.com/UnifiedPaymentSolutions/everypay-android#add-the-sdk-to-your-android-studio-project)
+  * [Configure the SDK parameters](https://github.com/UnifiedPaymentSolutions/everypay-android#configure-the-sdk-parameters)
+  * [Add a listener for payment flow events](https://github.com/UnifiedPaymentSolutions/everypay-android#add-a-listener-for-payment-flow-events)
+  * [Start the payment flow](https://github.com/UnifiedPaymentSolutions/everypay-android#start-the-payment-flow)
+* [Required Android permissions](https://github.com/UnifiedPaymentSolutions/everypay-android#required-android-permissions)
+* [Customising the app <-> merchant server communication steps](https://github.com/UnifiedPaymentSolutions/everypay-android#customising-the-app---merchant-server-communication-steps)
+* [Customising the card input form](https://github.com/UnifiedPaymentSolutions/everypay-android#customising-the-card-input-form)
+* [Customising everything](https://github.com/UnifiedPaymentSolutions/everypay-android#customising-everything)
 
 
 ## Overview
@@ -31,7 +34,7 @@ Add the following line to your `app/build.gradle` file:
 ```
 dependencies {
     ... Other dependencies ...
-    compile 'com.everypay.sdp:android-sdk:0.1'
+    compile 'com.everypay.sdk:android-sdk:0.1'
 }
 ```
 
@@ -55,7 +58,7 @@ Everypay.with(this).setEverypayApiBaseUrl(Everypay.EVERYPAY_API_URL_TESTING).set
 Everypay ep = Everypay.getDefault();
 ```
 
-### Add a listener for payment API events
+### Add a listener for payment flow events
 
 ```
 EverypayListener epListener = new EverypayListener() {
@@ -82,7 +85,7 @@ EverypayListener epListener = new EverypayListener() {
 });
 ```
 
-### Start and receive a result from the CardFormActivity
+### Start the payment flow
 
 When the user is ready to start, start CardFormActivity:
 
@@ -95,29 +98,26 @@ findViewById(R.id.pay_button).setOnClickListener(new View.OnClickListener() {
 });
 ```
 
-In the same activity, override and handle `onActivityResult()`, which is called after CardFormActivity finishes:
+In the same activity, override and handle `onActivityResult()`, which is called after CardFormActivity finishes. Note the call to `startFullPaymentFlow()` with the received card, device info and the listener you created.
 
 ```
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CardFormActivity.REQUEST_CODE) {
-            Pair<Card, String> result = CardFormActivity.getCardAndDeviceInfoFromResult(resultCode, data);
-            if (result != null) {
-                Log.d("logtag", "Valid card entered, start payment flow");
-                ... See next section ...
-            } else {
-                Log.e("logtag", "No valid card entered.");
-            }
+@Override
+protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    if (requestCode == CardFormActivity.REQUEST_CODE) {
+        Pair<Card, String> result = CardFormActivity.getCardAndDeviceInfoFromResult(resultCode, data);
+        if (result != null) {
+            Log.d("logtag", "Valid card entered, starting payment flow");
+            Everypay.getDefault().startFullPaymentFlow(result.first, result.second, everypayListener);
         } else {
-            super.onActivityResult(requestCode, resultCode, data);
+            Log.e("logtag", "No valid card entered.");
         }
+    } else {
+        super.onActivityResult(requestCode, resultCode, data);
     }
+}
 ```
 
-### Start payment flow
-
-
-
+The API call steps of the payment flow will run on a background thread, and results will be posted to the listener on the main UI thread.
 
 
 ## Required Android permissions
@@ -127,33 +127,61 @@ The SDK requires `<uses-permission android:name="android.permission.INTERNET" />
 If the app uses location services and has the `<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />` permission, then it will collect user location as an extra device info field. If the permission is missing from the app, then user location is skipped.
 
 
-
-## Customising the app <-> merchant server communication
+## Customising the app <-> merchant server communication steps
 
 The SDK includes example implementation for the app - merchant API calls, with the minimal required data for a payment. However, most apps using EveryPay will want to replace the communication step between the app and your server - for example to add your own user accounts, save shopping baskets or subscription plans.
 
-To provide a replacement, override the `run()` method in a MerchantParamsStep subclass:
+To provide a replacement, create subclasses of MerchantParamsStep and MerchantPaymentStep:
 
 ```
 public class MyMerchantParamsStep extends MerchantParamsStep {
-
     @Override
     public MerchantParamsResponseData run(Activity activity, Everypay ep) {
         // Your implementation
     }
 }
+public class MyMerchantPaymentStep extends MerchantPaymentStep {
+    @Override
+    public MerchantPaymentResponseData run(Context activity, Everypay ep, MerchantParamsResponseData paramsResponse, EverypayTokenResponseData everypayResponse) throws MerchantApiException {
+        // Your implementation
+    }
+}
 ```
 
-and pass it to `EveryPay.startFullPaymentFlow()`:
+and pass an instance of the step when configuring EveryPay:
 
 ```
-TODO
+Everypay.with(this).setMerchantParamsStep(new MyMerchantParamsStep()).setMerchantPaymentStep(new MyMerchantPaymentStep()) ... .build();
 ```
 
 `run()` is called on a background thread, and can be synchronous. If it throws an exception, the payment process is cancelled and the `stepFailure()` listener method is called on the main thread.
 
+Note that providing the step subclasses overrides `.setMerchantApiBaseUrl()`.
+
 
 ## Customising the card input form
 
+If the EveryPay card input form does not match your requirements, or if you wish to add custom branding beyond the configuration options, then you can create a custom one. There are two requirements for a custom card form:
+
+* It should construct a [Card model](https://github.com/UnifiedPaymentSolutions/everypay-android/blob/master/sdk/src/main/java/com/everypay/sdk/model/Card.java). The Card model can also be used to validate the inputs.
+* Use the [`DeviceInfoCollector`](https://github.com/UnifiedPaymentSolutions/everypay-android/blob/master/sdk/src/main/java/com/everypay/sdk/deviceinfo/DeviceCollector.java) to obtain a device fingerprint. Collecting the device info in the background while the user is entering card details is a good choice, since it may take up to 10 seconds.
+
+After your custom card form has returned a Card model and the device info string, pass them to `Everypay.startFullPaymentFlow()` as usual.
+
 
 ## Customising everything
+
+In a complex app it's possible that you might need to customise most of the SDK: both the merchant server <-> app communication steps (you might already have your own APIs), the card input form, and perhaps the ways how the success/failure events are tied to the UI.
+
+In this case it might make more sense to skip the provided steps and `startFullPaymentFlow()`, and just run step 3 (Everypay API call) directly from your code.
+
+It is provided as a Retrofit API call in both synchronous and asynchronous versions:
+
+```
+EverypayTokenResponseData respWithToken = Everypay.getDefault().getEverypayApi().saveCard(new EverypayTokenRequestData(paramsResponse, card, deviceInfo));
+
+Everypay.getDefault().getEverypayApi().saveCard(new EverypayTokenRequestData(paramsResponse, card, deviceInfo), callback);
+```
+
+
+
