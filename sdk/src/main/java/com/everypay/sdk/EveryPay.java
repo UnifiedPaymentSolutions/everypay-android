@@ -10,8 +10,6 @@ import com.everypay.sdk.model.Card;
 import com.everypay.sdk.steps.MerchantParamsStep;
 import com.everypay.sdk.steps.MerchantPaymentStep;
 
-import java.util.Map;
-
 
 /**
  * Builder class for EverypaySessions.
@@ -34,6 +32,7 @@ public class Everypay {
 
     private Context context;
     private EverypayApiCalls everypayApi;
+    private MerchantApiCalls merchantApi;
     private MerchantParamsStep merchantParamsStep;
     private MerchantPaymentStep merchantPaymentStep;
 
@@ -55,6 +54,10 @@ public class Everypay {
 
     public EverypayApiCalls getEverypayApi() {
         return everypayApi;
+    }
+
+    public MerchantApiCalls getMerchantApi() {
+        return merchantApi;
     }
 
     public MerchantParamsStep getMerchantParamsStep() {

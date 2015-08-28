@@ -49,6 +49,8 @@ public class CardFormActivity extends Activity {
     ImageView typeIcon;
     Button done;
 
+    private FloatingProgress progress;
+
     int colorNormal;
     int colorInvalid;
 
@@ -78,6 +80,17 @@ public class CardFormActivity extends Activity {
 
         attachUiEvents();
         setResult(RESULT_CANCELED, null);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        hideProgress();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
     private void attachUiEvents() {
@@ -126,14 +139,20 @@ public class CardFormActivity extends Activity {
             public void onClick(View v) {
                 Log.e(Everypay.TAG, "Month now " + partialCard.getExpMonth());
                 Log.e(Everypay.TAG, "Year now " + partialCard.getExpYear());
+                setResult(RESULT_CANCELED, null);
                 if (validateWithToast()) {
-                    Intent result = new Intent();
-                    result.putExtra("card", partialCard);
-                    result.putExtra("deviceInfo", collector.collectWithTimeout());
-                    setResult(RESULT_OK, result);
-                    finish();
-                } else {
-                    setResult(RESULT_CANCELED, null);
+                    showProgress();
+                    collector.collectWithDefaultTimeout(new DeviceCollector.DeviceInfoListener() {
+                        @Override
+                        public void deviceInfoCollected(String deviceInfo) {
+                            hideProgress();
+                            Intent result = new Intent();
+                            result.putExtra("card", partialCard);
+                            result.putExtra("deviceInfo", deviceInfo);
+                            setResult(RESULT_OK, result);
+                            finish();
+                        }
+                    });
                 }
             }
         });
@@ -172,5 +191,19 @@ public class CardFormActivity extends Activity {
 
     private void toast(int resId, Object... args) {
         toast(getString(resId), args);
+    }
+
+    private void showProgress() {
+        if (progress != null) {
+            progress.dismiss();
+        }
+        progress = FloatingProgress.show(this);
+    }
+
+    private void hideProgress() {
+        if (progress != null) {
+            progress.dismiss();
+            progress = null;
+        }
     }
 }

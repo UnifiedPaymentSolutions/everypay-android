@@ -9,4 +9,5 @@ public class DeviceInfo {
     InfoField netMacs;
     InfoField os;
     InfoField wifiMac;
+    InfoField gps;
 }

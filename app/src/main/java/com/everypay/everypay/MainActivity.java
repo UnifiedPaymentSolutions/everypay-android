@@ -13,12 +13,9 @@ import android.widget.Toast;
 
 import com.everypay.sdk.Everypay;
 import com.everypay.sdk.EverypayListener;
-import com.everypay.sdk.deviceinfo.DeviceInfo;
 import com.everypay.sdk.model.Card;
 import com.everypay.sdk.steps.StepType;
 import com.everypay.sdk.views.CardFormActivity;
-
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
