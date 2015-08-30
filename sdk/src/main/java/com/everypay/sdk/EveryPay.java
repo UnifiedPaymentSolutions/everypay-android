@@ -31,14 +31,15 @@ public class Everypay {
     }
 
     private Context context;
-    private EverypayApiCalls everypayApi;
-    private MerchantApiCalls merchantApi;
+    private String everypayUrl;
+    private String merchantUrl;
     private MerchantParamsStep merchantParamsStep;
     private MerchantPaymentStep merchantPaymentStep;
 
-    private Everypay(Context appContext, String everypayUrl, MerchantParamsStep merchantParamsStep, MerchantPaymentStep merchantPaymentStep) {
+    private Everypay(Context appContext, String everypayUrl, String merchantUrl, MerchantParamsStep merchantParamsStep, MerchantPaymentStep merchantPaymentStep) {
         this.context = appContext;
-        this.everypayApi = EverypayApi.getEverypayApi(everypayUrl);
+        this.everypayUrl = everypayUrl;
+        this.merchantUrl = merchantUrl;
         this.merchantParamsStep = merchantParamsStep;
         this.merchantPaymentStep = merchantPaymentStep;
     }
@@ -52,12 +53,12 @@ public class Everypay {
         return this;
     }
 
-    public EverypayApiCalls getEverypayApi() {
-        return everypayApi;
+    public String getEverypayUrl() {
+        return everypayUrl;
     }
 
-    public MerchantApiCalls getMerchantApi() {
-        return merchantApi;
+    public String getMerchantUrl() {
+        return merchantUrl;
     }
 
     public MerchantParamsStep getMerchantParamsStep() {
@@ -108,12 +109,11 @@ public class Everypay {
         }
 
         public Everypay build() {
-            MerchantApiCalls merchantApi = MerchantApi.getMerchantApi(merchantUrl);
             if (merchantParamsStep == null)
-                merchantParamsStep = new MerchantParamsStep(merchantApi);
+                merchantParamsStep = new MerchantParamsStep();
             if (merchantPaymentStep == null)
-                merchantPaymentStep = new MerchantPaymentStep(merchantApi);
-            return new Everypay(context.getApplicationContext(), everypayUrl, merchantParamsStep, merchantPaymentStep);
+                merchantPaymentStep = new MerchantPaymentStep();
+            return new Everypay(context.getApplicationContext(), everypayUrl, merchantUrl, merchantParamsStep, merchantPaymentStep);
         }
 
     }

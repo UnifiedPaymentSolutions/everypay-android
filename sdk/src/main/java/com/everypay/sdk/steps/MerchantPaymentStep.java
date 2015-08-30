@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.everypay.sdk.Everypay;
 import com.everypay.sdk.api.EverypayTokenResponseData;
+import com.everypay.sdk.api.merchant.MerchantApi;
 import com.everypay.sdk.api.merchant.MerchantApiCalls;
 import com.everypay.sdk.api.merchant.MerchantParamsResponseData;
 import com.everypay.sdk.api.merchant.MerchantPaymentRequestData;
@@ -17,16 +18,11 @@ public class MerchantPaymentStep extends Step {
         return StepType.MERCHANT_PAYMENT;
     }
 
-    MerchantApiCalls merchantApi;
-
-    public MerchantPaymentStep(MerchantApiCalls merchantApi) {
-        this.merchantApi = merchantApi;
-    }
-
     public MerchantPaymentResponseData run(Context activity, Everypay ep, MerchantParamsResponseData paramsResponse, EverypayTokenResponseData everypayResponse) {
+        MerchantApiCalls merchantApi = MerchantApi.getMerchantApi(ep.getMerchantUrl());
         MerchantPaymentResponseData resp = merchantApi.callMakePayment(new MerchantPaymentRequestData(paramsResponse, everypayResponse));
         if (resp == null || !"success".equals(resp.status)) {
-            throw new RuntimeException("Payment failed with error code: " + resp.status);
+            throw new RuntimeException("Payment failed with error code: " + (resp == null ? "null" : resp.status));
         }
         return resp;
     }
