@@ -10,6 +10,7 @@
   * [Start the payment flow](https://github.com/UnifiedPaymentSolutions/everypay-android#start-the-payment-flow)
 * [Required Android permissions](https://github.com/UnifiedPaymentSolutions/everypay-android#required-android-permissions)
 * [Customising the app <-> merchant server communication steps](https://github.com/UnifiedPaymentSolutions/everypay-android#customising-the-app---merchant-server-communication-steps)
+* [Theming the card input form](https://github.com/UnifiedPaymentSolutions/everypay-android/blob/master/README.md#theming-the-card-input-form)
 * [Customising the card input form](https://github.com/UnifiedPaymentSolutions/everypay-android#customising-the-card-input-form)
 * [Customising everything](https://github.com/UnifiedPaymentSolutions/everypay-android#customising-everything)
 
