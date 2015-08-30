@@ -5,9 +5,9 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
@@ -15,7 +15,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.everypay.sdk.Everypay;
 import com.everypay.sdk.R;
 import com.everypay.sdk.deviceinfo.DeviceCollector;
 import com.everypay.sdk.model.Card;
@@ -24,13 +23,12 @@ import com.everypay.sdk.model.CardType;
 import com.everypay.sdk.util.Reflect;
 
 
-public class CardFormActivity extends Activity {
+public class CardFormActivity extends AppCompatActivity {
 
     public static final int REQUEST_CODE = 13423;
 
-    public static void startForResult(Activity activity, String title) {
+    public static void startForResult(Activity activity) {
         Intent intent = new Intent(activity, CardFormActivity.class);
-        intent.putExtra("title", title);
         activity.startActivityForResult(intent, REQUEST_CODE);
     }
 
@@ -61,7 +59,6 @@ public class CardFormActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cardform);
-        setTitle(getIntent().getStringExtra("title"));
 
         name = (EditText)findViewById(R.id.cc_holder_name);
         number = (EditText)findViewById(R.id.cc_number);
@@ -86,6 +83,7 @@ public class CardFormActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         hideProgress();
+        collector.cancel();
     }
 
     @Override
@@ -137,8 +135,6 @@ public class CardFormActivity extends Activity {
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e(Everypay.TAG, "Month now " + partialCard.getExpMonth());
-                Log.e(Everypay.TAG, "Year now " + partialCard.getExpYear());
                 setResult(RESULT_CANCELED, null);
                 if (validateWithToast()) {
                     showProgress();

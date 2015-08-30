@@ -2,4 +2,9 @@
     <string name="app_name">EveryPay</string>
     <string name="start_payment">Start Payment</string>
 
+
+    <!-- To override CardFormActivity text, colors, and styles, define replacements with the same name in your app. -->
+
+    <string name="ep_cc_holder_name">Name on Card</string>
+
 </resources>

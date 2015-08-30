@@ -13,27 +13,5 @@
         <item name="android:fontFamily">sans-serif-light</item>
     </style>
 
-    <style name="TextViewBoldTheme" parent="android:Widget.TextView">
-        <item name="android:fontFamily">sans-serif</item>
-    </style>
-
-    <style name="FloatingDialogTheme" parent="Theme.AppCompat.Light.Dialog">
-        <item name="android:backgroundDimEnabled">true</item>
-        <item name="android:dialogTitle">@style/DialogTitleTheme</item>
-        <item name="android:textViewStyle">@style/TextViewTheme</item>
-        <item name="android:buttonStyle">@style/DialogButtonTheme</item>
-    </style>
-
-    <style name="DialogTitleTheme">
-        <item name="android:fontFamily">sans-serif-light</item>
-        <item name="android:textColor">@color/accent</item>
-    </style>
-
-    <style name="DialogButtonTheme" parent="Widget.AppCompat.ActionButton">
-        <item name="android:fontFamily">sans-serif-light</item>
-        <item name="android:textColor">@color/accent</item>
-        <item name="android:textAllCaps">true</item>
-    </style>
-
 </resources>
 

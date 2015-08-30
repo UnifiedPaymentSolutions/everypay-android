@@ -1,6 +1,6 @@
 <resources>
 
-    <style name="ep_FloatingProgressTheme" parent="@android:style/Theme.Dialog">
+    <style name="ep_FloatingProgressTheme" parent="Theme.AppCompat.Dialog">
         <item name="android:backgroundDimEnabled">true</item>
         <item name="android:windowFrame">@null</item>
         <item name="android:windowBackground">@android:color/transparent</item>
@@ -11,6 +11,28 @@
         <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
         <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
         <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="ep_FloatingDialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:dialogTitle">@style/ep_DialogTitleTheme</item>
+        <item name="android:textViewStyle">@style/ep_TextViewTheme</item>
+        <item name="android:buttonStyle">@style/ep_DialogButtonTheme</item>
+    </style>
+
+    <style name="ep_TextViewTheme" parent="android:Widget.TextView">
+        <item name="android:fontFamily">sans-serif-light</item>
+    </style>
+
+    <style name="ep_DialogTitleTheme">
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:textColor">@color/ep_accent</item>
+    </style>
+
+    <style name="ep_DialogButtonTheme" parent="@android:style/Widget.ActionButton">
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:textColor">@color/ep_accent</item>
+        <item name="android:textAllCaps">true</item>
     </style>
 
 

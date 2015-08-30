@@ -45,12 +45,14 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void stepStarted(StepType step) {
+                        Log.d(Everypay.TAG, "Started step " + step);
                         hideStatusViews(step);
                         statuses[step.ordinal()].progress.setVisibility(View.VISIBLE);
                     }
 
                     @Override
                     public void stepSuccess(StepType step) {
+                        Log.d(Everypay.TAG, "Completed step " + step);
                         hideStatusViews(step);
                         statuses[step.ordinal()].good.setVisibility(View.VISIBLE);
                     }
@@ -62,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void stepFailure(StepType step, Exception e) {
-                        Log.e(Everypay.TAG, "Error", e);
+                        Log.e(Everypay.TAG, "Error in step " + step, e);
                         hideStatusViews(step);
                         statuses[step.ordinal()].bad.setVisibility(View.VISIBLE);
                         toast("Step %s failed: %s", step, e);
@@ -96,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                 ((Button)findViewById(R.id.start)).setText("Restart");
                 hideAllStatusViews();
                 statuses[0].progress.setVisibility(View.VISIBLE);
-                CardFormActivity.startForResult(MainActivity.this, "Enter Card Details");
+                CardFormActivity.startForResult(MainActivity.this);
             }
         });
     }

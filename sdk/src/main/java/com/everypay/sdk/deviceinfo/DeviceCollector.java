@@ -63,6 +63,11 @@ public class DeviceCollector {
         collectWithTimeout(listener, DEFAULT_TIMEOUT_MILLIS);
     }
 
+    public synchronized void cancel() {
+        if (gpsCollector != null)
+            gpsCollector.stopAndGetInfoField();
+    }
+
     public interface DeviceInfoListener {
         void deviceInfoCollected(String deviceInfo);
     }
