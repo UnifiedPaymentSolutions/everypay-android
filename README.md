@@ -34,13 +34,12 @@ Add the following line to your `app/build.gradle` file:
 ```
 dependencies {
     ... Other dependencies ...
-    compile 'com.everypay.sdk:android-sdk:0.1'
+    compile 'com.everypay.sdk:android-sdk:0.9'
 }
 ```
 
 Note that it goes into the app module build file (`app/build.gradle` or similar), NOT the project-wide build file (`./build.gradle`). If there is `apply plugin: 'com.android.application'` at the top of the file, it's probably the right one.
 
-Individual releases are also available at https://github.com/UnifiedPaymentSolutions/everypay-android/releases and via git tags here.
 
 ### Configure the SDK parameters
 
@@ -136,13 +135,13 @@ To provide a replacement, create subclasses of MerchantParamsStep and MerchantPa
 ```
 public class MyMerchantParamsStep extends MerchantParamsStep {
     @Override
-    public MerchantParamsResponseData run(Activity activity, Everypay ep) {
+    public MerchantParamsResponseData run(Context activity, Everypay ep, String deviceInfo) {
         // Your implementation
     }
 }
 public class MyMerchantPaymentStep extends MerchantPaymentStep {
     @Override
-    public MerchantPaymentResponseData run(Context activity, Everypay ep, MerchantParamsResponseData paramsResponse, EverypayTokenResponseData everypayResponse) throws MerchantApiException {
+    public MerchantPaymentResponseData run(Context activity, Everypay ep, MerchantParamsResponseData paramsResponse, EverypayTokenResponseData everypayResponse) {
         // Your implementation
     }
 }
@@ -156,7 +155,13 @@ Everypay.with(this).setMerchantParamsStep(new MyMerchantParamsStep()).setMerchan
 
 `run()` is called on a background thread, and can be synchronous. If it throws an exception, the payment process is cancelled and the `stepFailure()` listener method is called on the main thread.
 
-Note that providing the step subclasses overrides `.setMerchantApiBaseUrl()`.
+## Theming the card input form
+
+To override the text, color and styles used in the card input form, define resources matching the identifiers in your `colors.xml`, `strings.xml` and `styles.xml` files. The EveryPay SDK resources start with the `ep_` prefix.
+
+For an example, see https://github.com/UnifiedPaymentSolutions/everypay-android/blob/master/app/src/main/res/values/strings.xml
+
+For more substantial theming, overriding the `layout/activity_cardform.xml` with your own layout is also a possibility.
 
 
 ## Customising the card input form
@@ -164,7 +169,7 @@ Note that providing the step subclasses overrides `.setMerchantApiBaseUrl()`.
 If the EveryPay card input form does not match your requirements, or if you wish to add custom branding beyond the configuration options, then you can create a custom one. There are two requirements for a custom card form:
 
 * It should construct a [Card model](https://github.com/UnifiedPaymentSolutions/everypay-android/blob/master/sdk/src/main/java/com/everypay/sdk/model/Card.java). The Card model can also be used to validate the inputs.
-* Use the [`DeviceInfoCollector`](https://github.com/UnifiedPaymentSolutions/everypay-android/blob/master/sdk/src/main/java/com/everypay/sdk/deviceinfo/DeviceCollector.java) to obtain a device fingerprint. Collecting the device info in the background while the user is entering card details is a good choice, since it may take up to 10 seconds.
+* Use the [`DeviceInfoCollector`](https://github.com/UnifiedPaymentSolutions/everypay-android/blob/master/sdk/src/main/java/com/everypay/sdk/deviceinfo/DeviceCollector.java) to obtain a device fingerprint. Collecting the device info in the background while the user is entering card details is a good choice, since it may take tens of seconds to get the (optional) GPS location.
 
 After your custom card form has returned a Card model and the device info string, pass them to `Everypay.startFullPaymentFlow()` as usual.
 
