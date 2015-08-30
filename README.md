@@ -1,6 +1,6 @@
 # EveryPay Android SDK
 
-> Warning: the Android SDK is still in an alpha stage. Significant API changes may happen before a 1.0 release.
+The EveryPay Android SDK is in the beta stage. Significant API changes are not expected, but improvements may be added as we receive feedback from customers.
 
 * [Overview](https://github.com/UnifiedPaymentSolutions/everypay-android#overview)
 * Integrating the SDK
