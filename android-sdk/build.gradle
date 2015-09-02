@@ -1,4 +1,6 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
 
 
 version = '0.9'
@@ -15,9 +17,6 @@ android {
         versionCode 2
         versionName version
     }
-
-    // Allow publishing debug builds of the library module
-    publishNonDefault true
 
     buildTypes {
         release {
@@ -49,30 +48,101 @@ dependencies {
     compile 'com.squareup.retrofit:retrofit:1.9.0'
 }
 
+def siteUrl = 'https://github.com/UnifiedPaymentSolutions/everypay-android'
+def gitUrl = 'https://github.com/UnifiedPaymentSolutions/everypay-android.git'
+group = 'com.everypay.sdk'
 
-ext {
-    bintrayRepo = 'maven'
-    bintrayName = 'android-sdk'
 
-    publishedGroupId = 'com.everypay.sdk'
-    libraryName = 'EveryPay'
-    artifact = 'android-sdk'
+install {
+    repositories.mavenInstaller {
+        // This generates POM.xml with proper parameters
+        pom {
+            project {
+                packaging 'aar'
 
-    libraryDescription = 'EveryPay Android SDK'
+                // Add your description here
+                name 'EveryPay Android SDK'
+                url siteUrl
 
-    siteUrl = 'https://github.com/UnifiedPaymentSolutions/everypay-android'
-    gitUrl = 'https://github.com/UnifiedPaymentSolutions/everypay-android.git'
+                // Set your license
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id 'linnap'
+                        name 'Mattias Linnap'
+                        email 'linnap@gmail.com'
+                    }
+                }
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
 
-    libraryVersion = version
-
-    developerId = 'linnap'
-    developerName = 'Mattias Linnap'
-    developerEmail = 'linnap@gmail.com'
-
-    licenseName = 'The Apache Software License, Version 2.0'
-    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-    allLicenses = ["Apache-2.0"]
+                }
+            }
+        }
+    }
 }
 
-apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
-apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+artifacts {
+    archives sourcesJar
+}
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+
+    configurations = ['archives']
+    pkg {
+        repo = 'maven'
+        name = 'android-sdk'
+        userOrg = 'everypay'
+
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        licenses = ["Apache-2.0"]
+        publish = true
+        publicDownloadNumbers = true
+    }
+}
+
+//
+//ext {
+//    bintrayRepo = 'maven'
+//    bintrayName = 'android-sdk'
+//
+//    publishedGroupId = 'com.everypay.sdk'
+//    libraryName = 'EveryPay'
+//    artifact = 'android-sdk'
+//
+//    libraryDescription = 'EveryPay Android SDK'
+//
+//    siteUrl = 'https://github.com/UnifiedPaymentSolutions/everypay-android'
+//    gitUrl = 'https://github.com/UnifiedPaymentSolutions/everypay-android.git'
+//
+//    libraryVersion = version
+//
+//    developerId = 'linnap'
+//    developerName = 'Mattias Linnap'
+//    developerEmail = 'linnap@gmail.com'
+//
+//    licenseName = 'The Apache Software License, Version 2.0'
+//    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+//    allLicenses = ["Apache-2.0"]
+//}
+//
+//apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
+//apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
