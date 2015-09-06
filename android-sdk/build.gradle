@@ -3,18 +3,18 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
 
-version = '0.9'
+version = '0.91'
 
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion '22.0.1'
+    compileSdkVersion 23
+    buildToolsVersion '23.0.1'
     resourcePrefix 'ep_'
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 22
-        versionCode 2
+        targetSdkVersion 23
+        versionCode 3
         versionName version
     }
 
@@ -42,7 +42,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:22.+'
+    compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'com.squareup.okhttp:okhttp:2.4.0'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
@@ -118,31 +118,3 @@ bintray {
         publicDownloadNumbers = true
     }
 }
-
-//
-//ext {
-//    bintrayRepo = 'maven'
-//    bintrayName = 'android-sdk'
-//
-//    publishedGroupId = 'com.everypay.sdk'
-//    libraryName = 'EveryPay'
-//    artifact = 'android-sdk'
-//
-//    libraryDescription = 'EveryPay Android SDK'
-//
-//    siteUrl = 'https://github.com/UnifiedPaymentSolutions/everypay-android'
-//    gitUrl = 'https://github.com/UnifiedPaymentSolutions/everypay-android.git'
-//
-//    libraryVersion = version
-//
-//    developerId = 'linnap'
-//    developerName = 'Mattias Linnap'
-//    developerEmail = 'linnap@gmail.com'
-//
-//    licenseName = 'The Apache Software License, Version 2.0'
-//    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-//    allLicenses = ["Apache-2.0"]
-//}
-//
-//apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
-//apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
