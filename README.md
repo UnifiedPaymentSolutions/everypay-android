@@ -33,14 +33,21 @@ Example implementation is provided for steps 2 and 4, even if they are likely to
 Add the following line to your `app/build.gradle` file:
 
 ```
+repositories {
+    maven {
+        url 'https://dl.bintray.com/everypay/maven/'
+    }
+}
+
 dependencies {
     ... Other dependencies ...
-    compile 'com.everypay.sdk:android-sdk:0.9'
+    compile 'com.everypay.sdk:android-sdk:0.91'
 }
 ```
 
 Note that it goes into the app module build file (`app/build.gradle` or similar), NOT the project-wide build file (`./build.gradle`). If there is `apply plugin: 'com.android.application'` at the top of the file, it's probably the right one.
 
+If you wish to download a copy of the SDK to add it to your project manually, then you can find the .aar library files at https://bintray.com/everypay/maven/android-sdk/view#files
 
 ### Configure the SDK parameters
 
