@@ -27,9 +27,19 @@ public class CardFormActivity extends AppCompatActivity {
 
     public static final int REQUEST_CODE = 13423;
 
-    public static void startForResult(Activity activity) {
-        Intent intent = new Intent(activity, CardFormActivity.class);
-        activity.startActivityForResult(intent, REQUEST_CODE);
+    public static void startForResult(Activity fromActivity) {
+        startForResult(fromActivity, null);
+    }
+
+    /**
+     * Card initialData is optional.
+     */
+    public static void startForResult(Activity fromActivity, Card initialData) {
+        Intent intent = new Intent(fromActivity, CardFormActivity.class);
+        if (initialData != null) {
+            intent.putExtra("initialData", initialData);
+        }
+        fromActivity.startActivityForResult(intent, REQUEST_CODE);
     }
 
     public static Pair<Card, String> getCardAndDeviceInfoFromResult(int resultCode, Intent data) {
@@ -72,10 +82,12 @@ public class CardFormActivity extends AppCompatActivity {
         colorInvalid = getResources().getColor(R.color.ep_card_field_invalid);
 
         partialCard = new Card();
+
         collector = new DeviceCollector(this);
         collector.start();
 
         attachUiEvents();
+        loadInitialData();
         setResult(RESULT_CANCELED, null);
     }
 
@@ -154,6 +166,17 @@ public class CardFormActivity extends AppCompatActivity {
         });
     }
 
+    private void loadInitialData() {
+        Card initialData = getIntent().getParcelableExtra("initialData");
+        if (initialData != null) {
+            name.setText(initialData.getName());
+            number.setText(initialData.getNumber());
+            cvc.setText(initialData.getCVC());
+            setValueFromArray(month, "ExpMonth", R.array.ep_cc_month_values, R.array.ep_cc_month_names, initialData.getExpMonth());
+            setValueFromArray(year, "ExpYear", R.array.ep_cc_year_values, R.array.ep_cc_year_values, initialData.getExpYear());
+        }
+    }
+
     private boolean validateWithToast() {
         try {
             partialCard.validateCard(this);
@@ -178,6 +201,18 @@ public class CardFormActivity extends AppCompatActivity {
                     }
                 })
                 .show();
+    }
+
+    private void setValueFromArray(EditText input, String fieldName, int valuesId, int displayId, String desiredValue) {
+        String[] displays = getResources().getStringArray(displayId);
+        String[] values = getResources().getStringArray(valuesId);
+        for (int i = 0; i < displays.length && i < values.length; ++i) {
+            if (values[i].equals(desiredValue)) {
+                input.setText(displays[i]);
+                Reflect.setString(partialCard, "set" + fieldName, desiredValue);
+                return;
+            }
+        }
     }
 
     private void toast(String fmt, Object... args) {

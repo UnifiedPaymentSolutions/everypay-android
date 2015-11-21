@@ -98,7 +98,17 @@ public class MainActivity extends AppCompatActivity {
                 ((Button)findViewById(R.id.start)).setText("Restart");
                 hideAllStatusViews();
                 statuses[0].progress.setVisibility(View.VISIBLE);
-                CardFormActivity.startForResult(MainActivity.this);
+
+                // Initial card data is entirely optional.
+                // Use null to let the user fill out the card form.
+                Card initial = new Card();
+                initial.setName("Tom Smith");
+                initial.setNumber("5169032156782335");
+                initial.setExpYear("2017");
+                initial.setExpMonth("01");
+                initial.setCVC("643");
+
+                CardFormActivity.startForResult(MainActivity.this, initial);
             }
         });
     }
