@@ -9,6 +9,8 @@ import android.text.TextUtils;
 import com.everypay.sdk.R;
 import com.everypay.sdk.util.DateUtils;
 
+import java.io.Serializable;
+
 /**
  * Customised from https://github.com/stripe/stripe-android/blob/master/stripe/src/main/java/com/stripe/android/model/Card.java
  */
@@ -135,7 +137,7 @@ public class Card implements Parcelable {
     }
 
     private void normalize() {
-        name = (name == null) ? "" : name.trim();
+        name = (name == null) ? "" : name;
         number = normalizeNumber(number);
         expMonth = normalizeNumber(expMonth);
         expYear = normalizeNumber(expYear);

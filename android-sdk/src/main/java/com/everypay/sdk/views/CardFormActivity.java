@@ -5,8 +5,10 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Pair;
 import android.view.View;
@@ -22,10 +24,13 @@ import com.everypay.sdk.model.CardError;
 import com.everypay.sdk.model.CardType;
 import com.everypay.sdk.util.Reflect;
 
+import java.io.Serializable;
+
 
 public class CardFormActivity extends AppCompatActivity {
 
     public static final int REQUEST_CODE = 13423;
+    private static final String STATE_PARTIAL_CARD = "com.everypay.STATE_PARTIAL_CARD";
 
     public static void startForResult(Activity fromActivity) {
         startForResult(fromActivity, null);
@@ -44,7 +49,7 @@ public class CardFormActivity extends AppCompatActivity {
 
     public static Pair<Card, String> getCardAndDeviceInfoFromResult(int resultCode, Intent data) {
         if (resultCode == RESULT_OK && data != null) {
-            return new Pair<>((Card)data.getParcelableExtra("card"), data.getStringExtra("deviceInfo"));
+            return new Pair<>((Card) data.getParcelableExtra("card"), data.getStringExtra("deviceInfo"));
         }
         return null;
     }
@@ -70,18 +75,18 @@ public class CardFormActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cardform);
 
-        name = (EditText)findViewById(R.id.cc_holder_name);
-        number = (EditText)findViewById(R.id.cc_number);
-        cvc = (EditText)findViewById(R.id.cc_cvc);
-        month = (EditText)findViewById(R.id.cc_month);
-        year = (EditText)findViewById(R.id.cc_year);
-        typeIcon = (ImageView)findViewById(R.id.cc_type_icon);
-        done = (Button)findViewById(R.id.btn_done);
+        name = (EditText) findViewById(R.id.cc_holder_name);
+        number = (EditText) findViewById(R.id.cc_number);
+        cvc = (EditText) findViewById(R.id.cc_cvc);
+        month = (EditText) findViewById(R.id.cc_month);
+        year = (EditText) findViewById(R.id.cc_year);
+        typeIcon = (ImageView) findViewById(R.id.cc_type_icon);
+        done = (Button) findViewById(R.id.btn_done);
 
         colorNormal = getResources().getColor(R.color.ep_card_field_normal);
         colorInvalid = getResources().getColor(R.color.ep_card_field_invalid);
 
-        partialCard = new Card();
+        partialCard = savedInstanceState != null ? (Card) savedInstanceState.getParcelable(STATE_PARTIAL_CARD) : new Card();
 
         collector = new DeviceCollector(this);
         collector.start();
@@ -155,6 +160,7 @@ public class CardFormActivity extends AppCompatActivity {
                         public void deviceInfoCollected(String deviceInfo) {
                             hideProgress();
                             Intent result = new Intent();
+                            partialCard.setName(partialCard.getName().trim());
                             result.putExtra("card", partialCard);
                             result.putExtra("deviceInfo", deviceInfo);
                             setResult(RESULT_OK, result);
@@ -167,13 +173,21 @@ public class CardFormActivity extends AppCompatActivity {
     }
 
     private void loadInitialData() {
-        Card initialData = getIntent().getParcelableExtra("initialData");
-        if (initialData != null) {
-            name.setText(initialData.getName());
-            number.setText(initialData.getNumber());
-            cvc.setText(initialData.getCVC());
-            setValueFromArray(month, "ExpMonth", R.array.ep_cc_month_values, R.array.ep_cc_month_names, initialData.getExpMonth());
-            setValueFromArray(year, "ExpYear", R.array.ep_cc_year_values, R.array.ep_cc_year_values, initialData.getExpYear());
+        if (!TextUtils.isEmpty(partialCard.getName()) && !TextUtils.isEmpty(partialCard.getCVC()) && !TextUtils.isEmpty(partialCard.getNumber()) && !TextUtils.isEmpty(partialCard.getExpMonth()) && !TextUtils.isEmpty(partialCard.getExpYear())) {
+            name.setText(partialCard.getName());
+            number.setText(partialCard.getNumber());
+            cvc.setText(partialCard.getCVC());
+            setValueFromArray(month, "ExpMonth", R.array.ep_cc_month_values, R.array.ep_cc_month_names, partialCard.getExpMonth());
+            setValueFromArray(year, "ExpYear", R.array.ep_cc_year_values, R.array.ep_cc_year_values, partialCard.getExpYear());
+        }  else {
+            Card initialData = getIntent().getParcelableExtra("initialData");
+            if (initialData != null) {
+                name.setText(initialData.getName());
+                number.setText(initialData.getNumber());
+                cvc.setText(initialData.getCVC());
+                setValueFromArray(month, "ExpMonth", R.array.ep_cc_month_values, R.array.ep_cc_month_names, initialData.getExpMonth());
+                setValueFromArray(year, "ExpYear", R.array.ep_cc_year_values, R.array.ep_cc_year_values, initialData.getExpYear());
+            }
         }
     }
 
@@ -236,5 +250,10 @@ public class CardFormActivity extends AppCompatActivity {
             progress.dismiss();
             progress = null;
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putParcelable(STATE_PARTIAL_CARD, partialCard);
     }
 }
