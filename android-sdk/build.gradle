@@ -48,73 +48,33 @@ dependencies {
     compile 'com.squareup.retrofit:retrofit:1.9.0'
 }
 
-def siteUrl = 'https://github.com/UnifiedPaymentSolutions/everypay-android'
-def gitUrl = 'https://github.com/UnifiedPaymentSolutions/everypay-android.git'
-group = 'com.everypay.sdk'
+
+apply plugin: 'com.android.library'
+
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'android-sdk'
 
 
-install {
-    repositories.mavenInstaller {
-        // This generates POM.xml with proper parameters
-        pom {
-            project {
-                packaging 'aar'
+    publishedGroupId = 'com.everypay.sdk'
+    libraryName = 'FBLike'
+    artifact = 'android-sdk'
 
-                // Add your description here
-                name 'EveryPay Android SDK'
-                url siteUrl
+    libraryDescription = 'EveryPay Android SDK'
 
-                // Set your license
-                licenses {
-                    license {
-                        name 'The Apache Software License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
-                developers {
-                    developer {
-                        id 'linnap'
-                        name 'Mattias Linnap'
-                        email 'linnap@gmail.com'
-                    }
-                }
-                scm {
-                    connection gitUrl
-                    developerConnection gitUrl
-                    url siteUrl
+    siteUrl = 'https://github.com/UnifiedPaymentSolutions/everypay-android'
+    gitUrl = 'https://github.com/UnifiedPaymentSolutions/everypay-android.git'
 
-                }
-            }
-        }
-    }
-}
+    libraryVersion = '0.97'
 
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier = 'sources'
-}
+    developerId = 'olevabel'
+    developerName = 'Olev Abel'
+    developerEmail = 'olev.abel@lab.mobi'
 
-artifacts {
-    archives sourcesJar
-}
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
 
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
-
-bintray {
-    user = properties.getProperty("bintray.user")
-    key = properties.getProperty("bintray.apikey")
-
-    configurations = ['archives']
-    pkg {
-        repo = 'maven'
-        name = 'android-sdk'
-        userOrg = 'everypay'
-
-        websiteUrl = siteUrl
-        vcsUrl = gitUrl
-        licenses = ["Apache-2.0"]
-        publish = true
-        publicDownloadNumbers = true
-    }
+    apply from: 'installv1.gradle'
+    apply from: 'bintrayv1.gradle'
 }
