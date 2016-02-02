@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -83,8 +84,8 @@ public class CardFormActivity extends AppCompatActivity {
         typeIcon = (ImageView) findViewById(R.id.cc_type_icon);
         done = (Button) findViewById(R.id.btn_done);
 
-        colorNormal = getResources().getColor(R.color.ep_card_field_normal);
-        colorInvalid = getResources().getColor(R.color.ep_card_field_invalid);
+        colorNormal = ContextCompat.getColor(CardFormActivity.this,R.color.ep_card_field_normal);
+        colorInvalid = ContextCompat.getColor(CardFormActivity.this,R.color.ep_card_field_invalid);
 
         partialCard = savedInstanceState != null ? (Card) savedInstanceState.getParcelable(STATE_PARTIAL_CARD) : new Card();
 

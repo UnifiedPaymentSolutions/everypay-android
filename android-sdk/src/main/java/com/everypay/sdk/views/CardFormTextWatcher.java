@@ -2,6 +2,7 @@ package com.everypay.sdk.views;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Pair;
@@ -53,12 +54,12 @@ public class CardFormTextWatcher implements TextWatcher {
         Resources res = context.getResources();
         try {
             Reflect.call(card, "validate" + fieldName, new Pair<Class, Object>(Context.class, context));
-            input.setTextColor(res.getColor(R.color.ep_card_field_normal));
+            input.setTextColor(ContextCompat.getColor(context,R.color.ep_card_field_normal));
         } catch (CardError e) {
             if (e.isPartialOk()) {
-                input.setTextColor(res.getColor(R.color.ep_card_field_normal));
+                input.setTextColor(ContextCompat.getColor(context,R.color.ep_card_field_normal));
             } else {
-                input.setTextColor(res.getColor(R.color.ep_card_field_invalid));
+                input.setTextColor(ContextCompat.getColor(context,R.color.ep_card_field_invalid));
             }
         } catch (Throwable tr) {
             throw new RuntimeException("Unexpected exception from card validation.", tr);
