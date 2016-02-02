@@ -2,6 +2,7 @@ package com.everypay.everypay;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Pair;
@@ -87,8 +88,8 @@ public class MainActivity extends AppCompatActivity {
         statuses[3] = new StepStatusViews(R.id.payment_good, R.id.payment_bad, R.id.payment_progress);
 
         for (StepStatusViews views : statuses) {
-            views.good.setColorFilter(getResources().getColor(R.color.tint_good));
-            views.bad.setColorFilter(getResources().getColor(R.color.tint_bad));
+            views.good.setColorFilter(ContextCompat.getColor(MainActivity.this,R.color.tint_good));
+            views.bad.setColorFilter(ContextCompat.getColor(MainActivity.this, R.color.tint_bad));
         }
         hideAllStatusViews();
 
