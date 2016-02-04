@@ -30,6 +30,11 @@ import java.io.Serializable;
 
 public class CardFormActivity extends AppCompatActivity {
 
+    private static final String EXTRA_INITIAL_DATA = "com.everypay.sdk.EXTRA_INITIAL_DATA";
+    private static final String EXTRA_CARD = "com.everypay.sdk.EXTRA_CARD";
+    private static final String EXTRA_DEVICE_INFO = "com.everypay.sdk.EXTRA_DEVICE_INFO";
+
+    private static final String METHOD_SET = "set";
     public static final int REQUEST_CODE = 13423;
     private static final String STATE_PARTIAL_CARD = "com.everypay.STATE_PARTIAL_CARD";
 
@@ -43,14 +48,14 @@ public class CardFormActivity extends AppCompatActivity {
     public static void startForResult(Activity fromActivity, Card initialData) {
         Intent intent = new Intent(fromActivity, CardFormActivity.class);
         if (initialData != null) {
-            intent.putExtra("initialData", initialData);
+            intent.putExtra(EXTRA_INITIAL_DATA, initialData);
         }
         fromActivity.startActivityForResult(intent, REQUEST_CODE);
     }
 
     public static Pair<Card, String> getCardAndDeviceInfoFromResult(int resultCode, Intent data) {
         if (resultCode == RESULT_OK && data != null) {
-            return new Pair<>((Card) data.getParcelableExtra("card"), data.getStringExtra("deviceInfo"));
+            return new Pair<>((Card) data.getParcelableExtra(EXTRA_CARD), data.getStringExtra(EXTRA_DEVICE_INFO));
         }
         return null;
     }
@@ -110,9 +115,9 @@ public class CardFormActivity extends AppCompatActivity {
     }
 
     private void attachUiEvents() {
-        name.addTextChangedListener(new CardFormTextWatcher(name, partialCard, "Name"));
-        number.addTextChangedListener(new CardFormTextWatcher(number, partialCard, "Number"));
-        cvc.addTextChangedListener(new CardFormTextWatcher(cvc, partialCard, "CVC"));
+        name.addTextChangedListener(new CardFormTextWatcher(name, partialCard, CardFormActivity.this.getResources().getString(R.string.ep_field_name)));
+        number.addTextChangedListener(new CardFormTextWatcher(number, partialCard, CardFormActivity.this.getResources().getString(R.string.ep_field_number)));
+        cvc.addTextChangedListener(new CardFormTextWatcher(cvc, partialCard, CardFormActivity.this.getResources().getString(R.string.ep_field_cvc)));
 
         number.addTextChangedListener(new TextWatcher() {
             @Override
@@ -139,14 +144,14 @@ public class CardFormActivity extends AppCompatActivity {
         month.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showSelectDialog(month, "ExpMonth", R.string.ep_cc_month, R.array.ep_cc_month_values, R.array.ep_cc_month_names);
+                showSelectDialog(month, CardFormActivity.this.getResources().getString(R.string.ep_field_exp_month), R.string.ep_cc_month, R.array.ep_cc_month_values, R.array.ep_cc_month_names);
             }
         });
 
         year.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showSelectDialog(year, "ExpYear", R.string.ep_cc_year, R.array.ep_cc_year_values, R.array.ep_cc_year_values);
+                showSelectDialog(year, CardFormActivity.this.getResources().getString(R.string.ep_field_exp_year), R.string.ep_cc_year, R.array.ep_cc_year_values, R.array.ep_cc_year_values);
             }
         });
 
@@ -162,8 +167,8 @@ public class CardFormActivity extends AppCompatActivity {
                             hideProgress();
                             Intent result = new Intent();
                             partialCard.setName(partialCard.getName().trim());
-                            result.putExtra("card", partialCard);
-                            result.putExtra("deviceInfo", deviceInfo);
+                            result.putExtra(EXTRA_CARD, partialCard);
+                            result.putExtra(EXTRA_DEVICE_INFO, deviceInfo);
                             setResult(RESULT_OK, result);
                             finish();
                         }
@@ -178,16 +183,16 @@ public class CardFormActivity extends AppCompatActivity {
             name.setText(partialCard.getName());
             number.setText(partialCard.getNumber());
             cvc.setText(partialCard.getCVC());
-            setValueFromArray(month, "ExpMonth", R.array.ep_cc_month_values, R.array.ep_cc_month_names, partialCard.getExpMonth());
-            setValueFromArray(year, "ExpYear", R.array.ep_cc_year_values, R.array.ep_cc_year_values, partialCard.getExpYear());
+            setValueFromArray(month, CardFormActivity.this.getResources().getString(R.string.ep_field_exp_month), R.array.ep_cc_month_values, R.array.ep_cc_month_names, partialCard.getExpMonth());
+            setValueFromArray(year, CardFormActivity.this.getResources().getString(R.string.ep_field_exp_year), R.array.ep_cc_year_values, R.array.ep_cc_year_values, partialCard.getExpYear());
         }  else {
-            Card initialData = getIntent().getParcelableExtra("initialData");
+            Card initialData = getIntent().getParcelableExtra(EXTRA_INITIAL_DATA);
             if (initialData != null) {
                 name.setText(initialData.getName());
                 number.setText(initialData.getNumber());
                 cvc.setText(initialData.getCVC());
-                setValueFromArray(month, "ExpMonth", R.array.ep_cc_month_values, R.array.ep_cc_month_names, initialData.getExpMonth());
-                setValueFromArray(year, "ExpYear", R.array.ep_cc_year_values, R.array.ep_cc_year_values, initialData.getExpYear());
+                setValueFromArray(month, CardFormActivity.this.getResources().getString(R.string.ep_field_exp_month), R.array.ep_cc_month_values, R.array.ep_cc_month_names, initialData.getExpMonth());
+                setValueFromArray(year, CardFormActivity.this.getResources().getString(R.string.ep_field_exp_year), R.array.ep_cc_year_values, R.array.ep_cc_year_values, initialData.getExpYear());
             }
         }
     }
@@ -211,7 +216,7 @@ public class CardFormActivity extends AppCompatActivity {
                         String[] values = getResources().getStringArray(valuesId);
                         if (values != null && which < values.length && which < displays.length) {
                             input.setText(displays[which]);
-                            Reflect.setString(partialCard, "set" + fieldName, values[which]);
+                            Reflect.setString(partialCard, METHOD_SET + fieldName, values[which]);
                         }
                     }
                 })
@@ -224,7 +229,7 @@ public class CardFormActivity extends AppCompatActivity {
         for (int i = 0; i < displays.length && i < values.length; ++i) {
             if (values[i].equals(desiredValue)) {
                 input.setText(displays[i]);
-                Reflect.setString(partialCard, "set" + fieldName, desiredValue);
+                Reflect.setString(partialCard, METHOD_SET + fieldName, desiredValue);
                 return;
             }
         }

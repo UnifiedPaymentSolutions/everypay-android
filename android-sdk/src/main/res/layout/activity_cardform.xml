@@ -101,7 +101,7 @@
 
     <Button
         android:id="@+id/btn_done"
-        android:text="OK"
+        android:text="@string/ep_btn_ok"
         android:background="@color/ep_primary"
         android:textColor="@color/ep_primary_text"
         android:layout_width="match_parent"

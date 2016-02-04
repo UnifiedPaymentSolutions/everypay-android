@@ -21,6 +21,13 @@
     <string name="ep_cc_error_cvc_missing">Please enter the security code.</string>
     <string name="ep_cc_error_cvc_invalid">The security code is not valid, should be 3 digits.</string>
     <string name="ep_cc_error_cvc_invalid_american_express">The security code is not valid, should be 4 digits for American Express.</string>
+    <string name="ep_btn_ok">OK</string>
+    <string name="ep_field_name">Name</string>
+    <string name="ep_field_number">Number</string>
+    <string name="ep_field_cvc">CVC</string>
+    <string name="ep_field_exp_month">ExpMonth</string>
+    <string name="ep_field_exp_year">ExpYear</string>
+
 
     <string-array name="ep_cc_month_values" translatable="false">
         <item>01</item>

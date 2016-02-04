@@ -14,6 +14,8 @@ public class EveryPay {
 
     public static final String TAG = "everypay";
 
+    private static final String EXCEPTION_NO_DEFAULT_EVERYPAY_INSTANCE = "No default Everypay instance set.";
+
     public static final String EVERYPAY_API_URL_TESTING = "https://gw-demo.every-pay.com";
     public static final String EVERYPAY_API_URL_LIVE = "http://gw.every-pay.com";
     public static final String MERCHANT_API_URL_TESTING = "https://igwshop-demo.every-pay.com";
@@ -22,7 +24,7 @@ public class EveryPay {
     static EveryPay defaultInstance;
     public static synchronized EveryPay getDefault() {
         if (defaultInstance == null)
-            throw new RuntimeException("No default Everypay instance set.");
+            throw new RuntimeException(EXCEPTION_NO_DEFAULT_EVERYPAY_INSTANCE);
         return defaultInstance;
     }
 

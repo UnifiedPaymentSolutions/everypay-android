@@ -14,7 +14,7 @@ public class MerchantParamsStep extends Step {
         return StepType.MERCHANT_PARAMS;
     }
 
-    public MerchantParamsResponseData run(Context activity, EveryPay ep, String deviceInfo) {
+    public MerchantParamsResponseData run(EveryPay ep, String deviceInfo) {
         return  MerchantApi.getMerchantApi(ep.getMerchantUrl()).callGetParams(new MerchantParamsRequestData(deviceInfo));
     }
 }

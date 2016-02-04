@@ -5,9 +5,10 @@ import android.text.TextUtils;
 
 public class Str {
 
+    private static final String EXCEPTION_CANNOT_ADD_SPACES = "Cannot add spaces after every %1$s characters.";
     public static String spaced(String str, int afterEvery) {
         if (afterEvery <= 0)
-            throw new IllegalArgumentException("Cannot add spaces after every " + afterEvery + " characters.");
+            throw new IllegalArgumentException(String.format(EXCEPTION_CANNOT_ADD_SPACES,afterEvery));
 
         if (TextUtils.isEmpty(str))
             return "";

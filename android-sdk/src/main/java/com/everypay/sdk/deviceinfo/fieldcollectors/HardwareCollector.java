@@ -9,12 +9,13 @@ import com.everypay.sdk.deviceinfo.InfoField;
 
 public class HardwareCollector implements FieldCollector {
 
+    private static final String FIELD_NAME_HARDWARE = "hardware";
     @Override
     public InfoField getField(Context context) {
         try {
-            return new InfoField("hardware", new HardwareData());
+            return new InfoField(FIELD_NAME_HARDWARE, new HardwareData());
         } catch (SecurityException e) {
-            return new InfoField("hardware", FieldError.PERMISSIONS);
+            return new InfoField(FIELD_NAME_HARDWARE, FieldError.PERMISSIONS);
         }
     }
 
@@ -24,6 +25,7 @@ public class HardwareCollector implements FieldCollector {
         String brand;
         String cpuAbi;
         String cpuAbi2;
+        String[] supportedAbis;
         String device;
         String hardware;
         String manufacturer;
@@ -34,8 +36,12 @@ public class HardwareCollector implements FieldCollector {
         public HardwareData() {
             this.board = Build.BOARD;
             this.brand = Build.BRAND;
-            this.cpuAbi = Build.CPU_ABI;
-            this.cpuAbi2 = Build.CPU_ABI2;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                this.supportedAbis = Build.SUPPORTED_ABIS;
+            }else {
+                this.cpuAbi = Build.CPU_ABI;
+                this.cpuAbi2 = Build.CPU_ABI2;
+            }
             this.device = Build.DEVICE;
             this.serial = Build.SERIAL;
             this.hardware = Build.HARDWARE;

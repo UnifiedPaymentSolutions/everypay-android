@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void fullSuccess() {
-                        toast("Payment successful!");
+                        toast(MainActivity.this.getResources().getString(R.string.ep_toast_payment_successful));
                     }
 
                     @Override
@@ -68,12 +68,12 @@ public class MainActivity extends AppCompatActivity {
                         Log.e(EveryPay.TAG, "Error in step " + step, e);
                         hideStatusViews(step);
                         statuses[step.ordinal()].bad.setVisibility(View.VISIBLE);
-                        toast("Step %s failed: %s", step, e);
+                        toast(MainActivity.this.getResources().getString(R.string.ep_toast_step_failed), step, e);
                     }
                 });
             } else {
                 statuses[0].bad.setVisibility(View.VISIBLE);
-                toast("No valid card entered.");
+                toast(MainActivity.this.getResources().getString(R.string.ep_err_no_valid_card));
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
@@ -96,18 +96,18 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.start).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((Button)findViewById(R.id.start)).setText("Restart");
+                ((Button)findViewById(R.id.start)).setText(MainActivity.this.getResources().getString(R.string.ep_btn_restart));
                 hideAllStatusViews();
                 statuses[0].progress.setVisibility(View.VISIBLE);
 
                 // Initial card data is entirely optional.
                 // Use null to let the user fill out the card form.
                 Card initial = new Card();
-                initial.setName("Tom Smith");
-                initial.setNumber("5169032156782335");
-                initial.setExpYear("2017");
-                initial.setExpMonth("01");
-                initial.setCVC("643");
+                initial.setName(MainActivity.this.getResources().getString(R.string.ep_initial_card_name));
+                initial.setNumber(MainActivity.this.getResources().getString(R.string.ep_initial_card_number));
+                initial.setExpYear(MainActivity.this.getResources().getString(R.string.ep_initial_card_exp_year));
+                initial.setExpMonth(MainActivity.this.getResources().getString(R.string.ep_initial_card_exp_month));
+                initial.setCVC(MainActivity.this.getResources().getString(R.string.ep_initial_card_cvc));
 
                 CardFormActivity.startForResult(MainActivity.this, initial);
             }

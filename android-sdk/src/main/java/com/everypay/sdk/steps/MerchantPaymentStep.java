@@ -13,6 +13,7 @@ import com.everypay.sdk.api.merchant.MerchantPaymentResponseData;
 
 public class MerchantPaymentStep extends Step {
 
+    private static final String EXCEPTION_PAYMENT_FAILED = "Payment failed with error code: ";
     @Override
     public final StepType getType() {
         return StepType.MERCHANT_PAYMENT;
@@ -22,7 +23,7 @@ public class MerchantPaymentStep extends Step {
         MerchantApiCalls merchantApi = MerchantApi.getMerchantApi(ep.getMerchantUrl());
         MerchantPaymentResponseData resp = merchantApi.callMakePayment(new MerchantPaymentRequestData(paramsResponse, everypayResponse));
         if (resp == null || !"success".equals(resp.status)) {
-            throw new RuntimeException("Payment failed with error code: " + (resp == null ? "null" : resp.status));
+            throw new RuntimeException(EXCEPTION_PAYMENT_FAILED + (resp == null ? "null" : resp.status));
         }
         return resp;
     }

@@ -8,16 +8,18 @@ import java.lang.reflect.Method;
 
 public class Reflect {
 
+    private static final String EXCEPITION_REFLECTION_FAILED = "Reflection failed.";
+
     public static void setString(Object obj, String methodName, String value) {
         try {
             Method method = obj.getClass().getMethod(methodName, String.class);
             method.invoke(obj, value);
         } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException("Reflection failed.", e);
+            throw new IllegalArgumentException(EXCEPITION_REFLECTION_FAILED, e);
         } catch (InvocationTargetException e) {
-            throw new IllegalArgumentException("Reflection failed.", e);
+            throw new IllegalArgumentException(EXCEPITION_REFLECTION_FAILED, e);
         } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException("Reflection failed.", e);
+            throw new IllegalArgumentException(EXCEPITION_REFLECTION_FAILED, e);
         }
     }
 
@@ -26,11 +28,11 @@ public class Reflect {
             Method method = obj.getClass().getMethod(methodName);
             return (String)method.invoke(obj);
         } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException("Reflection failed.", e);
+            throw new IllegalArgumentException(EXCEPITION_REFLECTION_FAILED, e);
         } catch (InvocationTargetException e) {
-            throw new IllegalArgumentException("Reflection failed.", e);
+            throw new IllegalArgumentException(EXCEPITION_REFLECTION_FAILED, e);
         } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException("Reflection failed.", e);
+            throw new IllegalArgumentException(EXCEPITION_REFLECTION_FAILED, e);
         }
     }
 
@@ -46,11 +48,11 @@ public class Reflect {
             Method method = obj.getClass().getMethod(methodName, types);
             method.invoke(obj, args);
         } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException("Reflection failed.", e);
+            throw new IllegalArgumentException(EXCEPITION_REFLECTION_FAILED, e);
         } catch (InvocationTargetException e) {
             throw e.getTargetException();
         } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException("Reflection failed.", e);
+            throw new IllegalArgumentException(EXCEPITION_REFLECTION_FAILED, e);
         }
     }
 }

@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="ep_FloatingProgressTheme" parent="Theme.AppCompat.Dialog">
         <item name="android:backgroundDimEnabled">true</item>
@@ -21,16 +21,16 @@
     </style>
 
     <style name="ep_TextViewTheme" parent="android:Widget.TextView">
-        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:fontFamily" tools:targetApi="jelly_bean">sans-serif-light</item>
     </style>
 
     <style name="ep_DialogTitleTheme">
-        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:fontFamily" tools:targetApi="jelly_bean">sans-serif-light</item>
         <item name="android:textColor">@color/ep_accent</item>
     </style>
 
     <style name="ep_DialogButtonTheme" parent="@android:style/Widget.ActionButton">
-        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:fontFamily" tools:targetApi="jelly_bean">sans-serif-light</item>
         <item name="android:textColor">@color/ep_accent</item>
         <item name="android:textAllCaps">true</item>
     </style>

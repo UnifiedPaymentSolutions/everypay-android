@@ -6,5 +6,14 @@
     <!-- To override CardFormActivity text, colors, and styles, define replacements with the same name in your app. -->
 
     <string name="ep_cc_holder_name">Name on Card</string>
+    <string name="ep_btn_restart">Restart</string>
+    <string name="ep_toast_payment_successful">Payment successful!</string>
+    <string name="ep_toast_step_failed">Step %s failed: %s</string>
+    <string name="ep_err_no_valid_card">No valid card entered.</string>
+    <string name="ep_initial_card_name">Tom Smith</string>
+    <string name="ep_initial_card_number">5169032156782335</string>
+    <string name="ep_initial_card_exp_year">2017</string>
+    <string name="ep_initial_card_exp_month">01</string>
+    <string name="ep_initial_card_cvc">643</string>
 
 </resources>
