@@ -1,16 +1,16 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="AppTheme" parent="Theme.AppCompat.Light">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primaryDark</item>
         <item name="colorAccent">@color/accent</item>
         <item name="android:windowBackground">@color/window_background</item>
-        <item name="android:navigationBarColor">@color/navbar</item>
+        <item name="android:navigationBarColor" tools:targetApi="lollipop">@color/navbar</item>
         <item name="android:textViewStyle">@style/TextViewTheme</item>
     </style>
 
     <style name="TextViewTheme" parent="android:Widget.TextView">
-        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:fontFamily" tools:targetApi="jelly_bean">sans-serif-light</item>
     </style>
 
 </resources>
