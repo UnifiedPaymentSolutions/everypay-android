@@ -5,34 +5,32 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
 
-import com.everypay.sdk.api.EverypayTokenResponseData;
+import com.everypay.sdk.api.EveryPayTokenResponseData;
 import com.everypay.sdk.api.merchant.MerchantParamsResponseData;
 import com.everypay.sdk.model.Card;
-import com.everypay.sdk.steps.EverypayTokenStep;
+import com.everypay.sdk.steps.EveryPayTokenStep;
 import com.everypay.sdk.steps.MerchantParamsStep;
 import com.everypay.sdk.steps.MerchantPaymentStep;
 import com.everypay.sdk.steps.Step;
 
-import java.util.Map;
 
-
-public class EverypaySession extends AsyncTask<Void, Void, Void> {
+public class EveryPaySession extends AsyncTask<Void, Void, Void> {
 
     private Handler handler;
     private Context context;
-    private Everypay ep;
+    private EveryPay ep;
     private String deviceInfo;
-    private EverypayListener listener;
+    private EveryPayListener listener;
 
     private Card card;
 
     // Steps
     private MerchantParamsStep merchantParamsStep;
-    private EverypayTokenStep everyPayTokenStep;
+    private EveryPayTokenStep everyPayTokenStep;
     private MerchantPaymentStep merchantPaymentStep;
 
 
-    public EverypaySession(Context context, Everypay ep, Card card, String deviceInfo, EverypayListener listener) {
+    public EveryPaySession(Context context, EveryPay ep, Card card, String deviceInfo, EveryPayListener listener) {
         this.handler = new Handler();
         this.context = context;
         this.ep = ep;
@@ -48,7 +46,7 @@ public class EverypaySession extends AsyncTask<Void, Void, Void> {
             throw new IllegalArgumentException("Listener is null");
 
         this.merchantParamsStep = ep.getMerchantParamsStep();
-        this.everyPayTokenStep = new EverypayTokenStep();
+        this.everyPayTokenStep = new EveryPayTokenStep();
         this.merchantPaymentStep = ep.getMerchantPaymentStep();
     }
 
@@ -64,7 +62,7 @@ public class EverypaySession extends AsyncTask<Void, Void, Void> {
 
             lastStep = everyPayTokenStep;
             callStepStarted(everyPayTokenStep);
-            EverypayTokenResponseData everypayResponse = everyPayTokenStep.run(context, ep, paramsResponse, card, deviceInfo);
+            EveryPayTokenResponseData everypayResponse = everyPayTokenStep.run(context, ep, paramsResponse, card, deviceInfo);
             callStepSuccess(everyPayTokenStep);
 
             lastStep = merchantPaymentStep;
@@ -74,7 +72,7 @@ public class EverypaySession extends AsyncTask<Void, Void, Void> {
 
             callFullSuccess();
         } catch (Exception e) {
-            Log.e(Everypay.TAG, String.format("Step %s failed.", lastStep), e);
+            Log.e(EveryPay.TAG, String.format("Step %s failed.", lastStep), e);
             callStepFailure(lastStep, e);
             return null;
         }

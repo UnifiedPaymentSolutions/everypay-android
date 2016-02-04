@@ -3,20 +3,20 @@ package com.everypay.sdk.steps;
 
 import android.content.Context;
 
-import com.everypay.sdk.Everypay;
-import com.everypay.sdk.api.EverypayApi;
-import com.everypay.sdk.api.EverypayTokenRequestData;
-import com.everypay.sdk.api.EverypayTokenResponseData;
+import com.everypay.sdk.EveryPay;
+import com.everypay.sdk.api.EveryPayApi;
+import com.everypay.sdk.api.EveryPayTokenRequestData;
+import com.everypay.sdk.api.EveryPayTokenResponseData;
 import com.everypay.sdk.api.merchant.MerchantParamsResponseData;
 import com.everypay.sdk.model.Card;
 
-public class EverypayTokenStep extends Step {
+public class EveryPayTokenStep extends Step {
     @Override
     public final StepType getType() {
         return StepType.EVERYPAY_TOKEN;
     }
 
-    public EverypayTokenResponseData run(Context activity, Everypay ep, MerchantParamsResponseData paramsResponse, Card card, String deviceInfo) {
-        return EverypayApi.getEverypayApi(ep.getEverypayUrl()).saveCard(new EverypayTokenRequestData(paramsResponse, card, deviceInfo));
+    public EveryPayTokenResponseData run(Context activity, EveryPay ep, MerchantParamsResponseData paramsResponse, Card card, String deviceInfo) {
+        return EveryPayApi.getEverypayApi(ep.getEverypayUrl()).saveCard(new EveryPayTokenRequestData(paramsResponse, card, deviceInfo));
     }
 }

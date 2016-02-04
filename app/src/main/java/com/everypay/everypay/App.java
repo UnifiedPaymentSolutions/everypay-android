@@ -2,7 +2,7 @@ package com.everypay.everypay;
 
 import android.app.Application;
 
-import com.everypay.sdk.Everypay;
+import com.everypay.sdk.EveryPay;
 
 
 public class App extends Application {
@@ -11,6 +11,6 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
 
-        Everypay.with(this).setEverypayApiBaseUrl(Everypay.EVERYPAY_API_URL_TESTING).setMerchantApiBaseUrl(Everypay.MERCHANT_API_URL_TESTING).build().setDefault();
+        EveryPay.with(this).setEverypayApiBaseUrl(EveryPay.EVERYPAY_API_URL_TESTING).setMerchantApiBaseUrl(EveryPay.MERCHANT_API_URL_TESTING).build().setDefault();
     }
 }

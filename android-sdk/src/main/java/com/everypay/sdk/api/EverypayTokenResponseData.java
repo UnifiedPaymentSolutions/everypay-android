@@ -3,7 +3,7 @@ package com.everypay.sdk.api;
 
 import android.text.TextUtils;
 
-public class EverypayTokenResponseData {
+public class EveryPayTokenResponseData {
     public EncryptedTokenResponseData encryptedPaymentInstrument;
 
     public String getToken() {
