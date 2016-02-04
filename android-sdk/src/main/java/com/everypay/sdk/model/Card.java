@@ -16,6 +16,14 @@ import java.io.Serializable;
  */
 public class Card implements Parcelable {
 
+    private static final int YEAR_MIN_VALUE = 1900;
+    private static final int YEAR_MAX_VALUE = 2100;
+    private static final int MONTH_MIN_VALUE = 1;
+    private static final int MONTH_MAX_VALUE = 12;
+    private static final int EXPIRE_DATE_DIGIT_COUNT = 4;
+    private static final int CVC_COUNT_AMERICAN_EXPRESS = 4;
+    private static final int CVC_COUNT = 3;
+
     private String name;
     private String number;
     private String cvc;
@@ -75,9 +83,9 @@ public class Card implements Parcelable {
 
         // normalize() already gets rid of non-digits.
         int month = Integer.parseInt(expMonth, 10);
-        if (month < 1)
+        if (month < MONTH_MIN_VALUE)
             CardError.raise(context, true, R.string.ep_cc_error_month_invalid);
-        if (month > 12)
+        if (month > MONTH_MAX_VALUE)
             CardError.raise(context, false, R.string.ep_cc_error_month_invalid);
         return month;
     }
@@ -87,11 +95,11 @@ public class Card implements Parcelable {
             CardError.raise(context, true, R.string.ep_cc_error_year_missing);
 
         // normalize() already gets rid of non-digits.
-        if (expYear.length() < 4)
+        if (expYear.length() < EXPIRE_DATE_DIGIT_COUNT)
             CardError.raise(context, true, R.string.ep_cc_error_year_short);
 
         int year = Integer.parseInt(expYear, 10);
-        if (year < 1900 || year > 2100)
+        if (year < YEAR_MIN_VALUE || year > YEAR_MAX_VALUE)
             CardError.raise(context, false, R.string.ep_cc_error_year_invalid);
         return year;
     }
@@ -102,11 +110,11 @@ public class Card implements Parcelable {
 
         // normalize() already gets rid of non-digits.
         if (getType() == CardType.AMERICAN_EXPRESS) {
-            if (cvc.length() != 4)
-                CardError.raise(context, cvc.length() < 4, R.string.ep_cc_error_cvc_invalid_american_express);
+            if (cvc.length() != CVC_COUNT_AMERICAN_EXPRESS)
+                CardError.raise(context, cvc.length() < CVC_COUNT_AMERICAN_EXPRESS, R.string.ep_cc_error_cvc_invalid_american_express);
         } else {
-            if (cvc.length() != 3)
-                CardError.raise(context, cvc.length() < 3, R.string.ep_cc_error_cvc_invalid);
+            if (cvc.length() != CVC_COUNT)
+                CardError.raise(context, cvc.length() < CVC_COUNT, R.string.ep_cc_error_cvc_invalid);
         }
     }
 
