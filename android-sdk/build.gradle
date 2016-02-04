@@ -65,7 +65,7 @@ ext {
     siteUrl = 'https://github.com/UnifiedPaymentSolutions/everypay-android'
     gitUrl = 'https://github.com/UnifiedPaymentSolutions/everypay-android.git'
 
-    libraryVersion = '0.96'
+    libraryVersion = '0.97'
 
     developerId = 'olevabel'
     developerName = 'Olev Abel'
