@@ -1,7 +1,6 @@
 package com.everypay.sdk.steps;
 
 
-import android.content.Context;
 
 import com.everypay.sdk.EveryPay;
 import com.everypay.sdk.api.EveryPayApi;
