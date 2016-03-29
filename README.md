@@ -33,15 +33,9 @@ Example implementation is provided for steps 2 and 4, even if they are likely to
 Add the following line to your `app/build.gradle` file:
 
 ```
-repositories {
-    maven {
-        url 'https://dl.bintray.com/everypay/maven/'
-    }
-}
-
 dependencies {
     ... Other dependencies ...
-    compile 'com.everypay.sdk:android-sdk:0.94'
+   compile 'com.everypay.sdk:android-sdk:0.97'
 }
 ```
 
