@@ -4,11 +4,11 @@ import com.everypay.sdk.api.merchant.MerchantParamsResponseData;
 import com.everypay.sdk.model.Card;
 
 
-public class EveryPayTokenRequestData1 {
+public class EveryPayTokenRequestData {
 
     public EncryptedTokenRequestData encryptedPaymentInstrument;
 
-    public EveryPayTokenRequestData1(MerchantParamsResponseData params, Card card, String deviceInfo) {
+    public EveryPayTokenRequestData(MerchantParamsResponseData params, Card card, String deviceInfo) {
         this.encryptedPaymentInstrument = new EncryptedTokenRequestData(params, card, deviceInfo);
     }
 

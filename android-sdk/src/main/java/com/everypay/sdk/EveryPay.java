@@ -10,7 +10,7 @@ import com.everypay.sdk.steps.MerchantPaymentStep;
 /**
  * Builder class for EverypaySessions.
  */
-public class EveryPay1 {
+public class EveryPay {
 
     public static final String TAG = "everypay";
 
@@ -21,8 +21,8 @@ public class EveryPay1 {
     public static final String MERCHANT_API_URL_TESTING = "https://igwshop-demo.every-pay.com";
 
 
-    static EveryPay1 defaultInstance;
-    public static synchronized EveryPay1 getDefault() {
+    static EveryPay defaultInstance;
+    public static synchronized EveryPay getDefault() {
         if (defaultInstance == null)
             throw new RuntimeException(EXCEPTION_NO_DEFAULT_EVERYPAY_INSTANCE);
         return defaultInstance;
@@ -34,7 +34,7 @@ public class EveryPay1 {
     private MerchantParamsStep merchantParamsStep;
     private MerchantPaymentStep merchantPaymentStep;
 
-    private EveryPay1(Context appContext, String everypayUrl, String merchantUrl, MerchantParamsStep merchantParamsStep, MerchantPaymentStep merchantPaymentStep) {
+    private EveryPay(Context appContext, String everypayUrl, String merchantUrl, MerchantParamsStep merchantParamsStep, MerchantPaymentStep merchantPaymentStep) {
         this.context = appContext;
         this.everypayUrl = everypayUrl;
         this.merchantUrl = merchantUrl;
@@ -46,7 +46,7 @@ public class EveryPay1 {
         return new Builder(context);
     }
 
-    public EveryPay1 setDefault() {
+    public EveryPay setDefault() {
         defaultInstance = this;
         return this;
     }
@@ -67,8 +67,8 @@ public class EveryPay1 {
         return  merchantPaymentStep;
     }
 
-    public void startFullPaymentFlow(Card card, String deviceInfo, EveryPayListener1 callback) {
-        new EveryPaySession1(context, this, card, deviceInfo, callback).execute();
+    public void startFullPaymentFlow(Card card, String deviceInfo, EveryPayListener callback) {
+        new EveryPaySession(context, this, card, deviceInfo, callback).execute();
     }
 
     public static class Builder {
@@ -106,12 +106,12 @@ public class EveryPay1 {
             return this;
         }
 
-        public EveryPay1 build() {
+        public EveryPay build() {
             if (merchantParamsStep == null)
                 merchantParamsStep = new MerchantParamsStep();
             if (merchantPaymentStep == null)
                 merchantPaymentStep = new MerchantPaymentStep();
-            return new EveryPay1(context.getApplicationContext(), everypayUrl, merchantUrl, merchantParamsStep, merchantPaymentStep);
+            return new EveryPay(context.getApplicationContext(), everypayUrl, merchantUrl, merchantParamsStep, merchantPaymentStep);
         }
 
     }
