@@ -6,7 +6,7 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
 
-import com.everypay.sdk.EveryPay;
+import com.everypay.sdk.EveryPay1;
 import com.everypay.sdk.deviceinfo.fieldcollectors.AndroidIdCollector;
 import com.everypay.sdk.deviceinfo.fieldcollectors.AppInstallCollector;
 import com.everypay.sdk.deviceinfo.fieldcollectors.GpsCollector;
@@ -38,7 +38,7 @@ public class DeviceCollector {
 
     public synchronized void collectWithTimeout(final DeviceInfoListener listener, long timeout) {
         long remainingTimeout = Math.max(0, startMillis - SystemClock.elapsedRealtime() + timeout);
-        Log.d(EveryPay.TAG, "Remaining timeout " + remainingTimeout + "ms");
+        Log.d(EveryPay1.TAG, "Remaining timeout " + remainingTimeout + "ms");
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {

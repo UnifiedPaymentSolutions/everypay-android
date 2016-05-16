@@ -2,7 +2,7 @@ package com.everypay.sdk;
 
 import com.everypay.sdk.steps.StepType;
 
-public interface EveryPayListener {
+public interface EveryPayListener1 {
     void stepStarted(StepType step);
     void stepSuccess(StepType step);
     void fullSuccess();

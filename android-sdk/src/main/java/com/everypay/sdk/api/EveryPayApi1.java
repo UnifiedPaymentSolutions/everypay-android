@@ -7,15 +7,15 @@ import com.everypay.sdk.util.CustomGson;
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
 
-public class EveryPayApi {
+public class EveryPayApi1 {
 
-    public static EveryPayApiCalls getEverypayApi(String everyPayApiUrl) {
+    public static EveryPayApiCalls1 getEverypayApi(String everyPayApiUrl) {
         return new RestAdapter.Builder()
                 .setEndpoint(everyPayApiUrl)
                 .setConverter(new GsonConverter(CustomGson.getInstance()))
                 .setLogLevel(Config.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.BASIC)
                 .build()
-                .create(EveryPayApiCalls.class);
+                .create(EveryPayApiCalls1.class);
     }
 
 }

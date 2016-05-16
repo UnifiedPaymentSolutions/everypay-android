@@ -60,7 +60,7 @@ ext {
     libraryName = 'EveryPayAndroidSDK'
     artifact = 'android-sdk'
 
-    libraryDescription = 'EveryPay Android SDK'
+    libraryDescription = 'EveryPay1 Android SDK'
 
     siteUrl = 'https://github.com/UnifiedPaymentSolutions/everypay-android'
     gitUrl = 'https://github.com/UnifiedPaymentSolutions/everypay-android.git'

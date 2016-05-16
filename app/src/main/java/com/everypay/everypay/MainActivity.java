@@ -12,15 +12,15 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.everypay.sdk.EveryPay;
-import com.everypay.sdk.EveryPayListener;
+import com.everypay.sdk.EveryPay1;
+import com.everypay.sdk.EveryPayListener1;
 import com.everypay.sdk.model.Card;
 import com.everypay.sdk.steps.StepType;
 import com.everypay.sdk.views.CardFormActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    EveryPay ep;
+    EveryPay1 ep;
 
     StepStatusViews[] statuses;
 
@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ep = EveryPay.getDefault();
+        ep = EveryPay1.getDefault();
 
         attachUiEvents();
     }
@@ -42,18 +42,18 @@ public class MainActivity extends AppCompatActivity {
             Pair<Card, String> result = CardFormActivity.getCardAndDeviceInfoFromResult(resultCode, data);
             if (result != null) {
                 statuses[0].good.setVisibility(View.VISIBLE);
-                EveryPay.getDefault().startFullPaymentFlow(result.first, result.second, new EveryPayListener() {
+                EveryPay1.getDefault().startFullPaymentFlow(result.first, result.second, new EveryPayListener1() {
 
                     @Override
                     public void stepStarted(StepType step) {
-                        Log.d(EveryPay.TAG, "Started step " + step);
+                        Log.d(EveryPay1.TAG, "Started step " + step);
                         hideStatusViews(step);
                         statuses[step.ordinal()].progress.setVisibility(View.VISIBLE);
                     }
 
                     @Override
                     public void stepSuccess(StepType step) {
-                        Log.d(EveryPay.TAG, "Completed step " + step);
+                        Log.d(EveryPay1.TAG, "Completed step " + step);
                         hideStatusViews(step);
                         statuses[step.ordinal()].good.setVisibility(View.VISIBLE);
                     }
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void stepFailure(StepType step, Exception e) {
-                        Log.e(EveryPay.TAG, "Error in step " + step, e);
+                        Log.e(EveryPay1.TAG, "Error in step " + step, e);
                         hideStatusViews(step);
                         statuses[step.ordinal()].bad.setVisibility(View.VISIBLE);
                         toast(MainActivity.this.getResources().getString(R.string.ep_toast_step_failed), step, e);
