@@ -2,6 +2,8 @@ package com.everypay.sdk.steps;
 
 
 
+import android.util.Log;
+
 import com.everypay.sdk.EveryPay;
 import com.everypay.sdk.api.EveryPayApi;
 import com.everypay.sdk.api.EveryPayTokenRequestData;
@@ -16,6 +18,7 @@ public class EveryPayTokenStep extends Step {
     }
 
     public EveryPayTokenResponseData run(EveryPay ep, MerchantParamsResponseData paramsResponse, Card card, String deviceInfo) {
+        Log.d("tag", card.toString());
         return EveryPayApi.getEverypayApi(ep.getEverypayUrl()).saveCard(new EveryPayTokenRequestData(paramsResponse, card, deviceInfo));
     }
 }

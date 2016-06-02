@@ -16,7 +16,6 @@ import com.everypay.sdk.util.Reflect;
 public class CardFormTextWatcher implements TextWatcher {
 
     private static final String METHOD_SET = "set";
-    private static final String METHOD_GET = "get";
     private static final String METHOD_VALIDATE = "validate";
     boolean selfChange = false;
 
@@ -51,7 +50,6 @@ public class CardFormTextWatcher implements TextWatcher {
 
     private void reformat(Editable s) {
         Reflect.setString(card, METHOD_SET + fieldName, s.toString());
-        s.replace(0, s.length(), Reflect.getString(card, METHOD_GET + fieldName));
 
         Context context = input.getContext();
         Resources res = context.getResources();
