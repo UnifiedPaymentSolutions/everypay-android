@@ -1,6 +1,7 @@
-package com.everypay.sdk.api.merchant;
+package com.everypay.sdk.api.requestdata;
 
-import com.everypay.sdk.api.EveryPayTokenResponseData;
+import com.everypay.sdk.api.responsedata.EveryPayTokenResponseData;
+import com.everypay.sdk.api.responsedata.MerchantParamsResponseData;
 
 public class MerchantPaymentRequestData {
     public String hmac;

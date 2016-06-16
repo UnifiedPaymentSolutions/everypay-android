@@ -20,6 +20,7 @@ import com.everypay.sdk.views.CardFormActivity;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static com.everypay.sdk.util.Log log = com.everypay.sdk.util.Log.getInstance(MainActivity.class);
     EveryPay ep;
 
     StepStatusViews[] statuses;
@@ -46,14 +47,14 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void stepStarted(StepType step) {
-                        Log.d(EveryPay.TAG, "Started step " + step);
+                        log.d("Started step " + step);
                         hideStatusViews(step);
                         statuses[step.ordinal()].progress.setVisibility(View.VISIBLE);
                     }
 
                     @Override
                     public void stepSuccess(StepType step) {
-                        Log.d(EveryPay.TAG, "Completed step " + step);
+                        log.d("Completed step " + step);
                         hideStatusViews(step);
                         statuses[step.ordinal()].good.setVisibility(View.VISIBLE);
                     }
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void stepFailure(StepType step, Exception e) {
-                        Log.e(EveryPay.TAG, "Error in step " + step, e);
+                        log.e( "Error in step " + step, e);
                         hideStatusViews(step);
                         statuses[step.ordinal()].bad.setVisibility(View.VISIBLE);
                         toast(MainActivity.this.getResources().getString(R.string.ep_toast_step_failed), step, e);

@@ -10,7 +10,6 @@ public class CustomGson {
     public static synchronized Gson getInstance() {
         if (gson == null) {
             GsonBuilder builder = new GsonBuilder();
-            builder.serializeNulls();
             builder.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES);
             gson = builder.create();
         }

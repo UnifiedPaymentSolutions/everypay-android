@@ -5,6 +5,7 @@ import android.content.Context;
 import com.everypay.sdk.model.Card;
 import com.everypay.sdk.steps.MerchantParamsStep;
 import com.everypay.sdk.steps.MerchantPaymentStep;
+import com.everypay.sdk.util.Log;
 
 
 /**
@@ -16,9 +17,9 @@ public class EveryPay {
 
     private static final String EXCEPTION_NO_DEFAULT_EVERYPAY_INSTANCE = "No default Everypay instance set.";
 
-    public static final String EVERYPAY_API_URL_TESTING = "https://gw-demo.every-pay.com";
+    public static final String EVERYPAY_API_URL_TESTING = "https://gw-staging.every-pay.com/";
     public static final String EVERYPAY_API_URL_LIVE = "http://gw.every-pay.eu";
-    public static final String MERCHANT_API_URL_TESTING = "https://igwshop-demo.every-pay.com";
+    public static final String MERCHANT_API_URL_TESTING = "https://igwshop-staging.every-pay.com/";
 
 
     static EveryPay defaultInstance;
@@ -31,15 +32,17 @@ public class EveryPay {
     private Context context;
     private String everypayUrl;
     private String merchantUrl;
+    private String apiVersion;
     private MerchantParamsStep merchantParamsStep;
     private MerchantPaymentStep merchantPaymentStep;
 
-    private EveryPay(Context appContext, String everypayUrl, String merchantUrl, MerchantParamsStep merchantParamsStep, MerchantPaymentStep merchantPaymentStep) {
+    private EveryPay(Context appContext, String everypayUrl, String merchantUrl, MerchantParamsStep merchantParamsStep, MerchantPaymentStep merchantPaymentStep, String apiVersion) {
         this.context = appContext;
         this.everypayUrl = everypayUrl;
         this.merchantUrl = merchantUrl;
         this.merchantParamsStep = merchantParamsStep;
         this.merchantPaymentStep = merchantPaymentStep;
+        this.apiVersion = apiVersion;
     }
 
     public static Builder with(Context context) {
@@ -68,13 +71,15 @@ public class EveryPay {
     }
 
     public void startFullPaymentFlow(Card card, String deviceInfo, EveryPayListener callback) {
-        new EveryPaySession(context, this, card, deviceInfo, callback).execute();
+        Log.setLogLevel(Config.USE_DEBUG ? Log.LOG_LEVEL_DEBUG: Log.LOG_LEVEL_RELEASE);
+        new EveryPaySession(context, this, card, deviceInfo, callback, apiVersion).execute();
     }
 
     public static class Builder {
         Context context;
         String everypayUrl;
         String merchantUrl;
+        String apiVersion;
         MerchantParamsStep merchantParamsStep;
         MerchantPaymentStep merchantPaymentStep;
 
@@ -106,12 +111,12 @@ public class EveryPay {
             return this;
         }
 
-        public EveryPay build() {
+        public EveryPay build(String apiVersion) {
             if (merchantParamsStep == null)
                 merchantParamsStep = new MerchantParamsStep();
             if (merchantPaymentStep == null)
                 merchantPaymentStep = new MerchantPaymentStep();
-            return new EveryPay(context.getApplicationContext(), everypayUrl, merchantUrl, merchantParamsStep, merchantPaymentStep);
+            return new EveryPay(context.getApplicationContext(), everypayUrl, merchantUrl, merchantParamsStep, merchantPaymentStep, apiVersion);
         }
 
     }

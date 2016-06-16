@@ -2,9 +2,10 @@ package com.everypay.sdk.api;
 
 
 import com.everypay.sdk.Config;
-import com.everypay.sdk.api.requestdata.EveryPayTokenRequestData;
-import com.everypay.sdk.api.responsedata.EveryPayResponse;
-import com.everypay.sdk.api.responsedata.EveryPayTokenResponseData;
+import com.everypay.sdk.api.requestdata.MerchantParamsRequestData;
+import com.everypay.sdk.api.requestdata.MerchantPaymentRequestData;
+import com.everypay.sdk.api.responsedata.MerchantParamsResponseData;
+import com.everypay.sdk.api.responsedata.MerchantPaymentResponseData;
 import com.everypay.sdk.util.CustomGson;
 import com.everypay.sdk.util.Log;
 
@@ -19,7 +20,7 @@ import retrofit2.http.Body;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
-public class EveryPayApi {
+public class MerchantApi {
     /**
      * Connect timeout value. In milliseconds.
      */
@@ -33,11 +34,10 @@ public class EveryPayApi {
      */
     private static final long TIMEOUT_WRITE = 15 * 1000L;
     private static final Log log = Log.getInstance(EveryPayApi.class);
-    private static volatile EveryPayApi instance;
-    private final EveryPayApiCalls apiCalls;
+    private static volatile MerchantApi instance;
+    private final MerchantApi.MerchantApiCalls apiCalls;
 
-    public EveryPayApi(final String baseUrl) {
-        log.d("hello!");
+    public MerchantApi(final String baseUrl) {
         final HttpLoggingInterceptor interceptorLogging = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
             @Override
             public void log(String message) {
@@ -58,14 +58,14 @@ public class EveryPayApi {
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create(CustomGson.getInstance()))
                 .build();
-        apiCalls = retrofit.create(EveryPayApiCalls.class);
+        apiCalls = retrofit.create(MerchantApi.MerchantApiCalls.class);
     }
 
-    public EveryPayApiCalls getApiCalls() {
+    public MerchantApi.MerchantApiCalls getApiCalls() {
         return apiCalls;
     }
 
-    public static EveryPayApi getInstance(final String baseUrl) {
+    public static MerchantApi getInstance(final String baseUrl) {
         if(instance == null) {
             synchronized (EveryPayApi.class) {
                 if(instance == null) {
@@ -76,21 +76,29 @@ public class EveryPayApi {
         return instance;
     }
 
-    public static EveryPayApi createNewInstance(String baseUrl) {
-        synchronized (EveryPayApi.class) {
-            instance = new EveryPayApi(baseUrl);
+    public static MerchantApi createNewInstance(String baseUrl) {
+        synchronized (MerchantApi.class) {
+            instance = new MerchantApi(baseUrl);
             return instance;
         }
     }
 
 
 
-    public interface EveryPayApiCalls {
+    public interface MerchantApiCalls {
         @Headers({
                 "Content-Type: application/json",
                 "Accept: application/json"
         })
-        @POST("encrypted_payment_instruments")
-        Call<EveryPayTokenResponseData>saveCard(@Body EveryPayTokenRequestData params);
+        @POST("/merchant_mobile_payments/generate_token_api_parameters")
+        Call<MerchantParamsResponseData> callGetParams(@Body MerchantParamsRequestData params);
+
+        @Headers({
+                "Content-Type: application/json",
+                "Accept: application/json"
+        })
+        @POST("/merchant_mobile_payments/pay")
+        Call<MerchantPaymentResponseData> callMakePayment(@Body MerchantPaymentRequestData params);
     }
+
 }
