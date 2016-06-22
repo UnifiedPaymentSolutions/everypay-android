@@ -35,5 +35,11 @@
         <item name="android:textAllCaps">true</item>
     </style>
 
+    <style name="LinearProgressDrawableStyle" parent="Material.Drawable.LinearProgress">
+        <item name="lpd_strokeSize">@dimen/toolbar_progress_height</item>
+        <item name="lpd_strokeColor">?attr/colorAccent</item>
+        <item name="lpd_strokeSecondaryColor">@color/ep_accent</item>
+    </style>
+
 
 </resources>

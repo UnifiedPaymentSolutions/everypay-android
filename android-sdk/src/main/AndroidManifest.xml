@@ -8,5 +8,8 @@
 
     <application >
         <activity android:name=".views.CardFormActivity"/>
+        <activity android:name=".PaymentBrowserActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
     </application>
+
 </manifest>

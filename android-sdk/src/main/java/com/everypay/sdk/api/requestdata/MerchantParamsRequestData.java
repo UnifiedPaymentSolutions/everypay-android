@@ -18,9 +18,9 @@ public class MerchantParamsRequestData {
     @Override
     public String toString() {
         return "MerchantParamsRequestData{" +
-                "accountId='" + accountId + '\'' +
-                ", deviceInfo='" + deviceInfo + '\'' +
-                ", apiVersion='" + apiVersion + '\'' +
+                "accountId='" + accountId +
+                ", deviceInfo='" + deviceInfo +
+                ", apiVersion='" + apiVersion +
                 '}';
     }
 }

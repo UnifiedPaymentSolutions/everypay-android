@@ -1,9 +1,13 @@
 package com.everypay.sdk.steps;
 
 import com.everypay.sdk.EveryPay;
+import com.everypay.sdk.api.ErrorHelper;
 import com.everypay.sdk.api.MerchantApi;
 import com.everypay.sdk.api.requestdata.MerchantParamsRequestData;
+import com.everypay.sdk.api.responsedata.EveryPayTokenResponseData;
 import com.everypay.sdk.api.responsedata.MerchantParamsResponseData;
+import com.everypay.sdk.util.EveryPayException;
+import com.everypay.sdk.util.Util;
 
 
 import java.io.IOException;
@@ -21,14 +25,12 @@ public class MerchantParamsStep extends Step {
     public MerchantParamsResponseData run(EveryPay ep, String deviceInfo, String apiVersion) {
         MerchantApi.MerchantApiCalls apiCalls = MerchantApi.getInstance(ep.getMerchantUrl()).getApiCalls();
         MerchantParamsRequestData requestData = new MerchantParamsRequestData(deviceInfo, apiVersion);
-        Response<MerchantParamsResponseData> requestResult;
         Call<MerchantParamsResponseData> call = apiCalls.callGetParams(requestData);
-        try {
-            requestResult = call.execute();
-            return requestResult.body();
-        } catch (IOException e) {
-            e.printStackTrace();
+        ErrorHelper response = Util.execute(call);
+        if(response.isError()) {
+            throw new EveryPayException(response.getErrors().get(0).getCode(), response.getErrors().get(0).getMessage());
+        } else {
+            return (MerchantParamsResponseData) response;
         }
-        return null;
     }
 }

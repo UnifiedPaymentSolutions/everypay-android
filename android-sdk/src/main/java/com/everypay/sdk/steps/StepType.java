@@ -6,4 +6,5 @@ public enum StepType {
     MERCHANT_PARAMS,
     EVERYPAY_TOKEN,
     MERCHANT_PAYMENT,
+    EVERYPAY_3DS_CONFIRM
 }

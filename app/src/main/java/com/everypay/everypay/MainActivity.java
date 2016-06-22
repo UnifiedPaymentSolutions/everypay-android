@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void stepFailure(StepType step, Exception e) {
-                        log.e( "Error in step " + step, e);
+                        log.e("Error in step " + step, e);
                         hideStatusViews(step);
                         statuses[step.ordinal()].bad.setVisibility(View.VISIBLE);
                         toast(MainActivity.this.getResources().getString(R.string.ep_toast_step_failed), step, e);
@@ -82,14 +82,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void attachUiEvents() {
-        statuses = new StepStatusViews[StepType.values().length];
+        statuses = new StepStatusViews[StepType.values().length - 1];
         statuses[0] = new StepStatusViews(R.id.card_good, R.id.card_bad, R.id.card_progress);
         statuses[1] = new StepStatusViews(R.id.credentials_good, R.id.credentials_bad, R.id.credentials_progress);
         statuses[2] = new StepStatusViews(R.id.token_good, R.id.token_bad, R.id.token_progress);
         statuses[3] = new StepStatusViews(R.id.payment_good, R.id.payment_bad, R.id.payment_progress);
 
         for (StepStatusViews views : statuses) {
-            views.good.setColorFilter(ContextCompat.getColor(MainActivity.this,R.color.tint_good));
+            views.good.setColorFilter(ContextCompat.getColor(MainActivity.this, R.color.tint_good));
             views.bad.setColorFilter(ContextCompat.getColor(MainActivity.this, R.color.tint_bad));
         }
         hideAllStatusViews();
@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.start).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((Button)findViewById(R.id.start)).setText(MainActivity.this.getResources().getString(R.string.ep_btn_restart));
+                ((Button) findViewById(R.id.start)).setText(MainActivity.this.getResources().getString(R.string.ep_btn_restart));
                 hideAllStatusViews();
                 statuses[0].progress.setVisibility(View.VISIBLE);
 
@@ -141,9 +141,9 @@ public class MainActivity extends AppCompatActivity {
         public ProgressBar progress;
 
         public StepStatusViews(int goodId, int badId, int progressId) {
-            good = (ImageView)findViewById(goodId);
-            bad = (ImageView)findViewById(badId);
-            progress = (ProgressBar)findViewById(progressId);
+            good = (ImageView) findViewById(goodId);
+            bad = (ImageView) findViewById(badId);
+            progress = (ProgressBar) findViewById(progressId);
         }
     }
 

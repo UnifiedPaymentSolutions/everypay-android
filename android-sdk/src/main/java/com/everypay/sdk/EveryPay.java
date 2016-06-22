@@ -1,11 +1,14 @@
 package com.everypay.sdk;
 
 import android.content.Context;
+import android.os.Parcelable;
 
 import com.everypay.sdk.model.Card;
 import com.everypay.sdk.steps.MerchantParamsStep;
 import com.everypay.sdk.steps.MerchantPaymentStep;
 import com.everypay.sdk.util.Log;
+
+import java.io.Serializable;
 
 
 /**
@@ -13,14 +16,17 @@ import com.everypay.sdk.util.Log;
  */
 public class EveryPay {
 
+
     public static final String TAG = "everypay";
 
     private static final String EXCEPTION_NO_DEFAULT_EVERYPAY_INSTANCE = "No default Everypay instance set.";
 
     public static final String EVERYPAY_API_URL_TESTING = "https://gw-staging.every-pay.com/";
+    public static final String EVERYPAY_PORTAL_URL_TESTING = "https://google.com";
     public static final String EVERYPAY_API_URL_LIVE = "http://gw.every-pay.eu";
     public static final String MERCHANT_API_URL_TESTING = "https://igwshop-staging.every-pay.com/";
 
+    private static final Log log = Log.getInstance(EveryPay.class);
 
     static EveryPay defaultInstance;
     public static synchronized EveryPay getDefault() {
@@ -34,6 +40,7 @@ public class EveryPay {
     private String merchantUrl;
     private String apiVersion;
     private MerchantParamsStep merchantParamsStep;
+    private EveryPaySession session;
     private MerchantPaymentStep merchantPaymentStep;
 
     private EveryPay(Context appContext, String everypayUrl, String merchantUrl, MerchantParamsStep merchantParamsStep, MerchantPaymentStep merchantPaymentStep, String apiVersion) {
@@ -72,7 +79,8 @@ public class EveryPay {
 
     public void startFullPaymentFlow(Card card, String deviceInfo, EveryPayListener callback) {
         Log.setLogLevel(Config.USE_DEBUG ? Log.LOG_LEVEL_DEBUG: Log.LOG_LEVEL_RELEASE);
-        new EveryPaySession(context, this, card, deviceInfo, callback, apiVersion).execute();
+        session = new EveryPaySession(context, this, card, deviceInfo, callback, apiVersion);
+        session.execute();
     }
 
     public static class Builder {
@@ -120,4 +128,10 @@ public class EveryPay {
         }
 
     }
+
+    public void setWebViewResult(String id, String result) {
+        session.webViewDone(id, result);
+        session.releaseLock();
+    }
+
 }

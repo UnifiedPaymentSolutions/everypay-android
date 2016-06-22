@@ -57,20 +57,20 @@ public class EveryPayTokenRequestData {
         @Override
         public String toString() {
             return "EncryptedTokenRequestData{" +
-                    "apiUsername='" + apiUsername + '\'' +
-                    ", accountId='" + accountId + '\'' +
-                    ", userIp='" + userIp + '\'' +
-                    ", hmac='" + hmac + '\'' +
-                    ", nonce='" + nonce + '\'' +
+                    "apiUsername='" + apiUsername +
+                    ", accountId='" + accountId +
+                    ", userIp='" + userIp +
+                    ", hmac='" + hmac +
+                    ", nonce='" + nonce +
                     ", timestamp=" + timestamp +
-                    ", ccHolderName='" + ccHolderName + '\'' +
-                    ", ccNumber='" + ccNumber + '\'' +
-                    ", ccMonth='" + ccMonth + '\'' +
-                    ", ccYear='" + ccYear + '\'' +
-                    ", ccVerification='" + ccVerification + '\'' +
-                    ", apiVersion='" + apiVersion + '\'' +
-                    ", deviceInfo='" + deviceInfo + '\'' +
-                    ", orderReference='" + orderReference + '\'' +
+                    ", ccHolderName='" + ccHolderName +
+                    ", ccNumber='" + ccNumber +
+                    ", ccMonth='" + ccMonth +
+                    ", ccYear='" + ccYear +
+                    ", ccVerification='" + ccVerification +
+                    ", apiVersion='" + apiVersion +
+                    ", deviceInfo='" + deviceInfo +
+                    ", orderReference='" + orderReference +
                     '}';
         }
     }

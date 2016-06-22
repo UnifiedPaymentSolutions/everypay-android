@@ -8,6 +8,7 @@ import com.everypay.sdk.api.responsedata.EveryPayTokenResponseData;
 import com.everypay.sdk.util.CustomGson;
 import com.everypay.sdk.util.Log;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -16,8 +17,11 @@ import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
+import retrofit2.http.QueryMap;
 
 public class EveryPayApi {
     /**
@@ -92,5 +96,10 @@ public class EveryPayApi {
         })
         @POST("encrypted_payment_instruments")
         Call<EveryPayTokenResponseData>saveCard(@Body EveryPayTokenRequestData params);
+
+
+        @GET("encrypted_payment_instruments/{paymentReference}")
+        Call<EveryPayTokenResponseData>encryptedPaymentInstrumentConfirmed(@Path("paymentReference") String paymentReference, @QueryMap Map<String, String> params);
     }
+
 }
