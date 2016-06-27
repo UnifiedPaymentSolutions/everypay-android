@@ -196,6 +196,7 @@ public class PaymentBrowserActivity extends AppCompatActivity {
     }
 
     private String getSuccessResultFromURL(String url) {
+        // Simple string cutting. Cannot use Util.getUrlParamValue since payment reference is part of the url and not a parameter
         String urlWithoutPrefix = url.replace(BROWSER_FLOW_END_URL_PREFIX, "");
         String[] parts = urlWithoutPrefix.split("\\?");
         return parts[0];
