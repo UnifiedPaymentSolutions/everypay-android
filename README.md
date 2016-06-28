@@ -143,13 +143,13 @@ To provide a replacement, create subclasses of MerchantParamsStep and MerchantPa
 ```
 public class MyMerchantParamsStep extends MerchantParamsStep {
     @Override
-    public MerchantParamsResponseData run(Context activity, Everypay ep, String deviceInfo) {
+    public MerchantParamsResponseData run(Everypay ep, String deviceInfo, String apiVersion) {
         // Your implementation
     }
 }
 public class MyMerchantPaymentStep extends MerchantPaymentStep {
     @Override
-    public MerchantPaymentResponseData run(Context activity, Everypay ep, MerchantParamsResponseData paramsResponse, EverypayTokenResponseData everypayResponse) {
+    public MerchantPaymentResponseData run(MerchantParamsResponseData paramsResponse, EverypayTokenResponseData everypayResponse) {
         // Your implementation
     }
 }
