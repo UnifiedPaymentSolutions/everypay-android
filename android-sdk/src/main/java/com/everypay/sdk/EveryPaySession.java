@@ -27,9 +27,10 @@ public class EveryPaySession extends AsyncTask<Void, Void, Void> {
     private static final String EXCEPTION_LISTENER_IS_NULL = "Listener is null";
     public static final String WEBVIEW_RESULT_FAILURE = "com.everypay.sdk.WEBVIEW_RESULT_FAILURE";
     private static final String MESSAGE_3DS_AUTHENTICATION_FAILED = "3Ds authentication failed";
-
+    private static final String MESSAGE_3DS_AUTHENTICATION_CANCELED = "3Ds authentication canceled";
     private static final long THREAD_LOCK_TIMEOUT = 10 * 60 * 1000L;
     private static final int EXCEPTION_3DS_AUTHENTICATION_FAILED = 997;
+    private static final int EXCEPTION_3DS_AUTHENTICATION_CANCELED = 998;
     private static final String PAYMENT_STATE_WAITING_FOR_3DS = "waiting_for_3ds_response";
     private final Object threadLock = new Object();
     private Handler handler;
@@ -100,7 +101,10 @@ public class EveryPaySession extends AsyncTask<Void, Void, Void> {
             }
             lastStep = merchantPaymentStep;
             callStepStarted(merchantPaymentStep);
-            merchantPaymentStep.run(context, ep, paramsResponse, everyPay3DsConfirmResponse != null ? everyPay3DsConfirmResponse : everyPayResponse);
+            if(everyPayResponse.getToken() == null && everyPay3DsConfirmResponse.getToken() == null){
+                throw  new EveryPayException(EXCEPTION_3DS_AUTHENTICATION_CANCELED, MESSAGE_3DS_AUTHENTICATION_CANCELED);
+            }
+            merchantPaymentStep.run(paramsResponse, everyPay3DsConfirmResponse != null ? everyPay3DsConfirmResponse : everyPayResponse);
             callStepSuccess(merchantPaymentStep);
             callFullSuccess();
 
