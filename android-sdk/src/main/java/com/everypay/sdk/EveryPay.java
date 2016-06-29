@@ -7,6 +7,8 @@ import com.everypay.sdk.model.Card;
 import com.everypay.sdk.steps.MerchantParamsStep;
 import com.everypay.sdk.steps.MerchantPaymentStep;
 import com.everypay.sdk.util.Log;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.io.Serializable;
 
@@ -59,6 +61,10 @@ public class EveryPay {
     public EveryPay setDefault() {
         defaultInstance = this;
         return this;
+    }
+
+    public Context getContext() {
+        return context;
     }
 
     public String getEverypayUrl() {
@@ -133,5 +139,6 @@ public class EveryPay {
         session.webViewDone(id, result);
         session.releaseLock();
     }
+
 
 }

@@ -50,6 +50,7 @@ public class PaymentBrowserActivity extends AppCompatActivity {
     public static void start(final Context context, final String url, final String id) {
         final Intent intent = new Intent(context, PaymentBrowserActivity.class);
         intent.putExtra(EXTRA_GATEWAY_URL, url);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(EXTRA_ID, id);
 
         context.startActivity(intent);

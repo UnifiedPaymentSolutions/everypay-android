@@ -2,7 +2,9 @@ package com.everypay.everypay;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Pair;
@@ -17,9 +19,12 @@ import com.everypay.sdk.EveryPayListener;
 import com.everypay.sdk.model.Card;
 import com.everypay.sdk.steps.StepType;
 import com.everypay.sdk.views.CardFormActivity;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static com.everypay.sdk.util.Log log = com.everypay.sdk.util.Log.getInstance(MainActivity.class);
     EveryPay ep;
 
@@ -29,10 +34,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if(checkPlayServices()) {
+            ep = EveryPay.getDefault();
 
-        ep = EveryPay.getDefault();
-
-        attachUiEvents();
+            attachUiEvents();
+        } else {
+           finish();
+        }
     }
 
     @Override
@@ -147,4 +155,24 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Check the device to make sure it has the Google Play Services APK. If
+     * it doesn't, display a dialog that allows users to download the APK from
+     * the Google Play Store or enable it in the device's system settings.
+     */
+    private boolean checkPlayServices() {
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (apiAvailability.isUserResolvableError(resultCode)) {
+                apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
+                        .show();
+            } else {
+                log.e("This device is not supported.");
+                finish();
+            }
+            return false;
+        }
+        return true;
+    }
 }

@@ -1,6 +1,8 @@
 package com.everypay.sdk.api;
 
 
+import android.content.Context;
+
 import com.everypay.sdk.Config;
 import com.everypay.sdk.api.requestdata.MerchantParamsRequestData;
 import com.everypay.sdk.api.requestdata.MerchantPaymentRequestData;
@@ -8,9 +10,13 @@ import com.everypay.sdk.api.responsedata.MerchantParamsResponseData;
 import com.everypay.sdk.api.responsedata.MerchantPaymentResponseData;
 import com.everypay.sdk.util.CustomGson;
 import com.everypay.sdk.util.Log;
+import com.google.android.gms.security.ProviderInstaller;
 
+
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.ConnectionSpec;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -37,7 +43,8 @@ public class MerchantApi {
     private static volatile MerchantApi instance;
     private final MerchantApi.MerchantApiCalls apiCalls;
 
-    public MerchantApi(final String baseUrl) {
+    public MerchantApi(final Context appContext, final String baseUrl) {
+        patchSSLProvider(appContext);
         final HttpLoggingInterceptor interceptorLogging = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
             @Override
             public void log(String message) {
@@ -45,14 +52,15 @@ public class MerchantApi {
             }
         });
         interceptorLogging.setLevel(Config.USE_DEBUG ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE);
+        final ConnectionSpec connectionSpec = new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS).build();
 
         final OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder()
                 .connectTimeout(TIMEOUT_CONNECT, TimeUnit.MILLISECONDS)
                 .writeTimeout(TIMEOUT_WRITE, TimeUnit.MILLISECONDS)
                 .readTimeout(TIMEOUT_READ, TimeUnit.MILLISECONDS)
-                .addInterceptor(interceptorLogging);
+                .addInterceptor(interceptorLogging)
+                .connectionSpecs(Collections.singletonList(connectionSpec));
         final OkHttpClient client = okHttpBuilder.build();
-
         final Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .client(client)
@@ -65,25 +73,32 @@ public class MerchantApi {
         return apiCalls;
     }
 
-    public static MerchantApi getInstance(final String baseUrl) {
+    public static MerchantApi getInstance(final Context appContext, final String baseUrl) {
         if(instance == null) {
             synchronized (EveryPayApi.class) {
                 if(instance == null) {
-                    createNewInstance(baseUrl);
+                    createNewInstance(appContext, baseUrl);
                 }
             }
         }
         return instance;
     }
 
-    public static MerchantApi createNewInstance(String baseUrl) {
+    public static MerchantApi createNewInstance(Context appContext, String baseUrl) {
         synchronized (MerchantApi.class) {
-            instance = new MerchantApi(baseUrl);
+            instance = new MerchantApi(appContext, baseUrl);
             return instance;
         }
     }
 
-
+    private void patchSSLProvider(final Context applicationContext) {
+        try {
+            ProviderInstaller.installIfNeeded(applicationContext);
+            log.d("patchSSLProvider patched");
+        } catch (Exception e) {
+            log.d("patchSSLProvider", e);
+        }
+    }
 
     public interface MerchantApiCalls {
         @Headers({

@@ -104,7 +104,7 @@ public class EveryPaySession extends AsyncTask<Void, Void, Void> {
             if(everyPayResponse.getToken() == null && everyPay3DsConfirmResponse.getToken() == null){
                 throw  new EveryPayException(EXCEPTION_3DS_AUTHENTICATION_CANCELED, MESSAGE_3DS_AUTHENTICATION_CANCELED);
             }
-            merchantPaymentStep.run(paramsResponse, everyPay3DsConfirmResponse != null ? everyPay3DsConfirmResponse : everyPayResponse);
+            merchantPaymentStep.run(ep, paramsResponse, everyPay3DsConfirmResponse != null ? everyPay3DsConfirmResponse : everyPayResponse);
             callStepSuccess(merchantPaymentStep);
             callFullSuccess();
 
