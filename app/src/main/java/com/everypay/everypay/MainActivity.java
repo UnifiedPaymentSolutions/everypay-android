@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
     private static final String EXTRA_CARD = "com.everypay.everypay.EXTRA_CARD";
     private static final String TAG_ACCOUNT_CHOICE_DIALOG = "com.everypay.everypay.TAG_ACCOUNT_CHOICE_DIALOG";
     private static final String EXTRA_DEVICE_INFO = "com.everypay.everypay.EXTRA_DEVICE_INFO";
+    private static final String STATE_ACCOUNT_ID_CHOICES = "com.everypay.everypay.STATE_ACCOUNT_ID_CHOICES";
     private static com.everypay.sdk.util.Log log = com.everypay.sdk.util.Log.getInstance(MainActivity.class);
     EveryPay ep;
 
@@ -53,6 +54,9 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
             attachUiEvents();
         } else {
             finish();
+        }
+        if(savedInstanceState != null) {
+            accountIdChoices = savedInstanceState.getStringArrayList(STATE_ACCOUNT_ID_CHOICES);
         }
     }
 
@@ -210,5 +214,11 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
             return false;
         }
         return true;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putStringArrayList(STATE_ACCOUNT_ID_CHOICES, accountIdChoices);
     }
 }
