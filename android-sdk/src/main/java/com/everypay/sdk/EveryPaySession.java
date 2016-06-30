@@ -15,6 +15,7 @@ import com.everypay.sdk.steps.EveryPayTokenStep;
 import com.everypay.sdk.steps.MerchantParamsStep;
 import com.everypay.sdk.steps.MerchantPaymentStep;
 import com.everypay.sdk.steps.Step;
+import com.everypay.sdk.steps.TestStep;
 import com.everypay.sdk.util.EveryPayException;
 import com.everypay.sdk.util.Log;
 import com.everypay.sdk.util.Util;
@@ -39,6 +40,7 @@ public class EveryPaySession extends AsyncTask<Void, Void, Void> {
     private EveryPay ep;
     private String apiVersion;
     private String deviceInfo;
+    private String accountId;
     private EveryPayListener listener;
     private volatile String paymentReference;
     private static final Log log = Log.getInstance(EveryPaySession.class);
@@ -52,12 +54,13 @@ public class EveryPaySession extends AsyncTask<Void, Void, Void> {
     private EveryPay3DsConfirmStep everyPay3DsConfirmStep;
 
 
-    public EveryPaySession(Context context, EveryPay ep, Card card, String deviceInfo, EveryPayListener listener, String apiVersion) {
+    public EveryPaySession(Context context, EveryPay ep, Card card, String deviceInfo, EveryPayListener listener, String apiVersion, String accountId) {
         this.handler = new Handler();
         this.context = context;
         this.ep = ep;
         this.apiVersion = apiVersion;
         this.id = Util.getRandomString();
+        this.accountId = accountId;
 
         if (card == null)
             throw new IllegalArgumentException(EXCEPTION_CARD_IS_NULL);
@@ -82,7 +85,7 @@ public class EveryPaySession extends AsyncTask<Void, Void, Void> {
         try {
             lastStep = merchantParamsStep;
             callStepStarted(merchantParamsStep);
-            MerchantParamsResponseData paramsResponse = merchantParamsStep.run(ep, deviceInfo, apiVersion);
+            MerchantParamsResponseData paramsResponse = merchantParamsStep.run(ep, apiVersion, accountId);
             callStepSuccess(merchantParamsStep);
 
             lastStep = everyPayTokenStep;

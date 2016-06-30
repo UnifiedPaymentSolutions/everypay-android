@@ -3,9 +3,11 @@ package com.everypay.everypay;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
@@ -14,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.everypay.everypay.fragment.SingleChoiceDialogFragment;
+import com.everypay.everypay.util.DialogUtil;
 import com.everypay.sdk.EveryPay;
 import com.everypay.sdk.EveryPayListener;
 import com.everypay.sdk.model.Card;
@@ -22,64 +26,53 @@ import com.everypay.sdk.views.CardFormActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity implements SingleChoiceDialogFragment.SingleChoiceDialogFragmentListener {
 
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    private static final int REQUEST_CODE_ACCOUNT_ID_CHOICE = 100;
+    private static final String ACCOUNT_ID_3DS = "EUR3D1";
+    private static final String ACCOUNT_ID_NON_3DS = "EUR1";
+    private static final String EXTRA_CARD = "com.everypay.everypay.EXTRA_CARD";
+    private static final String TAG_ACCOUNT_CHOICE_DIALOG = "com.everypay.everypay.TAG_ACCOUNT_CHOICE_DIALOG";
+    private static final String EXTRA_DEVICE_INFO = "com.everypay.everypay.EXTRA_DEVICE_INFO";
     private static com.everypay.sdk.util.Log log = com.everypay.sdk.util.Log.getInstance(MainActivity.class);
     EveryPay ep;
 
+    private ArrayList<String> accountIdChoices;
     StepStatusViews[] statuses;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if(checkPlayServices()) {
+        if (checkPlayServices()) {
             ep = EveryPay.getDefault();
 
             attachUiEvents();
         } else {
-           finish();
+            finish();
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         if (requestCode == CardFormActivity.REQUEST_CODE) {
             hideStatusViews(StepType.CARD_INPUT);
-
             Pair<Card, String> result = CardFormActivity.getCardAndDeviceInfoFromResult(resultCode, data);
             if (result != null) {
+                accountIdChoices = new ArrayList<>();
+                accountIdChoices.add(ACCOUNT_ID_3DS);
+                accountIdChoices.add(ACCOUNT_ID_NON_3DS);
+                Bundle extras = new Bundle();
+                extras.putParcelable(EXTRA_CARD, result.first);
+                extras.putString(EXTRA_DEVICE_INFO, result.second);
+                SingleChoiceDialogFragment fragment = SingleChoiceDialogFragment.newInstance(getString(R.string.title_choose_account), getString(R.string.text_choose_account_id), accountIdChoices, extras);
+                DialogUtil.showDialogFragment(MainActivity.this, fragment, TAG_ACCOUNT_CHOICE_DIALOG, null, REQUEST_CODE_ACCOUNT_ID_CHOICE);
                 statuses[0].good.setVisibility(View.VISIBLE);
-                EveryPay.getDefault().startFullPaymentFlow(result.first, result.second, new EveryPayListener() {
 
-                    @Override
-                    public void stepStarted(StepType step) {
-                        log.d("Started step " + step);
-                        hideStatusViews(step);
-                        statuses[step.ordinal()].progress.setVisibility(View.VISIBLE);
-                    }
-
-                    @Override
-                    public void stepSuccess(StepType step) {
-                        log.d("Completed step " + step);
-                        hideStatusViews(step);
-                        statuses[step.ordinal()].good.setVisibility(View.VISIBLE);
-                    }
-
-                    @Override
-                    public void fullSuccess() {
-                        toast(MainActivity.this.getResources().getString(R.string.ep_toast_payment_successful));
-                    }
-
-                    @Override
-                    public void stepFailure(StepType step, Exception e) {
-                        log.e("Error in step " + step, e);
-                        hideStatusViews(step);
-                        statuses[step.ordinal()].bad.setVisibility(View.VISIBLE);
-                        toast(MainActivity.this.getResources().getString(R.string.ep_toast_step_failed), step, e);
-                    }
-                });
             } else {
                 statuses[0].bad.setVisibility(View.VISIBLE);
                 toast(MainActivity.this.getResources().getString(R.string.ep_err_no_valid_card));
@@ -141,6 +134,49 @@ public class MainActivity extends AppCompatActivity {
     private void toast(String fmt, Object... args) {
         String msg = String.format(fmt, args);
         Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onSingleChoicePicked(int requestCode, int position, Bundle extras) {
+        Card card = extras.getParcelable(EXTRA_CARD);
+        String deviceInfo = extras.getString(EXTRA_DEVICE_INFO);
+        String accountId  = accountIdChoices.size() > position ? accountIdChoices.get(position) : null;
+        if (card != null && !TextUtils.isEmpty(deviceInfo) && accountId != null) {
+            EveryPay.getDefault().startFullPaymentFlow(card, deviceInfo, new EveryPayListener() {
+
+                @Override
+                public void stepStarted(StepType step) {
+                    log.d("Started step " + step);
+                    hideStatusViews(step);
+                    statuses[step.ordinal()].progress.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void stepSuccess(StepType step) {
+                    log.d("Completed step " + step);
+                    hideStatusViews(step);
+                    statuses[step.ordinal()].good.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void fullSuccess() {
+                    toast(MainActivity.this.getResources().getString(R.string.ep_toast_payment_successful));
+                }
+
+                @Override
+                public void stepFailure(StepType step, Exception e) {
+                    log.e("Error in step " + step, e);
+                    hideStatusViews(step);
+                    statuses[step.ordinal()].bad.setVisibility(View.VISIBLE);
+                    toast(MainActivity.this.getResources().getString(R.string.ep_toast_step_failed), step, e);
+                }
+            }, accountId);
+        }
+    }
+
+    @Override
+    public void onSingleChoiceCanceled(int requestCode, Bundle extras) {
+
     }
 
     private class StepStatusViews {

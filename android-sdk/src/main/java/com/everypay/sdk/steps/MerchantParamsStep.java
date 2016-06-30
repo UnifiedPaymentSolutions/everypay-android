@@ -22,9 +22,9 @@ public class MerchantParamsStep extends Step {
         return StepType.MERCHANT_PARAMS;
     }
 
-    public MerchantParamsResponseData run(EveryPay ep, String deviceInfo, String apiVersion) {
+    public MerchantParamsResponseData run(EveryPay ep, String apiVersion, String accountId) {
         MerchantApi.MerchantApiCalls apiCalls = MerchantApi.getInstance(ep.getContext(), ep.getMerchantUrl()).getApiCalls();
-        MerchantParamsRequestData requestData = new MerchantParamsRequestData(deviceInfo, apiVersion);
+        MerchantParamsRequestData requestData = new MerchantParamsRequestData(apiVersion, accountId);
         Call<MerchantParamsResponseData> call = apiCalls.callGetParams(requestData);
         ErrorHelper response = Util.execute(call);
         if (response.isError()) {

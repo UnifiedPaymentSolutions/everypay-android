@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@android:id/text1"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:textSize="24sp"
+    android:maxLines="1"
+    android:textColor="@color/accent"
+    android:gravity="center"
+    android:paddingLeft="@dimen/general_content_margin_1"
+    android:paddingRight="@dimen/general_content_margin_1"
+    android:paddingStart="@dimen/general_content_margin_1"
+    android:paddingEnd="@dimen/general_content_margin_1"
+    android:text="@string/app_name"
+    tools:ignore="NewApi" />

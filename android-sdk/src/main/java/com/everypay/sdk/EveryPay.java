@@ -24,7 +24,6 @@ public class EveryPay {
     private static final String EXCEPTION_NO_DEFAULT_EVERYPAY_INSTANCE = "No default Everypay instance set.";
 
     public static final String EVERYPAY_API_URL_TESTING = "https://gw-staging.every-pay.com/";
-    public static final String EVERYPAY_PORTAL_URL_TESTING = "https://google.com";
     public static final String EVERYPAY_API_URL_LIVE = "http://gw.every-pay.eu";
     public static final String MERCHANT_API_URL_TESTING = "https://igwshop-staging.every-pay.com/";
 
@@ -83,9 +82,9 @@ public class EveryPay {
         return  merchantPaymentStep;
     }
 
-    public void startFullPaymentFlow(Card card, String deviceInfo, EveryPayListener callback) {
+    public void startFullPaymentFlow(Card card, String deviceInfo, EveryPayListener callback, String accountId) {
         Log.setLogLevel(Config.USE_DEBUG ? Log.LOG_LEVEL_DEBUG: Log.LOG_LEVEL_RELEASE);
-        session = new EveryPaySession(context, this, card, deviceInfo, callback, apiVersion);
+        session = new EveryPaySession(context, this, card, deviceInfo, callback, apiVersion, accountId);
         session.execute();
     }
 

@@ -100,6 +100,9 @@ public class EveryPayApi {
 
         @GET("encrypted_payment_instruments/{paymentReference}")
         Call<EveryPayTokenResponseData>encryptedPaymentInstrumentConfirmed(@Path("paymentReference") String paymentReference, @QueryMap Map<String, String> params);
+
+        @GET("authentication3ds/new")
+        Call<String>auth(@QueryMap Map<String, String> params);
     }
 
 }

@@ -16,8 +16,10 @@ import com.google.android.gms.security.ProviderInstaller;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.CipherSuite;
 import okhttp3.ConnectionSpec;
 import okhttp3.OkHttpClient;
+import okhttp3.TlsVersion;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -52,7 +54,10 @@ public class MerchantApi {
             }
         });
         interceptorLogging.setLevel(Config.USE_DEBUG ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE);
-        final ConnectionSpec connectionSpec = new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS).build();
+        final ConnectionSpec connectionSpec = new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
+                .tlsVersions(TlsVersion.TLS_1_2, TlsVersion.TLS_1_1)
+                .supportsTlsExtensions(true)
+                .build();
 
         final OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder()
                 .connectTimeout(TIMEOUT_CONNECT, TimeUnit.MILLISECONDS)
