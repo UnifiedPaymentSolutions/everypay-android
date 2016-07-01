@@ -17,8 +17,8 @@ public class EveryPay3DsConfirmStep extends Step {
         return StepType.EVERYPAY_3DS_CONFIRM;
     }
 
-    public EveryPayTokenResponseData run(String paymentReference, String hmac, String apiVersion) {
-        EveryPayApi.EveryPayApiCalls apiCalls = EveryPayApi.getInstance(EveryPay.EVERYPAY_API_URL_TESTING).getApiCalls();
+    public EveryPayTokenResponseData run(EveryPay ep, String paymentReference, String hmac, String apiVersion) {
+        EveryPayApi.EveryPayApiCalls apiCalls = EveryPayApi.getInstance(ep.getEverypayUrl()).getApiCalls();
         HashMap<String, String> params = new HashMap<>();
         params.put("mobile_3ds_hmac", hmac);
         params.put("api_version", apiVersion);

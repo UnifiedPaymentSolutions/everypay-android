@@ -17,5 +17,7 @@
     <string name="ep_initial_card_cvc">643</string>
     <string name="title_choose_account">Choose account</string>
     <string name="text_choose_account_id">Choose account id in order to proceed with non-3Ds or 3Ds flow</string>
+    <string name="title_choose_environment">Choose environment</string>
+    <string name="text_choose_environment">Choose back-end environment</string>
 
 </resources>

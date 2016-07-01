@@ -22,7 +22,7 @@ public class MerchantPaymentStep extends Step {
     }
 
     public MerchantPaymentResponseData run(EveryPay ep, MerchantParamsResponseData paramsResponse, EveryPayTokenResponseData everypayResponse) {
-        MerchantApi.MerchantApiCalls apiCalls = MerchantApi.getInstance(ep.getContext(), EveryPay.MERCHANT_API_URL_TESTING).getApiCalls();
+        MerchantApi.MerchantApiCalls apiCalls = MerchantApi.getInstance(ep.getContext(), ep.getMerchantUrl()).getApiCalls();
         MerchantPaymentRequestData requestData = new MerchantPaymentRequestData(paramsResponse, everypayResponse);
         final Call<MerchantPaymentResponseData> call = apiCalls.callMakePayment(requestData);
         ErrorHelper response = Util.execute(call);

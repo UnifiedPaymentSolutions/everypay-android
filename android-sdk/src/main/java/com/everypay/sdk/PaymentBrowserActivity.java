@@ -36,24 +36,30 @@ public class PaymentBrowserActivity extends AppCompatActivity {
     private static final String STATE_PROGRESS_VISIBILITY = "com.everypay.sdk.STATE_PROGRESS_VISIBILITY";
     private static final String EXTRA_GATEWAY_URL = "com.everypay.sdk.EXTRA_GATEWAY_URL";
     private static final String EXTRA_ID = "com.everypay.sdk.EXTRA_GATEWAY_ID";
-    private static final String BROWSER_FLOW_END_URL_PREFIX = EveryPay.EVERYPAY_API_URL_TESTING + "authentication3ds/";
+    private static final String BROWSER_FLOW_END_URL_PATH = "authentication3ds/";
     private static final String PAYMENT_STATE_AUTHORISED = "authorised";
     private static final String PAYMENT_STATE = "payment_state";
 
     private ViewGroup layoutRoot;
     private ProgressView progressBar;
     private String id;
+    private static String browserFlowEndUrlPrefix;
     private ViewGroup layoutContainer;
     private Log log = Log.getInstance(this);
     private String gatewayURL;
 
-    public static void start(final Context context, final String url, final String id) {
+    public static void start(EveryPay ep, final Context context, final String url, final String id) {
+        setBrowserFlowEndUrl(ep);
         final Intent intent = new Intent(context, PaymentBrowserActivity.class);
         intent.putExtra(EXTRA_GATEWAY_URL, url);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(EXTRA_ID, id);
 
         context.startActivity(intent);
+    }
+
+    private static void setBrowserFlowEndUrl(EveryPay ep) {
+        browserFlowEndUrlPrefix = ep.getEverypayUrl() + BROWSER_FLOW_END_URL_PATH;
     }
 
     @Override
@@ -198,14 +204,14 @@ public class PaymentBrowserActivity extends AppCompatActivity {
 
     private String getSuccessResultFromURL(String url) {
         // Simple string cutting. Cannot use Util.getUrlParamValue since payment reference is part of the url and not a parameter
-        String urlWithoutPrefix = url.replace(BROWSER_FLOW_END_URL_PREFIX, "");
+        String urlWithoutPrefix = url.replace(browserFlowEndUrlPrefix, "");
         String[] parts = urlWithoutPrefix.split("\\?");
         return parts[0];
     }
 
     private boolean  isBrowserFlowSuccessful(final String url) {
         String paymentState = Util.getUrlParamValue(url, PAYMENT_STATE, null);
-        return !TextUtils.isEmpty(url) && url.toLowerCase(Locale.ENGLISH).startsWith(BROWSER_FLOW_END_URL_PREFIX) && !TextUtils.isEmpty(paymentState) && TextUtils.equals(paymentState, PAYMENT_STATE_AUTHORISED);
+        return !TextUtils.isEmpty(url) && url.toLowerCase(Locale.ENGLISH).startsWith(browserFlowEndUrlPrefix) && !TextUtils.isEmpty(paymentState) && TextUtils.equals(paymentState, PAYMENT_STATE_AUTHORISED);
     }
 
     private class WebClientImpl extends WebViewClient {

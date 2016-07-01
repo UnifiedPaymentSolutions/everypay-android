@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import com.everypay.sdk.api.responsedata.EveryPayTokenResponseData;
 import com.everypay.sdk.api.responsedata.MerchantParamsResponseData;
@@ -15,7 +14,6 @@ import com.everypay.sdk.steps.EveryPayTokenStep;
 import com.everypay.sdk.steps.MerchantParamsStep;
 import com.everypay.sdk.steps.MerchantPaymentStep;
 import com.everypay.sdk.steps.Step;
-import com.everypay.sdk.steps.TestStep;
 import com.everypay.sdk.util.EveryPayException;
 import com.everypay.sdk.util.Log;
 import com.everypay.sdk.util.Util;
@@ -90,14 +88,14 @@ public class EveryPaySession extends AsyncTask<Void, Void, Void> {
 
             lastStep = everyPayTokenStep;
             callStepStarted(everyPayTokenStep);
-            EveryPayTokenResponseData everyPayResponse = everyPayTokenStep.run(paramsResponse, card, deviceInfo);
+            EveryPayTokenResponseData everyPayResponse = everyPayTokenStep.run(ep, paramsResponse, card, deviceInfo);
             callStepSuccess(everyPayTokenStep);
             EveryPayTokenResponseData everyPay3DsConfirmResponse = null;
             if (TextUtils.equals(everyPayResponse.getPaymentState(), PAYMENT_STATE_WAITING_FOR_3DS)) {
                 String url = buildUrlForWebView(everyPayResponse.getPaymentReference(), everyPayResponse.getSecureCodeOne(), paramsResponse.getHmac());
-                startwebViewStep(context, url, id);
+                startwebViewStep(context, url, id, ep);
                 if (!TextUtils.isEmpty(paymentReference)) {
-                    everyPay3DsConfirmResponse = everyPay3DsConfirmStep.run(paymentReference, paramsResponse.getHmac(), paramsResponse.getApiVersion());
+                    everyPay3DsConfirmResponse = everyPay3DsConfirmStep.run(ep, paymentReference, paramsResponse.getHmac(), paramsResponse.getApiVersion());
                 } else {
                     throw new EveryPayException(EXCEPTION_3DS_AUTHENTICATION_FAILED, MESSAGE_3DS_AUTHENTICATION_FAILED);
                 }
@@ -131,8 +129,8 @@ public class EveryPaySession extends AsyncTask<Void, Void, Void> {
         return uri.toString();
     }
 
-    private void startwebViewStep(Context context, String url, String id) {
-        PaymentBrowserActivity.start(context, url, id);
+    private void startwebViewStep(Context context, String url, String id, EveryPay ep) {
+        PaymentBrowserActivity.start(ep, context, url, id);
         takeLock();
     }
 

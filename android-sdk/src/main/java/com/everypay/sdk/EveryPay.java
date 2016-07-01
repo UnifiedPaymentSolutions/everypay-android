@@ -23,9 +23,11 @@ public class EveryPay {
 
     private static final String EXCEPTION_NO_DEFAULT_EVERYPAY_INSTANCE = "No default Everypay instance set.";
 
-    public static final String EVERYPAY_API_URL_TESTING = "https://gw-staging.every-pay.com/";
+    public static final String EVERYPAY_API_URL_STAGING = "https://gw-staging.every-pay.com/";
+    public static final String EVERYPAY_API_URL_DEMO = "https://gw-demo.every-pay.com/";
     public static final String EVERYPAY_API_URL_LIVE = "http://gw.every-pay.eu";
-    public static final String MERCHANT_API_URL_TESTING = "https://igwshop-staging.every-pay.com/";
+    public static final String MERCHANT_API_URL_STAGING = "https://igwshop-staging.every-pay.com/";
+    public static final String MERCHANT_API_URL_DEMO = "https://igwshop-demo.every-pay.com/";
 
     private static final Log log = Log.getInstance(EveryPay.class);
 
@@ -98,8 +100,6 @@ public class EveryPay {
 
         private Builder(Context context) {
             this.context = context;
-            this.everypayUrl = EVERYPAY_API_URL_TESTING;
-            this.merchantUrl = MERCHANT_API_URL_TESTING;
             this.merchantParamsStep = null;
             this.merchantPaymentStep = null;
         }

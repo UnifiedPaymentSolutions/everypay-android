@@ -20,8 +20,8 @@ public class EveryPayTokenStep extends Step {
         return StepType.EVERYPAY_TOKEN;
     }
 
-    public EveryPayTokenResponseData run(MerchantParamsResponseData paramsResponse, Card card, String deviceInfo) {
-        EveryPayApi.EveryPayApiCalls apiCalls = EveryPayApi.getInstance(EveryPay.EVERYPAY_API_URL_TESTING).getApiCalls();
+    public EveryPayTokenResponseData run(EveryPay ep, MerchantParamsResponseData paramsResponse, Card card, String deviceInfo) {
+        EveryPayApi.EveryPayApiCalls apiCalls = EveryPayApi.getInstance(ep.getEverypayUrl()).getApiCalls();
         EveryPayTokenRequestData requestData = new EveryPayTokenRequestData(paramsResponse, card, deviceInfo);
         final Call<EveryPayTokenResponseData> call = apiCalls.saveCard(requestData);
         ErrorHelper response = Util.execute(call);
