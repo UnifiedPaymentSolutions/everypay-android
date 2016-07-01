@@ -24,7 +24,9 @@ public class EveryPay {
     private static final String EXCEPTION_NO_DEFAULT_EVERYPAY_INSTANCE = "No default Everypay instance set.";
 
     public static final String EVERYPAY_API_URL_STAGING = "https://gw-staging.every-pay.com/";
+    public static final String EVERYPAY_API_STAGING_HOST = "gw-staging.every-pay.com";
     public static final String EVERYPAY_API_URL_DEMO = "https://gw-demo.every-pay.com/";
+    public static final String EVERYPAY_API_DEMO_HOST = "gw-demo.every-pay.com";
     public static final String EVERYPAY_API_URL_LIVE = "http://gw.every-pay.eu";
     public static final String MERCHANT_API_URL_STAGING = "https://igwshop-staging.every-pay.com/";
     public static final String MERCHANT_API_URL_DEMO = "https://igwshop-demo.every-pay.com/";
@@ -40,19 +42,21 @@ public class EveryPay {
 
     private Context context;
     private String everypayUrl;
+    private String everyPayHost;
     private String merchantUrl;
     private String apiVersion;
     private MerchantParamsStep merchantParamsStep;
     private EveryPaySession session;
     private MerchantPaymentStep merchantPaymentStep;
 
-    private EveryPay(Context appContext, String everypayUrl, String merchantUrl, MerchantParamsStep merchantParamsStep, MerchantPaymentStep merchantPaymentStep, String apiVersion) {
+    private EveryPay(Context appContext, String everypayUrl, String merchantUrl, MerchantParamsStep merchantParamsStep, MerchantPaymentStep merchantPaymentStep, String apiVersion, String everyPayHost) {
         this.context = appContext;
         this.everypayUrl = everypayUrl;
         this.merchantUrl = merchantUrl;
         this.merchantParamsStep = merchantParamsStep;
         this.merchantPaymentStep = merchantPaymentStep;
         this.apiVersion = apiVersion;
+        this.everyPayHost = everyPayHost;
     }
 
     public static Builder with(Context context) {
@@ -76,6 +80,10 @@ public class EveryPay {
         return merchantUrl;
     }
 
+    public String getEveryPayHost() {
+        return everyPayHost;
+    }
+
     public MerchantParamsStep getMerchantParamsStep() {
         return merchantParamsStep;
     }
@@ -94,6 +102,7 @@ public class EveryPay {
         Context context;
         String everypayUrl;
         String merchantUrl;
+        String everyPayHost;
         String apiVersion;
         MerchantParamsStep merchantParamsStep;
         MerchantPaymentStep merchantPaymentStep;
@@ -123,13 +132,17 @@ public class EveryPay {
             this.merchantPaymentStep = merchantPaymentStep;
             return this;
         }
+        public Builder setEveryPayHost(String everyPayHost) {
+            this.everyPayHost = everyPayHost;
+            return this;
+        }
 
         public EveryPay build(String apiVersion) {
             if (merchantParamsStep == null)
                 merchantParamsStep = new MerchantParamsStep();
             if (merchantPaymentStep == null)
                 merchantPaymentStep = new MerchantPaymentStep();
-            return new EveryPay(context.getApplicationContext(), everypayUrl, merchantUrl, merchantParamsStep, merchantPaymentStep, apiVersion);
+            return new EveryPay(context.getApplicationContext(), everypayUrl, merchantUrl, merchantParamsStep, merchantPaymentStep, apiVersion, everyPayHost);
         }
 
     }

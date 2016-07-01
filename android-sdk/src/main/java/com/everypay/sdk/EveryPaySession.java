@@ -92,7 +92,7 @@ public class EveryPaySession extends AsyncTask<Void, Void, Void> {
             callStepSuccess(everyPayTokenStep);
             EveryPayTokenResponseData everyPay3DsConfirmResponse = null;
             if (TextUtils.equals(everyPayResponse.getPaymentState(), PAYMENT_STATE_WAITING_FOR_3DS)) {
-                String url = buildUrlForWebView(everyPayResponse.getPaymentReference(), everyPayResponse.getSecureCodeOne(), paramsResponse.getHmac());
+                String url = buildUrlForWebView(ep, everyPayResponse.getPaymentReference(), everyPayResponse.getSecureCodeOne(), paramsResponse.getHmac());
                 startwebViewStep(context, url, id, ep);
                 if (!TextUtils.isEmpty(paymentReference)) {
                     everyPay3DsConfirmResponse = everyPay3DsConfirmStep.run(ep, paymentReference, paramsResponse.getHmac(), paramsResponse.getApiVersion());
@@ -117,11 +117,11 @@ public class EveryPaySession extends AsyncTask<Void, Void, Void> {
         return null;
     }
 
-    private String buildUrlForWebView(String paymentReference, String secureCodeOne, String hmac) {
+    private String buildUrlForWebView(EveryPay ep, String paymentReference, String secureCodeOne, String hmac) {
         Uri uri = new Uri.Builder()
                 .scheme("https")
-                .authority("gw-staging.every-pay.com")
-                .path("authentication3ds/new")
+                .authority(ep.getEveryPayHost())
+                .path("/authentication3ds/new")
                 .appendQueryParameter("payment_reference", paymentReference)
                 .appendQueryParameter("secure_code_one", secureCodeOne)
                 .appendQueryParameter("mobile_3ds_hmac", hmac)

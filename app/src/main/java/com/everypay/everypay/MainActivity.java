@@ -77,13 +77,15 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
 
         // base URL choices
         baseUrlMap = new HashMap<>();
-        // array of URLs in the order: merchantApiBaseUrl, EveryPayApiBaseUrl
+        // array of URLs in the order: merchantApiBaseUrl, EveryPayApiBaseUrl, EveryPayHost
         ArrayList<String> stagingURLs = new ArrayList<>();
         stagingURLs.add(EveryPay.MERCHANT_API_URL_STAGING);
         stagingURLs.add(EveryPay.EVERYPAY_API_URL_STAGING);
+        stagingURLs.add(EveryPay.EVERYPAY_API_STAGING_HOST);
         ArrayList<String> demoURLs = new ArrayList<>();
         demoURLs.add(EveryPay.MERCHANT_API_URL_DEMO);
         demoURLs.add(EveryPay.EVERYPAY_API_URL_DEMO);
+        demoURLs.add(EveryPay.EVERYPAY_API_DEMO_HOST);
 
         baseUrlMap.put(KEY_STAGING_ENVIRONMENT, stagingURLs);
         baseUrlMap.put(KEY_DEMO_ENVIRONMENT, demoURLs);
@@ -177,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
             if(!TextUtils.isEmpty(baseURLKey)) {
                 ArrayList<String> baseURLs = baseUrlMap.get(baseURLKey);
                 if(baseURLs != null && baseURLs.size() != 0) {
-                    EveryPay.with(this).setEverypayApiBaseUrl(baseURLs.get(1)).setMerchantApiBaseUrl(baseURLs.get(0)).build(API_VERSION).setDefault();
+                    EveryPay.with(this).setEverypayApiBaseUrl(baseURLs.get(1)).setMerchantApiBaseUrl(baseURLs.get(0)).setEveryPayHost(baseURLs.get(2)).build(API_VERSION).setDefault();
                     SingleChoiceDialogFragment dialogFragment = SingleChoiceDialogFragment.newInstance(getString(R.string.title_choose_account), getString(R.string.text_choose_account_id), accountIdChoices, extras);
                     DialogUtil.showDialogFragment(MainActivity.this, dialogFragment, TAG_ACCOUNT_CHOICE_DIALOG, null, REQUEST_CODE_ACCOUNT_ID_CHOICE);
                 }
