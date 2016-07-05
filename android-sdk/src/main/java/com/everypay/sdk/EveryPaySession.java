@@ -4,10 +4,15 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.everypay.sdk.api.ErrorHelper;
 import com.everypay.sdk.api.responsedata.EveryPayTokenResponseData;
 import com.everypay.sdk.api.responsedata.MerchantParamsResponseData;
+import com.everypay.sdk.inter.MerchantParamsListener;
+import com.everypay.sdk.inter.ServiceListener;
 import com.everypay.sdk.model.Card;
 import com.everypay.sdk.steps.EveryPay3DsConfirmStep;
 import com.everypay.sdk.steps.EveryPayTokenStep;
@@ -18,8 +23,10 @@ import com.everypay.sdk.util.EveryPayException;
 import com.everypay.sdk.util.Log;
 import com.everypay.sdk.util.Util;
 
+import java.util.WeakHashMap;
 
-public class EveryPaySession extends AsyncTask<Void, Void, Void> {
+
+public class EveryPaySession {
 
 
     private static final String EXCEPTION_CARD_IS_NULL = "Card is null";
@@ -44,6 +51,7 @@ public class EveryPaySession extends AsyncTask<Void, Void, Void> {
     private static final Log log = Log.getInstance(EveryPaySession.class);
 
     private Card card;
+    private final WeakHashMap<String, ServiceListener> listeners = new WeakHashMap<>();
 
     // Steps
     private MerchantParamsStep merchantParamsStep;
@@ -77,46 +85,81 @@ public class EveryPaySession extends AsyncTask<Void, Void, Void> {
     }
 
 
-    @Override
-    protected Void doInBackground(Void... params) {
-        Step lastStep = null;
-        try {
-            lastStep = merchantParamsStep;
-            callStepStarted(merchantParamsStep);
-            MerchantParamsResponseData paramsResponse = merchantParamsStep.run(ep, apiVersion, accountId);
-            callStepSuccess(merchantParamsStep);
+    public void startPaymentFlow() {
+        Step lastStep = merchantParamsStep;
+        callStepStarted(merchantParamsStep);
+        getMerchantParams();
+    }
 
-            lastStep = everyPayTokenStep;
-            callStepStarted(everyPayTokenStep);
-            EveryPayTokenResponseData everyPayResponse = everyPayTokenStep.run(ep, paramsResponse, card, deviceInfo);
-            callStepSuccess(everyPayTokenStep);
-            EveryPayTokenResponseData everyPay3DsConfirmResponse = null;
-            if (TextUtils.equals(everyPayResponse.getPaymentState(), PAYMENT_STATE_WAITING_FOR_3DS)) {
-                String url = buildUrlForWebView(ep, everyPayResponse.getPaymentReference(), everyPayResponse.getSecureCodeOne(), paramsResponse.getHmac());
-                startwebViewStep(context, url, id, ep);
-                if (!TextUtils.isEmpty(paymentReference)) {
-                    everyPay3DsConfirmResponse = everyPay3DsConfirmStep.run(ep, paymentReference, paramsResponse.getHmac(), paramsResponse.getApiVersion());
-                } else {
-                    throw new EveryPayException(EXCEPTION_3DS_AUTHENTICATION_FAILED, MESSAGE_3DS_AUTHENTICATION_FAILED);
-                }
+    private void getMerchantParams() {
+        log.d("getMerchantParams called");
+        merchantParamsStep.run(ep, apiVersion, accountId, new MerchantParamsListener() {
+            @Override
+            public void onMerchantParamsSucceed(MerchantParamsResponseData responseData) {
+                log.d("EverypaySession merchantParams succeed");
+                callStepSuccess(merchantParamsStep);
             }
-            lastStep = merchantPaymentStep;
-            callStepStarted(merchantPaymentStep);
-            if(everyPayResponse.getToken() == null && everyPay3DsConfirmResponse.getToken() == null){
-                throw  new EveryPayException(EXCEPTION_3DS_AUTHENTICATION_CANCELED, MESSAGE_3DS_AUTHENTICATION_CANCELED);
-            }
-            merchantPaymentStep.run(ep, paramsResponse, everyPay3DsConfirmResponse != null ? everyPay3DsConfirmResponse : everyPayResponse);
-            callStepSuccess(merchantPaymentStep);
-            callFullSuccess();
 
-        } catch (Exception e) {
-            log.e(String.format("Step %s failed.", lastStep), e);
-            callStepFailure(lastStep, e);
+            @Override
+            public void onMerchantParamsFailure(ErrorHelper error) {
+                log.d("EverypaySession merchantParams failed");
+            }
+        });
+
+    }
+
+    /**
+     * Overwrite or clear a listener for a specific tag.
+     * NB: For an initial listener set it when calling a specific method.
+     *
+     * @param tag      Listener tag
+     * @param listener Listener to set
+     */
+    public void setListener(final String tag, @Nullable final ServiceListener listener) {
+        log.d("setListener: " + tag + ", listener: " + listener);
+        if (TextUtils.isEmpty(tag)) {
+            return;
+        }
+        synchronized (listeners) {
+            listeners.put(tag, listener);
+        }
+    }
+
+    /**
+     * Getter for specific listener.
+     *
+     * @param tag            unique tag that listener was set with
+     * @param forgetListener if we should listen for callback or not
+     * @param type           listener type
+     * @return listener of provided type
+     */
+    private <T extends ServiceListener> T getListener(final String tag, final boolean forgetListener, @NonNull final Class<T> type) {
+        log.d("getListener: " + tag + ", forgetListener: " + forgetListener);
+        if (TextUtils.isEmpty(tag) || type == null) {
             return null;
+        }
+        synchronized (listeners) {
+            if (listeners.get(tag) != null && type.isInstance(listeners.get(tag))) {
+                //noinspection unchecked
+                return (T) (forgetListener ? listeners.remove(tag) : listeners.get(tag));
+            }
         }
         return null;
     }
 
+    /**
+     * Method to remove listener.
+     *
+     * @param tag unique tag that listeners was set with
+     */
+    public void removeListener(final String tag) {
+        if (TextUtils.isEmpty(tag)) {
+            return;
+        }
+        synchronized (listeners) {
+            listeners.remove(tag);
+        }
+    }
     private String buildUrlForWebView(EveryPay ep, String paymentReference, String secureCodeOne, String hmac) {
         Uri uri = new Uri.Builder()
                 .scheme("https")
