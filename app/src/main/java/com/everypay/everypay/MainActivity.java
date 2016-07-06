@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
     private static final String EXTRA_CARD = "com.everypay.everypay.EXTRA_CARD";
     private static final String TAG_ACCOUNT_CHOICE_DIALOG = "com.everypay.everypay.TAG_ACCOUNT_CHOICE_DIALOG";
     private static final String TAG_ENVIRONMENT_CHOICE_DIALOG = "com.everypay.everypay.TAG_ENVIRONMENT_CHOICE_DIALOG";
+    private static final String TAG_START_FULL_PAYMENT_FLOW = "com.everypay.everypay.TAG_START_FULL_PAYMENT_FLOW";
     private static final String EXTRA_DEVICE_INFO = "com.everypay.everypay.EXTRA_DEVICE_INFO";
     private static final String STATE_ACCOUNT_ID_CHOICES = "com.everypay.everypay.STATE_ACCOUNT_ID_CHOICES";
     private static final String KEY_STAGING_ENVIRONMENT = "Staging Environment";
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
     private ArrayList<String> accountIdChoices;
     private ArrayList<String> environments;
     private HashMap<String, ArrayList<String>> baseUrlMap;
-    StepStatusViews[] statuses;
+    private StepStatusViews[] statuses;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -173,6 +174,15 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(EveryPay.getDefault() != null) {
+            EveryPay.getDefault().removeListener(TAG_START_FULL_PAYMENT_FLOW);
+        }
+
+    }
+
+    @Override
     public void onSingleChoicePicked(int requestCode, int position, Bundle extras) {
         if (requestCode == REQUEST_CODE_BASE_URL_CHOICE) {
             String baseURLKey = environments.size() > position ? environments.get(position) : null;
@@ -190,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
             String accountId = accountIdChoices.size() > position ? accountIdChoices.get(position) : null;
             if (card != null && !TextUtils.isEmpty(deviceInfo) && accountId != null) {
 
-                EveryPay.getDefault().startFullPaymentFlow(card, deviceInfo, new EveryPayListener() {
+                EveryPay.getDefault().startFullPaymentFlow(TAG_START_FULL_PAYMENT_FLOW, card, deviceInfo, new EveryPayListener() {
 
                     @Override
                     public void stepStarted(StepType step) {
@@ -212,11 +222,11 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
                     }
 
                     @Override
-                    public void stepFailure(StepType step, Exception e) {
-                        log.e("Error in step " + step, e);
+                    public void stepFailure(StepType step, String errorMessage) {
+                        log.e("Error in step " + step + "with message " + errorMessage);
                         hideStatusViews(step);
                         statuses[step.ordinal()].bad.setVisibility(View.VISIBLE);
-                        toast(MainActivity.this.getResources().getString(R.string.ep_toast_step_failed), step, e);
+                        toast(MainActivity.this.getResources().getString(R.string.ep_toast_step_failed), step, errorMessage);
                     }
                 }, accountId);
             }

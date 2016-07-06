@@ -7,8 +7,8 @@ public class MerchantPaymentRequestData {
     public String hmac;
     public String ccTokenEncrypted;
 
-    public MerchantPaymentRequestData(MerchantParamsResponseData paramsResponse, EveryPayTokenResponseData everypayResponse) {
-        this.hmac = paramsResponse.hmac;
+    public MerchantPaymentRequestData(String hmac, EveryPayTokenResponseData everypayResponse) {
+        this.hmac = hmac;
         this.ccTokenEncrypted = everypayResponse.getToken();
     }
 }

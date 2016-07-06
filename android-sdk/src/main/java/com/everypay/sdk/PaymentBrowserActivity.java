@@ -21,14 +21,14 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.everypay.sdk.api.EveryPayError;
+import com.everypay.sdk.inter.WebAuthListener;
 import com.everypay.sdk.util.Log;
 import com.everypay.sdk.util.Util;
 import com.everypay.sdk.util.WebViewStorage;
 import com.rey.material.widget.ProgressView;
 
 import java.util.Locale;
-
-import static com.everypay.sdk.EveryPaySession.WEBVIEW_RESULT_FAILURE;
 
 
 public class PaymentBrowserActivity extends AppCompatActivity {
@@ -45,11 +45,13 @@ public class PaymentBrowserActivity extends AppCompatActivity {
     private String id;
     private static String browserFlowEndUrlPrefix;
     private ViewGroup layoutContainer;
+    private static  WebAuthListener webAuthListener;
     private Log log = Log.getInstance(this);
     private String gatewayURL;
 
-    public static void start(EveryPay ep, final Context context, final String url, final String id) {
+    public static void start(EveryPay ep, final Context context, final String url, final String id, final WebAuthListener listener) {
         setBrowserFlowEndUrl(ep);
+        webAuthListener = listener;
         final Intent intent = new Intent(context, PaymentBrowserActivity.class);
         intent.putExtra(EXTRA_GATEWAY_URL, url);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -111,9 +113,9 @@ public class PaymentBrowserActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        webAuthListener = null;
         clearWebViewInstanceFromActivityReferences();
 
-        EveryPay.getDefault().setWebViewResult(id, "no");
         if (isFinishing()) {
             WebViewStorage.destroyInstance();
         }
@@ -193,11 +195,11 @@ public class PaymentBrowserActivity extends AppCompatActivity {
         if (isBrowserFlowSuccessful(url)) {
             log.d("onBrowserFlowEnded - result: success, url: " + url);
             String paymentReference = getSuccessResultFromURL(url);
-            EveryPay.getDefault().setWebViewResult(id, paymentReference);
+            webAuthListener.onWebAuthSucceed(paymentReference);
             finish();
         } else {
             log.d("onBrowserFlowEnded - result: fail, url: " + url);
-            EveryPay.getDefault().setWebViewResult(id, WEBVIEW_RESULT_FAILURE);
+            webAuthListener.onWebAuthFailure(new EveryPayError());
             finish();
         }
     }

@@ -6,6 +6,7 @@ import android.util.Base64;
 import com.everypay.sdk.api.ErrorHelper;
 import com.everypay.sdk.api.EveryPayError;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 
 import java.io.IOException;
 import java.net.URLDecoder;
@@ -13,6 +14,7 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -87,4 +89,25 @@ public class Util {
         return !TextUtils.isEmpty(haystack) && !TextUtils.isEmpty(needle) && haystack.toLowerCase(Locale.ENGLISH).contains(needle.toLowerCase(Locale.ENGLISH));
     }
 
+    public static ErrorHelper getErrorsIfAny(ResponseBody responseBody) {
+        if(responseBody == null) {
+            return null;
+        }
+        String respString = null;
+        try {
+            respString = responseBody.string();
+        } catch (IOException e) {
+            Log.getInstance(Util.class).e("getErrorIfAny", e);
+        }
+        if(TextUtils.isEmpty(respString)) {
+            return null;
+        }
+        ErrorHelper serverResponse = null;
+        try {
+            serverResponse = new GsonBuilder().create().fromJson(respString, ErrorHelper.class);
+        } catch (JsonSyntaxException e) {
+            Log.getInstance(Util.class).e("getErrorsIfAny", e);
+        }
+        return serverResponse;
+    }
 }

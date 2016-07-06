@@ -2,7 +2,11 @@ package com.everypay.sdk;
 
 import android.content.Context;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
+import com.everypay.sdk.inter.ServiceListener;
 import com.everypay.sdk.model.Card;
 import com.everypay.sdk.steps.MerchantParamsStep;
 import com.everypay.sdk.steps.MerchantPaymentStep;
@@ -11,6 +15,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.io.Serializable;
+import java.util.WeakHashMap;
 
 
 /**
@@ -35,8 +40,9 @@ public class EveryPay {
 
     static EveryPay defaultInstance;
     public static synchronized EveryPay getDefault() {
-        if (defaultInstance == null)
-            throw new RuntimeException(EXCEPTION_NO_DEFAULT_EVERYPAY_INSTANCE);
+        if (defaultInstance == null) {
+            return null;
+        }
         return defaultInstance;
     }
 
@@ -48,6 +54,7 @@ public class EveryPay {
     private MerchantParamsStep merchantParamsStep;
     private EveryPaySession session;
     private MerchantPaymentStep merchantPaymentStep;
+    private final WeakHashMap<String, ServiceListener> listeners = new WeakHashMap<>();
 
     private EveryPay(Context appContext, String everypayUrl, String merchantUrl, MerchantParamsStep merchantParamsStep, MerchantPaymentStep merchantPaymentStep, String apiVersion, String everyPayHost) {
         this.context = appContext;
@@ -92,12 +99,65 @@ public class EveryPay {
         return  merchantPaymentStep;
     }
 
-    public void startFullPaymentFlow(Card card, String deviceInfo, EveryPayListener callback, String accountId) {
+    public void startFullPaymentFlow(String tag, Card card, String deviceInfo, EveryPayListener callback, String accountId) {
+        setListener(tag, callback);
         Log.setLogLevel(Config.USE_DEBUG ? Log.LOG_LEVEL_DEBUG: Log.LOG_LEVEL_RELEASE);
         session = new EveryPaySession(context, this, card, deviceInfo, callback, apiVersion, accountId);
         session.startPaymentFlow();
     }
 
+    /**
+     * Overwrite or clear a listener for a specific tag.
+     * NB: For an initial listener set it when calling a specific method.
+     *
+     * @param tag      Listener tag
+     * @param listener Listener to set
+     */
+    public void setListener(final String tag, @Nullable final ServiceListener listener) {
+        log.d("setListener: " + tag + ", listener: " + listener);
+        if (TextUtils.isEmpty(tag)) {
+            return;
+        }
+        synchronized (listeners) {
+            listeners.put(tag, listener);
+        }
+    }
+
+    /**
+     * Getter for specific listener.
+     *
+     * @param tag            unique tag that listener was set with
+     * @param forgetListener if we should listen for callback or not
+     * @param type           listener type
+     * @return listener of provided type
+     */
+    public <T extends ServiceListener> T getListener(final String tag, final boolean forgetListener, @NonNull final Class<T> type) {
+        log.d("getListener: " + tag + ", forgetListener: " + forgetListener);
+        if (TextUtils.isEmpty(tag) || type == null) {
+            return null;
+        }
+        synchronized (listeners) {
+            if (listeners.get(tag) != null && type.isInstance(listeners.get(tag))) {
+                //noinspection unchecked
+                return (T) (forgetListener ? listeners.remove(tag) : listeners.get(tag));
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Method to remove listener.
+     *
+     * @param tag unique tag that listeners was set with
+     */
+    public void removeListener(final String tag) {
+        if (TextUtils.isEmpty(tag)) {
+            return;
+        }
+        synchronized (listeners) {
+            listeners.remove(tag);
+        }
+    }
     public static class Builder {
         Context context;
         String everypayUrl;
@@ -147,10 +207,7 @@ public class EveryPay {
 
     }
 
-    public void setWebViewResult(String id, String result) {
-        session.webViewDone(id, result);
-        session.releaseLock();
-    }
+
 
 
 }

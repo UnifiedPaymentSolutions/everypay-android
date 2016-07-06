@@ -27,6 +27,9 @@
     <string name="ep_field_cvc">CVC</string>
     <string name="ep_field_exp_month">ExpMonth</string>
     <string name="ep_field_exp_year">ExpYear</string>
+    <string name="ep_err_network_failure">Network connection failure. Check your connection and try again.</string>
+    <string name="ep_err_ssl_exception">SSL connection failure.</string>
+    <string name="ep_err_unknown">Unknown exception.</string>
 
 
     <string-array name="ep_cc_month_values" translatable="false">
