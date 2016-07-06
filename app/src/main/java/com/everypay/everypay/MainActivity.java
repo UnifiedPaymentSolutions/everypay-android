@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
         } else {
             finish();
         }
-        if(savedInstanceState != null) {
+        if (savedInstanceState != null) {
             accountIdChoices = savedInstanceState.getStringArrayList(STATE_ACCOUNT_ID_CHOICES);
         }
     }
@@ -120,15 +120,18 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
     }
 
     private void attachUiEvents() {
-        statuses = new StepStatusViews[StepType.values().length - 1];
+        // we need to count out web auth step and confirm3Ds step
+        statuses = new StepStatusViews[StepType.values().length];
+
         statuses[0] = new StepStatusViews(R.id.card_good, R.id.card_bad, R.id.card_progress);
         statuses[1] = new StepStatusViews(R.id.credentials_good, R.id.credentials_bad, R.id.credentials_progress);
         statuses[2] = new StepStatusViews(R.id.token_good, R.id.token_bad, R.id.token_progress);
         statuses[3] = new StepStatusViews(R.id.payment_good, R.id.payment_bad, R.id.payment_progress);
 
-        for (StepStatusViews views : statuses) {
-            views.good.setColorFilter(ContextCompat.getColor(MainActivity.this, R.color.tint_good));
-            views.bad.setColorFilter(ContextCompat.getColor(MainActivity.this, R.color.tint_bad));
+        for (int i = 0; i < statuses.length - 3; i++) {
+            StepStatusViews view = statuses[i];
+            view.good.setColorFilter(ContextCompat.getColor(MainActivity.this, R.color.tint_good));
+            view.bad.setColorFilter(ContextCompat.getColor(MainActivity.this, R.color.tint_bad));
         }
         hideAllStatusViews();
 
@@ -154,18 +157,21 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
     }
 
     private void hideAllStatusViews() {
-        for (StepStatusViews views : statuses) {
-            views.good.setVisibility(View.GONE);
-            views.bad.setVisibility(View.GONE);
-            views.progress.setVisibility(View.GONE);
+        for (int i = 0; i < statuses.length - 3; i++) {
+            StepStatusViews view = statuses[i];
+            view.good.setVisibility(View.GONE);
+            view.bad.setVisibility(View.GONE);
+            view.progress.setVisibility(View.GONE);
         }
     }
 
     private void hideStatusViews(StepType step) {
-        StepStatusViews views = statuses[step.ordinal()];
-        views.good.setVisibility(View.GONE);
-        views.bad.setVisibility(View.GONE);
-        views.progress.setVisibility(View.GONE);
+        if(!step.equals(StepType.WEB_AUTH_STEP)) {
+            StepStatusViews views = statuses[step.ordinal()];
+            views.good.setVisibility(View.GONE);
+            views.bad.setVisibility(View.GONE);
+            views.progress.setVisibility(View.GONE);
+        }
     }
 
     private void toast(String fmt, Object... args) {
@@ -176,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(EveryPay.getDefault() != null) {
+        if (EveryPay.getDefault() != null) {
             EveryPay.getDefault().removeListener(TAG_START_FULL_PAYMENT_FLOW);
         }
 
@@ -186,15 +192,15 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
     public void onSingleChoicePicked(int requestCode, int position, Bundle extras) {
         if (requestCode == REQUEST_CODE_BASE_URL_CHOICE) {
             String baseURLKey = environments.size() > position ? environments.get(position) : null;
-            if(!TextUtils.isEmpty(baseURLKey)) {
+            if (!TextUtils.isEmpty(baseURLKey)) {
                 ArrayList<String> baseURLs = baseUrlMap.get(baseURLKey);
-                if(baseURLs != null && baseURLs.size() != 0) {
+                if (baseURLs != null && baseURLs.size() != 0) {
                     EveryPay.with(this).setEverypayApiBaseUrl(baseURLs.get(1)).setMerchantApiBaseUrl(baseURLs.get(0)).setEveryPayHost(baseURLs.get(2)).build(API_VERSION).setDefault();
                     SingleChoiceDialogFragment dialogFragment = SingleChoiceDialogFragment.newInstance(getString(R.string.title_choose_account), getString(R.string.text_choose_account_id), accountIdChoices, extras);
                     DialogUtil.showDialogFragment(MainActivity.this, dialogFragment, TAG_ACCOUNT_CHOICE_DIALOG, null, REQUEST_CODE_ACCOUNT_ID_CHOICE);
                 }
             }
-        }else if(requestCode == REQUEST_CODE_ACCOUNT_ID_CHOICE) {
+        } else if (requestCode == REQUEST_CODE_ACCOUNT_ID_CHOICE) {
             Card card = extras.getParcelable(EXTRA_CARD);
             String deviceInfo = extras.getString(EXTRA_DEVICE_INFO);
             String accountId = accountIdChoices.size() > position ? accountIdChoices.get(position) : null;
@@ -225,7 +231,9 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
                     public void stepFailure(StepType step, String errorMessage) {
                         log.e("Error in step " + step + "with message " + errorMessage);
                         hideStatusViews(step);
-                        statuses[step.ordinal()].bad.setVisibility(View.VISIBLE);
+                        if(!step.equals(StepType.WEB_AUTH_STEP)){
+                            statuses[step.ordinal()].bad.setVisibility(View.VISIBLE);
+                        }
                         toast(MainActivity.this.getResources().getString(R.string.ep_toast_step_failed), step, errorMessage);
                     }
                 }, accountId);

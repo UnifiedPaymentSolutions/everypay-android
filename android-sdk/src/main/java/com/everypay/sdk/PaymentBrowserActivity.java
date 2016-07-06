@@ -199,7 +199,7 @@ public class PaymentBrowserActivity extends AppCompatActivity {
             finish();
         } else {
             log.d("onBrowserFlowEnded - result: fail, url: " + url);
-            webAuthListener.onWebAuthFailure(new EveryPayError());
+            webAuthListener.onWebAuthFailure(new EveryPayError(EveryPayError.ERROR_WEB_AUTH_FAILED, getString(R.string.ep_err_web_auth)));
             finish();
         }
     }

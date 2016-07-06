@@ -20,6 +20,7 @@ import com.everypay.sdk.steps.EveryPayTokenStep;
 import com.everypay.sdk.steps.MerchantParamsStep;
 import com.everypay.sdk.steps.MerchantPaymentStep;
 import com.everypay.sdk.steps.Step;
+import com.everypay.sdk.steps.WebAuthStep;
 import com.everypay.sdk.util.Log;
 import com.everypay.sdk.util.Util;
 
@@ -52,6 +53,7 @@ public class EveryPaySession {
     private EveryPayTokenStep everyPayTokenStep;
     private MerchantPaymentStep merchantPaymentStep;
     private EveryPay3DsConfirmStep everyPay3DsConfirmStep;
+    private WebAuthStep webAuthStep;
 
 
     public EveryPaySession(Context context, EveryPay ep, Card card, String deviceInfo, EveryPayListener listener, String apiVersion, String accountId) {
@@ -76,6 +78,7 @@ public class EveryPaySession {
         this.everyPayTokenStep = new EveryPayTokenStep();
         this.merchantPaymentStep = ep.getMerchantPaymentStep();
         this.everyPay3DsConfirmStep = new EveryPay3DsConfirmStep();
+        this.webAuthStep = new WebAuthStep();
     }
 
 
@@ -163,13 +166,14 @@ public class EveryPaySession {
         PaymentBrowserActivity.start(ep, context, url, id, new WebAuthListener() {
             @Override
             public void onWebAuthSucceed(String paymentReference) {
-                log.d("EveryPaySession webView finished");
+                log.d("EveryPaySession webView finished with success");
                 encryptedPaymentInstrumentsConfirm(TAG_EVERYPAY_SESSION_GET_MERHANT_PARAMS, paymentReference);
             }
 
             @Override
             public void onWebAuthFailure(EveryPayError error) {
-
+                log.d("EveryPaySession webView finished with failure");
+                callStepFailure(webAuthStep, error.getMessage());
             }
         });
     }
