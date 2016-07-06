@@ -38,6 +38,8 @@ dependencies {
    compile 'com.everypay.sdk:android-sdk:1.0.0'
 }
 ```
+**NB! SDK minSdkVersion is 19 so it's supporting Android 4.4+**
+
 
 Note that it goes into the app module build file (`app/build.gradle` or similar), NOT the project-wide build file (`./build.gradle`). If there is `apply plugin: 'com.android.application'` at the top of the file, it's probably the right one.
 
@@ -48,21 +50,21 @@ If you wish to download a copy of the SDK to add it to your project manually, th
 Create a new EveryPay object, for example in your payment activity onCreate():
 
 ```
-Everypay ep = Everypay.with(this).setEverypayApiBaseUrl(Everypay.EVERYPAY_API_URL_TESTING).setMerchantApiBaseUrl(Everypay.MERCHANT_API_URL_TESTING).build();
+EveryPay ep = EveryPay.with(this).setEverypayApiBaseUrl(EveryPay.EVERYPAY_API_URL_TESTING).setMerchantApiBaseUrl(EveryPay.MERCHANT_API_URL_TESTING).build(API_VERSION);
 ```
 
 Or create and save one as the default for the app, for example in your Application subclass's onCreate(), and fetch it in the activity:
 
 ```
-Everypay.with(this).setEverypayApiBaseUrl(Everypay.EVERYPAY_API_URL_TESTING).setMerchantApiBaseUrl(Everypay.MERCHANT_API_URL_TESTING).build().setDefault();
+EveryPay.with(this).setEverypayApiBaseUrl(EveryPay.EVERYPAY_API_URL_TESTING).setMerchantApiBaseUrl(EveryPay.MERCHANT_API_URL_TESTING).build(API_VERSION).setDefault();
 
-Everypay ep = Everypay.getDefault();
+EveryPay ep = EveryPay.getDefault();
 ```
 
 ### Add a listener for payment flow events
 
 ```
-EverypayListener epListener = new EverypayListener() {
+EveryPayListener epListener = new EveryPayListener() {
     @Override
     public void stepStarted(StepType step) {
         Log.d("logtag", "Started payment step " + step);
@@ -80,12 +82,16 @@ EverypayListener epListener = new EverypayListener() {
     }
 
     @Override
-    public void stepFailure(StepType step, Exception e) {
+    public void stepFailure(StepType step, String errorMessage) {
         Log.e("logtag", "Payment failed at step " + step);
     }
 });
 ```
 
+### Change listener for different application lifecycle events
+EveryPay.getDefault().setListener(TAG [1], ServiceListener [2]);
+
+[1] UI tag for finding 
 ### Start the payment flow
 
 When the user is ready to start, start CardFormActivity:
@@ -114,7 +120,7 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Pair<Card, String> result = CardFormActivity.getCardAndDeviceInfoFromResult(resultCode, data);
         if (result != null) {
             Log.d("logtag", "Valid card entered, starting payment flow");
-            Everypay.getDefault().startFullPaymentFlow(result.first, result.second, everypayListener);
+            Everypay.getDefault().startFullPaymentFlow(tag, result.first, result.second, everypayListener);
         } else {
             Log.e("logtag", "No valid card entered.");
         }
@@ -143,14 +149,22 @@ To provide a replacement, create subclasses of MerchantParamsStep and MerchantPa
 ```
 public class MyMerchantParamsStep extends MerchantParamsStep {
     @Override
-    public MerchantParamsResponseData run(Everypay ep, String deviceInfo, String apiVersion) {
+    public void run(String tag, Everypay ep, String deviceInfo, String apiVersion, MerchantParamsListener listener) {
         // Your implementation
+        // post the result back to main thread using 
+        listener.onMerchantParamsSucceed(result);
+        //post or failure using
+        listener.onMerchantParamsFailure(error);
     }
 }
 public class MyMerchantPaymentStep extends MerchantPaymentStep {
     @Override
-    public MerchantPaymentResponseData run(MerchantParamsResponseData paramsResponse, EverypayTokenResponseData everypayResponse) {
-        // Your implementation
+    public void run(String tag, String hmac, EverypayTokenResponseData everypayResponse, MerchantPaymentListener listener) {
+         // Your implementation
+        // post the result back to main thread using 
+        listener.onMerchantPaymentSucceed(result);
+        //post or failure using
+        listener.onMerchantPaymentFailure(error);
     }
 }
 ```
@@ -161,7 +175,7 @@ and pass an instance of the step when configuring EveryPay:
 Everypay.with(this).setMerchantParamsStep(new MyMerchantParamsStep()).setMerchantPaymentStep(new MyMerchantPaymentStep()) ... .build();
 ```
 
-`run()` is called on a background thread, and can be synchronous. If it throws an exception, the payment process is cancelled and the `stepFailure()` listener method is called on the main thread.
+`run()` needs to be called in background thread and its is asyncronous. If it throws an exception, the payment process is cancelled and the `stepFailure()` listener method is called on the main thread.
 
 ## Theming the card input form
 
