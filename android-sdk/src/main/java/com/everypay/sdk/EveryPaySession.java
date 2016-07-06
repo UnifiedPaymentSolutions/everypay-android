@@ -34,6 +34,9 @@ public class EveryPaySession {
     private static final String TAG_EVERYPAY_SESSION_GET_MERHANT_PARAMS = "com.everypay.sdk.TAG_EVERYPAY_SESSION_GET_MERHANT_PARAMS";
     private static final String TAG_EVERYPAY_SESSION_SAVE_CARD = "com.everypay.sdk.TAG_EVERYPAY_SESSION_SAVE_CARD";
     private static final String TAG_EVERYPAY_SESSION_MERCHANT_PAYMENT = "com.everypay.sdk.TAG_EVERYPAY_SESSION_MERCHANT_PAYMENT";
+    private static final String ACCOUNT_ID_3DS = "EUR3D1";
+    private static final String ACCOUNT_ID_NON_3DS = "EUR1";
+    private static final CharSequence PAYMENT_STATE_AUTHORISED = "authorised";
     private Handler handler;
     private Context context;
     private String id;
@@ -114,10 +117,12 @@ public class EveryPaySession {
             public void onEveryPayTokenSucceed(EveryPayTokenResponseData responseData) {
                 log.d("EveryPaySession saveCard succeed");
                 callStepSuccess(everyPayTokenStep);
-                if(TextUtils.equals(responseData.getPaymentState(), PAYMENT_STATE_WAITING_FOR_3DS)) {
+                if(TextUtils.equals(responseData.getPaymentState(), PAYMENT_STATE_WAITING_FOR_3DS) && TextUtils.equals(accountId, ACCOUNT_ID_3DS)) {
                     startwebViewStep(context,buildUrlForWebView(ep, responseData.getPaymentReference(), responseData.getSecureCodeOne(), merchantParamsResponseData.getHmac()), id, ep);
-                } else {
+                } else if(TextUtils.equals(responseData.getPaymentState(), PAYMENT_STATE_AUTHORISED) && TextUtils.equals(accountId, ACCOUNT_ID_NON_3DS)){
                     merchantPayment(TAG_EVERYPAY_SESSION_MERCHANT_PAYMENT, responseData, merchantParamsResponseData.getHmac());
+                } else {
+                    callStepFailure(everyPayTokenStep, "Unknown accout id or payment state");
                 }
             }
 
