@@ -47,7 +47,7 @@ public class SingleChoiceDialogFragment extends DialogFragment {
         final ArrayList<String> values = (ArrayList<String>) getArguments().getSerializable(ARG_CHOICES);
         final GenericSpinnerAdapter<String> adapter = new GenericSpinnerAdapter<>(getActivity(), R.layout.generic_list_item, values);
         listView.setAdapter(adapter);
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.ep_AppCompatAlertDialogStyle);
         builder.setTitle(getArguments().getString(ARG_TITLE));
         builder.setMessage(getArguments().getString(ARG_MESSAGE));
         builder.setView(listView);

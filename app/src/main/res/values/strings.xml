@@ -7,8 +7,8 @@
 
     <string name="ep_cc_holder_name">Name on Card</string>
     <string name="ep_btn_restart">Restart</string>
-    <string name="ep_toast_payment_successful">Payment successful!</string>
-    <string name="ep_toast_step_failed">Step %1$s failed: %2$s</string>
+    <string name="ep_text_payment_successful">Payment successful!</string>
+    <string name="ep_text_step_failed">Step %1$s failed: %2$s</string>
     <string name="ep_err_no_valid_card">No valid card entered.</string>
     <string name="ep_initial_card_name">Tom Smith</string>
     <string name="ep_initial_card_number">5168832136360487</string>
@@ -19,5 +19,8 @@
     <string name="text_choose_account_id">Choose account id in order to proceed with non-3Ds or 3Ds flow</string>
     <string name="title_choose_environment">Choose environment</string>
     <string name="text_choose_environment">Choose back-end environment</string>
+    <string name="ep_title_payment_successful">Payment successful</string>
+    <string name="ep_title_step_failed">Step failed</string>
+    <string name="ep_title_no_valid_card">No valid card</string>
 
 </resources>

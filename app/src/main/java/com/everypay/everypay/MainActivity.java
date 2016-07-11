@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.everypay.everypay.fragment.MessageDialogFragment;
 import com.everypay.everypay.fragment.SingleChoiceDialogFragment;
 import com.everypay.everypay.util.DialogUtil;
 import com.everypay.sdk.EveryPay;
@@ -48,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static final int REQUEST_CODE_ACCOUNT_ID_CHOICE = 100;
     private static final int REQUEST_CODE_BASE_URL_CHOICE = 101;
+    private static final String TAG_MESSAGE_DIALOG = "com.everypay.everypay.TAG_MESSAGE_DIALOG";
+    private static final int REQUEST_CODE_MESSAGE_DIALOG = 102;
     private static com.everypay.sdk.util.Log log = com.everypay.sdk.util.Log.getInstance(MainActivity.class);
 
     private ArrayList<String> accountIdChoices;
@@ -112,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
 
             } else {
                 statuses[0].bad.setVisibility(View.VISIBLE);
-                toast(MainActivity.this.getResources().getString(R.string.ep_err_no_valid_card));
+                displayMessageDialog(getString(R.string.ep_title_no_valid_card), getString(R.string.ep_err_no_valid_card));
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
@@ -174,10 +177,7 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
         }
     }
 
-    private void toast(String fmt, Object... args) {
-        String msg = String.format(fmt, args);
-        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
-    }
+
 
     @Override
     protected void onDestroy() {
@@ -224,7 +224,8 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
 
                     @Override
                     public void fullSuccess() {
-                        toast(MainActivity.this.getResources().getString(R.string.ep_toast_payment_successful));
+                        displayMessageDialog(getString(R.string.ep_title_payment_successful), getString(R.string.ep_text_payment_successful));
+
                     }
 
                     @Override
@@ -234,11 +235,16 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
                         if(!step.equals(StepType.WEB_AUTH_STEP)){
                             statuses[step.ordinal()].bad.setVisibility(View.VISIBLE);
                         }
-                        toast(MainActivity.this.getResources().getString(R.string.ep_toast_step_failed), step, errorMessage);
+                        displayMessageDialog(getString(R.string.ep_title_step_failed), getString(R.string.ep_text_step_failed,step,errorMessage));
                     }
                 }, accountId);
             }
         }
+    }
+
+    private void displayMessageDialog(String title, String message) {
+        MessageDialogFragment fragment = MessageDialogFragment.newInstance(title, message, getString(R.string.ep_btn_ok));
+        DialogUtil.showDialogFragment(MainActivity.this, fragment, TAG_MESSAGE_DIALOG, null, REQUEST_CODE_MESSAGE_DIALOG);
     }
 
     @Override

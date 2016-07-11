@@ -35,11 +35,15 @@
         <item name="android:textAllCaps">true</item>
     </style>
 
-    <style name="LinearProgressDrawableStyle" parent="Material.Drawable.LinearProgress">
+    <style name="ep_LinearProgressDrawableStyle" parent="Material.Drawable.LinearProgress">
         <item name="lpd_strokeSize">@dimen/toolbar_progress_height</item>
         <item name="lpd_strokeColor">?attr/colorAccent</item>
         <item name="lpd_strokeSecondaryColor">@color/ep_accent</item>
     </style>
 
+    <style name="ep_AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:textColorPrimary">@color/ep_primary</item>
+        <item name="colorAccent">@color/ep_accent</item>
+    </style>
 
 </resources>

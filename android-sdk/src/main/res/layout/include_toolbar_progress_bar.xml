@@ -7,4 +7,4 @@
     app:pv_autostart="true"
     app:pv_circular="false"
     app:pv_progressMode="indeterminate"
-    app:pv_progressStyle="@style/LinearProgressDrawableStyle"/>
+    app:pv_progressStyle="@style/ep_LinearProgressDrawableStyle"/>
