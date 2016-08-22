@@ -3,7 +3,6 @@ package com.everypay.sdk.api;
 
 import com.everypay.sdk.Config;
 import com.everypay.sdk.api.requestdata.EveryPayTokenRequestData;
-import com.everypay.sdk.api.responsedata.EveryPayResponse;
 import com.everypay.sdk.api.responsedata.EveryPayTokenResponseData;
 import com.everypay.sdk.util.CustomGson;
 import com.everypay.sdk.util.Log;

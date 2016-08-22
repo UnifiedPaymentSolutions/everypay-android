@@ -13,19 +13,19 @@ import retrofit2.Response;
 
 public abstract class EveryPayCallback<T> implements Callback<T> {
 
-   @Override
-   public void onResponse(Call<T> call, Response<T> response) {
-       ErrorHelper resp = getBody(response);
-       if(resp == null) {
-           onFailure(call, null, new RuntimeException());
-           return;
-       }
-       if(resp.isError()) {
-           onFailure(call, resp.getErrors().get(0), null);
-           return;
-       }
-       onSuccess(call, response);
-   }
+    @Override
+    public void onResponse(Call<T> call, Response<T> response) {
+        ErrorHelper resp = getBody(response);
+        if (resp == null) {
+            onFailure(call, null, new RuntimeException());
+            return;
+        }
+        if (resp.isError()) {
+            onFailure(call, resp.getErrors().get(0), null);
+            return;
+        }
+        onSuccess(call, response);
+    }
 
     @Override
     public void onFailure(Call<T> call, Throwable t) {
@@ -33,11 +33,13 @@ public abstract class EveryPayCallback<T> implements Callback<T> {
     }
 
     private ErrorHelper getBody(final @NonNull Response<T> response) {
-        if(response.body() != null) {
+        if (response.body() != null) {
             return (ErrorHelper) response.body();
         }
         return Util.getErrorsIfAny(response.errorBody());
     }
+
     public abstract void onSuccess(Call<T> call, Response<T> response);
+
     public abstract void onFailure(Call<T> call, @Nullable EveryPayError error, @Nullable Throwable t);
 }

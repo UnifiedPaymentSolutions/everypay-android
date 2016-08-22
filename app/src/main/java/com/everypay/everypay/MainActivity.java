@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
         statuses[2] = new StepStatusViews(R.id.token_good, R.id.token_bad, R.id.token_progress);
         statuses[3] = new StepStatusViews(R.id.payment_good, R.id.payment_bad, R.id.payment_progress);
 
-        for (int i = 0; i < statuses.length - 3; i++) {
+        for (int i = 0; i < statuses.length - 2; i++) {
             StepStatusViews view = statuses[i];
             view.good.setColorFilter(ContextCompat.getColor(MainActivity.this, R.color.tint_good));
             view.bad.setColorFilter(ContextCompat.getColor(MainActivity.this, R.color.tint_bad));
@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
     }
 
     private void hideAllStatusViews() {
-        for (int i = 0; i < statuses.length - 3; i++) {
+        for (int i = 0; i < statuses.length - 2; i++) {
             StepStatusViews view = statuses[i];
             view.good.setVisibility(View.GONE);
             view.bad.setVisibility(View.GONE);
