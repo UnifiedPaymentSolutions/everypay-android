@@ -37,6 +37,10 @@ public class EveryPaySession {
     private static final String ACCOUNT_ID_3DS = "EUR3D1";
     private static final String ACCOUNT_ID_NON_3DS = "EUR1";
     private static final CharSequence PAYMENT_STATE_AUTHORISED = "authorised";
+    private static final String PARAMETER_PAYMENT_REFERENCE = "payment_reference";
+    private static final String PARAMETER_SECURE_CODE_ONE = "secure_code_one";
+    private static final String PARAMETER_MOBILE_3DS_HMAC = "mobile_3ds_hmac";
+    private static final String PATH_WEB_VIEW = "/authentication3ds/new";
     private Handler handler;
     private Context context;
     private String id;
@@ -122,7 +126,7 @@ public class EveryPaySession {
                 } else if(TextUtils.equals(responseData.getPaymentState(), PAYMENT_STATE_AUTHORISED) && TextUtils.equals(accountId, ACCOUNT_ID_NON_3DS)){
                     merchantPayment(TAG_EVERYPAY_SESSION_MERCHANT_PAYMENT, responseData, merchantParamsResponseData.getHmac());
                 } else {
-                    callStepFailure(everyPayTokenStep, "Unknown accout id or payment state");
+                    callStepFailure(everyPayTokenStep, "Unknown account id or payment state");
                 }
             }
 
@@ -159,10 +163,10 @@ public class EveryPaySession {
         Uri uri = new Uri.Builder()
                 .scheme("https")
                 .authority(ep.getEveryPayHost())
-                .path("/authentication3ds/new")
-                .appendQueryParameter("payment_reference", paymentReference)
-                .appendQueryParameter("secure_code_one", secureCodeOne)
-                .appendQueryParameter("mobile_3ds_hmac", hmac)
+                .path(PATH_WEB_VIEW)
+                .appendQueryParameter(PARAMETER_PAYMENT_REFERENCE, paymentReference)
+                .appendQueryParameter(PARAMETER_SECURE_CODE_ONE, secureCodeOne)
+                .appendQueryParameter(PARAMETER_MOBILE_3DS_HMAC, hmac)
                 .build();
         return uri.toString();
     }
