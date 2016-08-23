@@ -31,6 +31,10 @@ android {
         exclude 'META-INF/LGPL2.1'
     }
 }
+def GROUP_BUILD_TASKS = 'Build'
+task buildGreenhouseDebug(dependsOn: ['clean', 'build'])
+buildGreenhouseDebug.group = GROUP_BUILD_TASKS
+buildGreenhouseDebug.description = "Build and publish the debug version with GreenhouseCI"
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
