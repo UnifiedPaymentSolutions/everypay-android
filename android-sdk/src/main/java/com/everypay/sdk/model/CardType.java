@@ -8,12 +8,12 @@ import com.everypay.sdk.R;
 public enum CardType {
 
     // Based on http://en.wikipedia.org/wiki/Bank_card_number#Issuer_identification_number_.28IIN.29
-    AMERICAN_EXPRESS(R.drawable.bt_amex, "American Express", 15, "34", "37"),
-    DISCOVER(R.drawable.bt_discover, "Discover", 16, "60", "62", "64", "65"),
-    JCB(R.drawable.bt_jcb, "JCB", 16, "35"),
-    DINERS_CLUB(R.drawable.bt_diners, "Diners Club", 14, "300", "301", "302", "303", "304", "305", "309", "36", "38", "37", "39"),
-    VISA(R.drawable.bt_visa, "Visa", 16, "4"),
-    MASTERCARD(R.drawable.bt_mastercard, "Mastercard", 16, "50", "51", "52", "53", "54", "55"),
+    AMERICAN_EXPRESS(R.drawable.ep_bt_amex, "American Express", 15, "34", "37"),
+    DISCOVER(R.drawable.ep_bt_discover, "Discover", 16, "60", "62", "64", "65"),
+    JCB(R.drawable.ep_bt_jcb, "JCB", 16, "35"),
+    DINERS_CLUB(R.drawable.ep_bt_diners, "Diners Club", 14, "300", "301", "302", "303", "304", "305", "309", "36", "38", "37", "39"),
+    VISA(R.drawable.ep_bt_visa, "Visa", 16, "4"),
+    MASTERCARD(R.drawable.ep_bt_mastercard, "Mastercard", 16, "50", "51", "52", "53", "54", "55"),
     UNKNOWN(-1, "Unknown", 16);
 
     public static final int INVALID_ICON = -1;

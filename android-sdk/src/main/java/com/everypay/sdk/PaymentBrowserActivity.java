@@ -68,7 +68,7 @@ public class PaymentBrowserActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         log.d("onCreate");
-        setContentView(R.layout.payment_browser_activity);
+        setContentView(R.layout.ep_payment_browser_activity);
         layoutRoot = (ViewGroup) findViewById(R.id.layout_generic_root);
         layoutContainer = (ViewGroup) findViewById(R.id.layout_payment_browser_container);
         progressBar = (ProgressView) layoutRoot.findViewById(R.id.progress);

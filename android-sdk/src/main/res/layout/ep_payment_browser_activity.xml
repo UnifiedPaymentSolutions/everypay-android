@@ -15,6 +15,6 @@
         android:layout_height="match_parent"
         android:keepScreenOn="true"/>
 
-        <include layout="@layout/include_toolbar_progress_bar" />
+        <include layout="@layout/ep_include_toolbar_progress_bar" />
     </FrameLayout>
 </LinearLayout>
