@@ -17,6 +17,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    lintOptions {
+        disable 'InvalidPackage'
+    }
 
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES.txt'
@@ -38,5 +41,5 @@ buildGreenhouseDebug.description = "Build and publish the debug version with Gre
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(':android-sdk')
+    compile 'com.everypay.sdk:android-sdk:1.0.3'
 }
