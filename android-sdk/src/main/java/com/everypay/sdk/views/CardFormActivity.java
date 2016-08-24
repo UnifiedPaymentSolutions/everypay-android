@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -24,8 +23,6 @@ import com.everypay.sdk.model.Card;
 import com.everypay.sdk.model.CardError;
 import com.everypay.sdk.model.CardType;
 import com.everypay.sdk.util.Reflect;
-
-import java.io.Serializable;
 
 
 public class CardFormActivity extends AppCompatActivity {
@@ -79,7 +76,7 @@ public class CardFormActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cardform);
+        setContentView(R.layout.ep_activity_cardform);
 
         name = (EditText) findViewById(R.id.cc_holder_name);
         number = (EditText) findViewById(R.id.cc_number);
