@@ -41,5 +41,5 @@ buildGreenhouseDebug.description = "Build and publish the debug version with Gre
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.everypay.sdk:android-sdk:1.0.4'
+    compile 'com.everypay.sdk:android-sdk:1.0.5'
 }
