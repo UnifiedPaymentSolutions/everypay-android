@@ -6,7 +6,8 @@
 - A. Prerequisites
 - B. Getting SDK to Bintray
 - C. Getting SDK from private package to Everypay organization package
-- D. Testing Bintray dependency and updating git repo 
+- D. Testing Bintray dependency and updating git repo
+- E. Troubleshooting standard questions
 
 
 ## A. Prerequisites
@@ -50,3 +51,11 @@ Additional labels for pre-release and build metadata are available as extensions
 - 3) Sync gradle files
 - 4) Build application and test through all the flows
 - 5) If everything is correct then push depencency change to master branch and make new release with tag with prefix v and corresponding SDK version.
+
+
+## E. Troubleshooting standard questions
+
+- 1) What version of SDK are you using ? 
+- 2) Is dependency strict or not ? 
+- 3) Are you receiving any callback from Every Pay server ?
+- 4) Could you send us logs about the issue,if you have any.
