@@ -21,6 +21,8 @@ import retrofit2.Response;
 public class EveryPay3DsConfirmStep extends Step {
 
     private static final Log log = Log.getInstance(MerchantPaymentStep.class);
+    private static final String PARAMETER_MOBILE_3DS_HMAC = "mobile_3ds_hmac";
+    private static final String PARAMETER_API_VERSION = "api_version";
 
     @Override
     public StepType getType() {
@@ -33,8 +35,8 @@ public class EveryPay3DsConfirmStep extends Step {
         }
         EveryPayApi.EveryPayApiCalls apiCalls = EveryPayApi.getInstance(ep.getEverypayUrl()).getApiCalls();
         HashMap<String, String> params = new HashMap<>();
-        params.put("mobile_3ds_hmac", hmac);
-        params.put("api_version", apiVersion);
+        params.put(PARAMETER_MOBILE_3DS_HMAC, hmac);
+        params.put(PARAMETER_API_VERSION, apiVersion);
        final Call<EveryPayTokenResponseData> call = apiCalls.encryptedPaymentInstrumentConfirmed(paymentReference, params);
        call.enqueue(new EveryPayCallback<EveryPayTokenResponseData>() {
            @Override

@@ -5,7 +5,9 @@ import android.net.Uri;
 import android.os.Handler;
 import android.text.TextUtils;
 
+import com.everypay.sdk.api.EveryPayApi;
 import com.everypay.sdk.api.EveryPayError;
+import com.everypay.sdk.api.MerchantApi;
 import com.everypay.sdk.api.responsedata.EveryPayTokenResponseData;
 import com.everypay.sdk.api.responsedata.MerchantParamsResponseData;
 import com.everypay.sdk.api.responsedata.MerchantPaymentResponseData;
@@ -90,6 +92,8 @@ public class EveryPaySession {
 
 
     public void startPaymentFlow() {
+        EveryPayApi.createNewInstance(ep.getEverypayUrl());
+        MerchantApi.createNewInstance(ep.getContext(), ep.getMerchantUrl());
         callStepStarted(merchantParamsStep);
         getMerchantParams(TAG_EVERYPAY_SESSION_GET_MERHANT_PARAMS);
     }

@@ -102,7 +102,7 @@ public class EveryPay {
     public void startFullPaymentFlow(String tag, Card card, String deviceInfo, EveryPayListener callback, String accountId) {
         setListener(tag, callback);
         Log.setLogLevel(Config.USE_DEBUG ? Log.LOG_LEVEL_DEBUG: Log.LOG_LEVEL_RELEASE);
-        session = new EveryPaySession(context, this, card, deviceInfo, callback, apiVersion, accountId);
+        session = new EveryPaySession(context, defaultInstance, card, deviceInfo, callback, apiVersion, accountId);
         session.startPaymentFlow();
     }
 
