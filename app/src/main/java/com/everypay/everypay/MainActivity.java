@@ -19,8 +19,8 @@ import android.widget.Toast;
 import com.everypay.everypay.fragment.MessageDialogFragment;
 import com.everypay.everypay.fragment.SingleChoiceDialogFragment;
 import com.everypay.everypay.util.DialogUtil;
-import com.everypay.sdk.EveryPay;
-import com.everypay.sdk.EveryPayListener;
+import com.everypay.sdk.*;
+import com.everypay.sdk.BuildConfig;
 import com.everypay.sdk.model.Card;
 import com.everypay.sdk.steps.StepType;
 import com.everypay.sdk.views.CardFormActivity;
@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
         accountIdChoices.add(ACCOUNT_ID_3DS);
         accountIdChoices.add(ACCOUNT_ID_NON_3DS);
 
+        Toast.makeText(this, BuildConfig.EVERYPAY_API_USERNAME + ", " + BuildConfig.EVERYPAY_API_USERNAME, Toast.LENGTH_LONG).show();
         // base URL choices
         baseUrlMap = new HashMap<>();
         // array of URLs in the order: merchantApiBaseUrl, EveryPayApiBaseUrl, EveryPayHost
