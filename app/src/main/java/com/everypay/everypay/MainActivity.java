@@ -2,13 +2,9 @@ package com.everypay.everypay;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +15,7 @@ import android.widget.Toast;
 import com.everypay.everypay.fragment.MessageDialogFragment;
 import com.everypay.everypay.fragment.SingleChoiceDialogFragment;
 import com.everypay.everypay.util.DialogUtil;
+import com.everypay.sdk.BuildConfig;
 import com.everypay.sdk.EveryPay;
 import com.everypay.sdk.EveryPayListener;
 import com.everypay.sdk.model.Card;
@@ -77,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
         if(accountIdChoices == null) {
             accountIdChoices = new ArrayList<>();
         }
+        Toast.makeText(this, BuildConfig.EVERYPAY_API_USERNAME + ", " + BuildConfig.EVERYPAY_API_SECRET, Toast.LENGTH_LONG).show();
         accountIdChoices.clear();
         accountIdChoices.add(ACCOUNT_ID_3DS);
         accountIdChoices.add(ACCOUNT_ID_NON_3DS);
