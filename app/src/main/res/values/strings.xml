@@ -10,11 +10,11 @@
     <string name="ep_text_payment_successful">Payment successful!</string>
     <string name="ep_text_step_failed">Step %1$s failed: %2$s</string>
     <string name="ep_err_no_valid_card">No valid card entered.</string>
-    <string name="ep_initial_card_name">Tom Smith</string>
-    <string name="ep_initial_card_number">5168832136360487</string>
-    <string name="ep_initial_card_exp_year">2018</string>
-    <string name="ep_initial_card_exp_month">10</string>
-    <string name="ep_initial_card_cvc">119</string>
+    <string name="ep_initial_card_name">##</string>
+    <string name="ep_initial_card_number">2223000010240338</string>
+    <string name="ep_initial_card_exp_year">2019</string>
+    <string name="ep_initial_card_exp_month">12</string>
+    <string name="ep_initial_card_cvc">462</string>
     <string name="title_choose_account">Choose account</string>
     <string name="text_choose_account_id">Choose account id in order to proceed with non-3Ds or 3Ds flow</string>
     <string name="title_choose_environment">Choose environment</string>

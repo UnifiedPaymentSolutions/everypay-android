@@ -2,25 +2,20 @@ package com.everypay.everypay;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.everypay.everypay.fragment.MessageDialogFragment;
 import com.everypay.everypay.fragment.SingleChoiceDialogFragment;
 import com.everypay.everypay.util.DialogUtil;
-import com.everypay.sdk.*;
-import com.everypay.sdk.BuildConfig;
+import com.everypay.sdk.EveryPay;
+import com.everypay.sdk.EveryPayListener;
 import com.everypay.sdk.model.Card;
 import com.everypay.sdk.steps.StepType;
 import com.everypay.sdk.views.CardFormActivity;
@@ -78,8 +73,6 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
         accountIdChoices = new ArrayList<>();
         accountIdChoices.add(ACCOUNT_ID_3DS);
         accountIdChoices.add(ACCOUNT_ID_NON_3DS);
-
-        Toast.makeText(this, BuildConfig.EVERYPAY_API_USERNAME + ", " + BuildConfig.EVERYPAY_API_USERNAME, Toast.LENGTH_LONG).show();
         // base URL choices
         baseUrlMap = new HashMap<>();
         // array of URLs in the order: merchantApiBaseUrl, EveryPayApiBaseUrl, EveryPayHost
