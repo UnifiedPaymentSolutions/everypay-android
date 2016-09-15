@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="ep_toolbar_progress_height">4dip</dimen>
+    <dimen name="ep_circle_progress_size">45dp</dimen>
 </resources>

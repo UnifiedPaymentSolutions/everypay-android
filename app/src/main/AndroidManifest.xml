@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.everypay.sdk.views.CardFormActivity"
+            android:name="com.everypay.sdk.activity.CardFormActivity"
             android:label="@string/ep_card_form_title"
             android:theme="@style/ep_FloatingDialogTheme"
             />

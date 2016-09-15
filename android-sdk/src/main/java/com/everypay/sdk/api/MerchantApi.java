@@ -110,14 +110,14 @@ public class MerchantApi {
                 "Content-Type: application/json",
                 "Accept: application/json"
         })
-        @POST("/merchant_mobile_payments/generate_token_api_parameters")
+        @POST("merchant_mobile_payments/generate_token_api_parameters")
         Call<MerchantParamsResponseData> callGetParams(@Body MerchantParamsRequestData params);
 
         @Headers({
                 "Content-Type: application/json",
                 "Accept: application/json"
         })
-        @POST("/merchant_mobile_payments/pay")
+        @POST("merchant_mobile_payments/pay")
         Call<MerchantPaymentResponseData> callMakePayment(@Body MerchantPaymentRequestData params);
     }
 

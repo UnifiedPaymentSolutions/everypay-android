@@ -20,14 +20,24 @@ public class DeviceCollector {
 
     public static long DEFAULT_TIMEOUT_MILLIS = 5000;
 
-    Context context;
-    Handler handler;
-    GpsCollector gpsCollector;
-    long startMillis;
+    private Context context;
+    private Handler handler;
+    private GpsCollector gpsCollector;
+    private long startMillis;
+
+    private DeviceInfoListener listener;
 
     public DeviceCollector(Context context) {
         this.context = context.getApplicationContext();
         this.handler = new Handler();
+    }
+
+    public DeviceInfoListener getListener() {
+        return listener;
+    }
+
+    public void setListener(DeviceInfoListener listener) {
+        this.listener = listener;
     }
 
     public synchronized void start() {
@@ -36,7 +46,7 @@ public class DeviceCollector {
         gpsCollector.start();
     }
 
-    public synchronized void collectWithTimeout(final DeviceInfoListener listener, long timeout) {
+    public synchronized void collectWithTimeout(long timeout) {
         long remainingTimeout = Math.max(0, startMillis - SystemClock.elapsedRealtime() + timeout);
         Log.d(EveryPay.TAG, "Remaining timeout " + remainingTimeout + "ms");
         handler.postDelayed(new Runnable() {
@@ -59,8 +69,8 @@ public class DeviceCollector {
         }, remainingTimeout);
     }
 
-    public synchronized void collectWithDefaultTimeout(DeviceInfoListener listener) {
-        collectWithTimeout(listener, DEFAULT_TIMEOUT_MILLIS);
+    public synchronized void collectWithDefaultTimeout() {
+        collectWithTimeout(DEFAULT_TIMEOUT_MILLIS);
     }
 
     public synchronized void cancel() {

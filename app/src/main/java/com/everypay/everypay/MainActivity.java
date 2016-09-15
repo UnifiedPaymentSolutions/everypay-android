@@ -20,7 +20,7 @@ import com.everypay.sdk.EveryPay;
 import com.everypay.sdk.EveryPayListener;
 import com.everypay.sdk.model.Card;
 import com.everypay.sdk.steps.StepType;
-import com.everypay.sdk.views.CardFormActivity;
+import com.everypay.sdk.activity.CardFormActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
@@ -294,7 +294,6 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
         outState.putStringArrayList(STATE_ACCOUNT_ID_CHOICES, accountIdChoices);
         outState.putSerializable(STATE_BASE_URL_CHOICES, baseUrlMap);
     }
