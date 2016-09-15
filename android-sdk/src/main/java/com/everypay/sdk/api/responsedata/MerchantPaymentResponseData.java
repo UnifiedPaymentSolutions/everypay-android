@@ -14,4 +14,11 @@ public class MerchantPaymentResponseData extends ErrorHelper {
     public MerchantPaymentResponseData(ArrayList<EveryPayError> errors) {
         super(errors);
     }
+
+    @Override
+    public String toString() {
+        return "MerchantPaymentResponseData{" +
+                "status='" + status + '\'' +
+                '}';
+    }
 }

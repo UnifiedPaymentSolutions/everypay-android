@@ -20,6 +20,7 @@ public class EveryPayError implements Serializable {
     public static final long ERROR_CODE_NETWORK_FAILURE = 1001;
     private static final long ERROR_CODE_SSL_EXCEPTION = 1002;
     public static  final long ERROR_WEB_AUTH_FAILED = 1003;
+    public static  final long ERROR_HTTP = 1004;
     public long code;
     public String message;
 

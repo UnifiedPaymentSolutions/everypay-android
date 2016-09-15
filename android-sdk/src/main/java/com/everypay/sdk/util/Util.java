@@ -107,6 +107,12 @@ public class Util {
             serverResponse = new GsonBuilder().create().fromJson(respString, ErrorHelper.class);
         } catch (JsonSyntaxException e) {
             Log.getInstance(Util.class).e("getErrorsIfAny", e);
+            return null;
+        }
+        if (serverResponse.errors == null || serverResponse.errors.size() == 0) {
+            ArrayList<EveryPayError> errors = new ArrayList<>();
+            errors.add(new EveryPayError(EveryPayError.ERROR_HTTP, respString));
+            return  new ErrorHelper(errors);
         }
         return serverResponse;
     }

@@ -38,6 +38,7 @@ public class EveryPayTokenStep extends Step {
         call.enqueue(new EveryPayCallback<EveryPayTokenResponseData>() {
             @Override
             public void onSuccess(Call<EveryPayTokenResponseData> call, Response<EveryPayTokenResponseData> response) {
+
                 log.d("saveCard success with response : " + response.body().toString());
                 final EveryPayTokenListener listener = ep.getListener(tag, true, EveryPayTokenListener.class);
                 if (listener != null) {

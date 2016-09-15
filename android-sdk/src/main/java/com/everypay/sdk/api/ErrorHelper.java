@@ -18,6 +18,6 @@ public class ErrorHelper implements Serializable {
     }
 
     public boolean isError() {
-        return getErrors() != null && getErrors().size() != 0;
+        return errors != null && getErrors().size() != 0;
     }
 }
