@@ -7,6 +7,7 @@ import android.text.TextUtils;
 
 import com.everypay.sdk.EveryPay;
 import com.everypay.sdk.R;
+import com.google.gson.annotations.SerializedName;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -21,7 +22,9 @@ public class EveryPayError implements Serializable {
     private static final long ERROR_CODE_SSL_EXCEPTION = 1002;
     public static  final long ERROR_WEB_AUTH_FAILED = 1003;
     public static  final long ERROR_HTTP = 1004;
+    @SerializedName("code")
     public long code;
+    @SerializedName("message")
     public String message;
 
     public EveryPayError() {

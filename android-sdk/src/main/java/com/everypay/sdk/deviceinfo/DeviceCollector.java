@@ -15,6 +15,7 @@ import com.everypay.sdk.deviceinfo.fieldcollectors.NetworkMacsCollector;
 import com.everypay.sdk.deviceinfo.fieldcollectors.OsCollector;
 import com.everypay.sdk.deviceinfo.fieldcollectors.WifiMacCollector;
 import com.everypay.sdk.util.CustomGson;
+import com.google.gson.Gson;
 
 public class DeviceCollector {
 
@@ -63,7 +64,8 @@ public class DeviceCollector {
                 result.gps = gpsCollector.stopAndGetInfoField();
 
                 if (listener != null) {
-                    listener.deviceInfoCollected(CustomGson.getInstance().toJson(result));
+                    Gson gson = new Gson();
+                    listener.deviceInfoCollected(gson.toJson(result));
                 }
             }
         }, remainingTimeout);

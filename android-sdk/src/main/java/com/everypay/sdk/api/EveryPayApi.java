@@ -40,7 +40,6 @@ public class EveryPayApi {
     private final EveryPayApiCalls apiCalls;
 
     public EveryPayApi(final String baseUrl) {
-        log.d("hello!");
         final HttpLoggingInterceptor interceptorLogging = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
             @Override
             public void log(String message) {
@@ -59,7 +58,7 @@ public class EveryPayApi {
         final Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .client(client)
-                .addConverterFactory(GsonConverterFactory.create(CustomGson.getInstance()))
+                .addConverterFactory(GsonConverterFactory.create())
                 .build();
         apiCalls = retrofit.create(EveryPayApiCalls.class);
     }

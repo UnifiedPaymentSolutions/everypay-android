@@ -69,7 +69,7 @@ public class MerchantApi {
         final Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .client(client)
-                .addConverterFactory(GsonConverterFactory.create(CustomGson.getInstance()))
+                .addConverterFactory(GsonConverterFactory.create())
                 .build();
         apiCalls = retrofit.create(MerchantApi.MerchantApiCalls.class);
     }

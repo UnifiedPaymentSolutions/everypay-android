@@ -3,18 +3,19 @@ package com.everypay.sdk.api.responsedata;
 
 import com.everypay.sdk.api.ErrorHelper;
 import com.everypay.sdk.api.EveryPayError;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
 public class EveryPayTokenResponseData extends ErrorHelper {
     private static final long serialVersionUID = -5232203392021227683L;
+    @SerializedName("encrypted_payment_instrument")
     public EncryptedTokenResponseData encryptedPaymentInstrument;
 
-    public EveryPayTokenResponseData(EncryptedTokenResponseData encryptedPaymentInstrument, ArrayList<EveryPayError> errors) {
+    public EveryPayTokenResponseData(ArrayList<EveryPayError> errors) {
         super(errors);
-        this.encryptedPaymentInstrument = encryptedPaymentInstrument;
-
     }
+
 
     public String getToken() {
         if (encryptedPaymentInstrument != null) {
@@ -54,9 +55,13 @@ public class EveryPayTokenResponseData extends ErrorHelper {
     }
 
     public static class EncryptedTokenResponseData {
+        @SerializedName("cc_token_encrypted")
         String ccTokenEncrypted;
+        @SerializedName("payment_state")
         String paymentState;
+        @SerializedName("payment_reference")
         String paymentReference;
+        @SerializedName("secure_code_one")
         String secureCodeOne;
 
 
