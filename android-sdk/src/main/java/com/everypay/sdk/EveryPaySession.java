@@ -187,6 +187,12 @@ public class EveryPaySession {
                 log.d("EveryPaySession webView finished with failure");
                 callStepFailure(webAuthStep, error.getMessage());
             }
+
+            @Override
+            public void onWebAuthCanceled(EveryPayError error) {
+                log.d("EveryPay webView finished with cancel");
+                callStepFailure(webAuthStep, error.getMessage());
+            }
         });
     }
 

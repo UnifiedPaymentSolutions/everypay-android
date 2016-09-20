@@ -45,7 +45,8 @@ public class PaymentBrowserActivity extends AppCompatActivity {
     private String id;
     private static String browserFlowEndUrlPrefix;
     private ViewGroup layoutContainer;
-    private static  WebAuthListener webAuthListener;
+    private static WebAuthListener webAuthListener;
+    private boolean isBrowerFlowEndURL;
     private Log log = Log.getInstance(this);
     private String gatewayURL;
 
@@ -113,10 +114,15 @@ public class PaymentBrowserActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        webAuthListener = null;
+
+
         clearWebViewInstanceFromActivityReferences();
 
         if (isFinishing()) {
+            if (!isBrowerFlowEndURL) {
+                webAuthListener.onWebAuthCanceled(new EveryPayError(EveryPayError.ERROR_WEB_AUTH_CANCELED, getString(R.string.ep_err_web_auth_canceled)));
+            }
+            webAuthListener = null;
             WebViewStorage.destroyInstance();
         }
         log.d("onDestroy");
@@ -185,6 +191,7 @@ public class PaymentBrowserActivity extends AppCompatActivity {
     private boolean isBrowserFlowEndUrl(final String url) {
         if (Util.contains(url, PAYMENT_STATE)) {
             log.d("isBrowserFlowEndUrl - true, url: " + url);
+            isBrowerFlowEndURL = true;
             return true;
         }
 
@@ -211,7 +218,7 @@ public class PaymentBrowserActivity extends AppCompatActivity {
         return parts[0];
     }
 
-    private boolean  isBrowserFlowSuccessful(final String url) {
+    private boolean isBrowserFlowSuccessful(final String url) {
         String paymentState = Util.getUrlParamValue(url, PAYMENT_STATE, null);
         return !TextUtils.isEmpty(url) && url.toLowerCase(Locale.ENGLISH).startsWith(browserFlowEndUrlPrefix) && !TextUtils.isEmpty(paymentState) && TextUtils.equals(paymentState, PAYMENT_STATE_AUTHORISED);
     }
