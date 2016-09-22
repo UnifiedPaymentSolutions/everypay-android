@@ -75,7 +75,6 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
         if(accountIdChoices == null) {
             accountIdChoices = new ArrayList<>();
         }
-        Toast.makeText(this, BuildConfig.EVERYPAY_API_USERNAME + ", " + BuildConfig.EVERYPAY_API_SECRET, Toast.LENGTH_LONG).show();
         accountIdChoices.clear();
         accountIdChoices.add(ACCOUNT_ID_3DS);
         accountIdChoices.add(ACCOUNT_ID_NON_3DS);

@@ -19,10 +19,6 @@ android {
     }
 
     buildTypes {
-        buildTypes.each {
-            it.buildConfigField('String', 'EVERYPAY_API_USERNAME', EVERYPAY_API_USERNAME)
-            it.buildConfigField('String', 'EVERYPAY_API_SECRET', EVERYPAY_API_SECRET)
-        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
