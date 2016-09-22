@@ -10,18 +10,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.everypay.everypay.fragment.MessageDialogFragment;
 import com.everypay.everypay.fragment.SingleChoiceDialogFragment;
 import com.everypay.everypay.util.DialogUtil;
-import com.everypay.sdk.BuildConfig;
 import com.everypay.sdk.EveryPay;
 import com.everypay.sdk.EveryPayListener;
+import com.everypay.sdk.activity.CardFormActivity;
 import com.everypay.sdk.api.responsedata.MerchantPaymentResponseData;
 import com.everypay.sdk.model.Card;
 import com.everypay.sdk.steps.StepType;
-import com.everypay.sdk.activity.CardFormActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
