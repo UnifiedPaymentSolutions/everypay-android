@@ -3,15 +3,12 @@ package com.everypay.sdk.steps;
 import android.support.annotation.Nullable;
 
 import com.everypay.sdk.EveryPay;
-import com.everypay.sdk.api.ErrorHelper;
 import com.everypay.sdk.api.EveryPayApi;
 import com.everypay.sdk.api.EveryPayError;
 import com.everypay.sdk.api.responsedata.EveryPayTokenResponseData;
 import com.everypay.sdk.inter.EveryPay3DsConfirmListener;
 import com.everypay.sdk.inter.EveryPayCallback;
-import com.everypay.sdk.util.EveryPayException;
 import com.everypay.sdk.util.Log;
-import com.everypay.sdk.util.Util;
 
 import java.util.HashMap;
 

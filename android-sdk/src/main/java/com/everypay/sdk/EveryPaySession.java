@@ -110,7 +110,7 @@ public class EveryPaySession {
             @Override
             public void onMerchantParamsFailure(EveryPayError error) {
                 log.d("EverypaySession merchantParams failed");
-                callStepFailure(merchantParamsStep, error.getMessage());
+                callStepFailure(merchantParamsStep, error);
             }
         });
 
@@ -129,14 +129,14 @@ public class EveryPaySession {
                 } else if(!TextUtils.equals(responseData.getPaymentState(), PAYMENT_STATE_FAILED)){
                     merchantPayment(TAG_EVERYPAY_SESSION_MERCHANT_PAYMENT, responseData, merchantParamsResponseData.getHmac());
                 } else {
-                    callStepFailure(everyPayTokenStep, "Unknown account id or payment state");
+                    callStepFailure(everyPayTokenStep, new EveryPayError(EveryPayError.ERROR_UNKNOWN_ACCOUNT_ID_OR_PAYMENT_STATE, context.getString(R.string.ep_err_unknown_account_id_or_payment_state)));
                 }
             }
 
             @Override
             public void onEveryPayTokenFailure(EveryPayError error) {
                 log.d("EveryPaySession saveCard failure");
-                callStepFailure(everyPayTokenStep, error.getMessage());
+                callStepFailure(everyPayTokenStep, error);
             }
         });
     }
@@ -155,7 +155,7 @@ public class EveryPaySession {
             @Override
             public void onMerchantPaymentFailure(EveryPayError error) {
                 log.d("EveryPaySession callMakePayment failure");
-                callStepFailure(merchantPaymentStep, error.getMessage());
+                callStepFailure(merchantPaymentStep, error);
             }
         });
     }
@@ -185,13 +185,13 @@ public class EveryPaySession {
             @Override
             public void onWebAuthFailure(EveryPayError error) {
                 log.d("EveryPaySession webView finished with failure");
-                callStepFailure(webAuthStep, error.getMessage());
+                callStepFailure(webAuthStep, error);
             }
 
             @Override
             public void onWebAuthCanceled(EveryPayError error) {
                 log.d("EveryPay webView finished with cancel");
-                callStepFailure(webAuthStep, error.getMessage());
+                callStepFailure(webAuthStep, error);
             }
         });
     }
@@ -245,7 +245,7 @@ public class EveryPaySession {
         }
     }
 
-    private void callStepFailure(final Step step, final String errorMessage) {
+    private void callStepFailure(final Step step, final EveryPayError errorMessage) {
         if (listener != null) {
             handler.post(new Runnable() {
                 @Override

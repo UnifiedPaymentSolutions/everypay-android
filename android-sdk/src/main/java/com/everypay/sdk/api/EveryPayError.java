@@ -23,6 +23,7 @@ public class EveryPayError implements Serializable {
     public static  final long ERROR_WEB_AUTH_FAILED = 1003;
     public static final long ERROR_WEB_AUTH_CANCELED = 1004;
     public static  final long ERROR_HTTP = 1004;
+    public static final long ERROR_UNKNOWN_ACCOUNT_ID_OR_PAYMENT_STATE = 1005;
     @SerializedName("code")
     public long code;
     @SerializedName("message")

@@ -17,6 +17,7 @@ import com.everypay.everypay.util.DialogUtil;
 import com.everypay.sdk.EveryPay;
 import com.everypay.sdk.EveryPayListener;
 import com.everypay.sdk.activity.CardFormActivity;
+import com.everypay.sdk.api.EveryPayError;
 import com.everypay.sdk.api.responsedata.MerchantPaymentResponseData;
 import com.everypay.sdk.model.Card;
 import com.everypay.sdk.steps.StepType;
@@ -232,13 +233,12 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
                         }
 
                         @Override
-                        public void stepFailure(StepType step, String errorMessage) {
-                            log.e("Error in step " + step + "with message " + errorMessage);
+                        public void stepFailure(StepType step, EveryPayError error) {
                             hideStatusViews(step);
                             if (!step.equals(StepType.WEB_AUTH_STEP)) {
                                 statuses[step.ordinal()].bad.setVisibility(View.VISIBLE);
                             }
-                            displayMessageDialog(getString(R.string.ep_title_step_failed), getString(R.string.ep_text_step_failed, step, errorMessage));
+                            displayMessageDialog(getString(R.string.ep_title_step_failed), getString(R.string.ep_text_step_failed, step, error.getMessage()));
                         }
                     }, accountId);
                 }
