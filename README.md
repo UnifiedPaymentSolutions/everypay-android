@@ -35,7 +35,7 @@ Add the following line to your `app/build.gradle` file:
 ```
 dependencies {
     ... Other dependencies ...
-   compile 'com.everypay.sdk:android-sdk:1.0.0'
+   compile 'com.everypay.sdk:android-sdk:1.0.10'
 }
 ```
 **NB! SDK minSdkVersion is 19 so it's supporting Android 4.4+**
@@ -50,7 +50,7 @@ If you wish to download a copy of the SDK to add it to your project manually, th
 Create a new EveryPay object, for example in your payment activity onCreate():
 
 ```
-EveryPay ep = EveryPay.with(this).setEverypayApiBaseUrl(EveryPay.EVERYPAY_API_URL_TESTING).setMerchantApiBaseUrl(EveryPay.MERCHANT_API_URL_TESTING).build(API_VERSION);
+EveryPay.with(this).setEverypayApiBaseUrl(EVERYPAY_API_BASE_URL).setMerchantApiBaseUrl(MERCHANT_API_BASE_URL).setEveryPayHost(EVERYPAY_HOST_URL).build(API_VERSION).;
 ```
 
 Or create and save one as the default for the app, for example in your Application subclass's onCreate(), and fetch it in the activity:
@@ -60,7 +60,7 @@ EveryPay.with(this).setEverypayApiBaseUrl(EveryPay.EVERYPAY_API_URL_TESTING).set
 
 EveryPay ep = EveryPay.getDefault();
 ```
-
+EVERYPAY_HOST_URL is the host of Everypay GW i.e gw-demo.every-pay.com
 ### Add a listener for payment flow events
 
 ```
@@ -76,13 +76,12 @@ EveryPayListener epListener = new EveryPayListener() {
     }
 
     @Override
-    public void fullSuccess() {
+    public void fullSuccess(MerchantPaymentResponseData responseData) {
         Log.d("logtag", "Payment complete, your server now has a card token!");
-        toast("Payment successful!");
     }
 
     @Override
-    public void stepFailure(StepType step, String errorMessage) {
+    public void stepFailure(StepType step, EveryPayError error) {
         Log.e("logtag", "Payment failed at step " + step);
     }
 });
@@ -92,6 +91,7 @@ EveryPayListener epListener = new EveryPayListener() {
 EveryPay.getDefault().setListener(TAG [1], ServiceListener [2]);
 
 [1] UI tag for finding 
+[2] ServiceListener subclass for resetting listener
 ### Start the payment flow
 
 When the user is ready to start, start CardFormActivity:
@@ -130,6 +130,14 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 }
 ```
 
+Alternatively you can only use CardFormFragment, if for any reason you don't want to use separate acitvity for card form. In order to get result data from this fragment you have to implement following :
+```
+@Override
+public void retrieveCardData(String deviceInfo, Card card) {
+       // In this method you can get all the necessary data
+    }
+```
+
 The API call steps of the payment flow will run on a background thread, and results will be posted to the listener on the main UI thread.
 
 
@@ -152,9 +160,9 @@ public class MyMerchantParamsStep extends MerchantParamsStep {
     public void run(String tag, Everypay ep, String deviceInfo, String apiVersion, MerchantParamsListener listener) {
         // Your implementation
         // post the result back to main thread using 
-        listener.onMerchantParamsSucceed(result);
+        listener.onMerchantParamsSucceed(MerchantParamsResponseData result);
         //post or failure using
-        listener.onMerchantParamsFailure(error);
+        listener.onMerchantParamsFailure(EveryPayError error);
     }
 }
 public class MyMerchantPaymentStep extends MerchantPaymentStep {
@@ -162,9 +170,9 @@ public class MyMerchantPaymentStep extends MerchantPaymentStep {
     public void run(String tag, String hmac, EverypayTokenResponseData everypayResponse, MerchantPaymentListener listener) {
          // Your implementation
         // post the result back to main thread using 
-        listener.onMerchantPaymentSucceed(result);
+        listener.onMerchantPaymentSucceed(MerchantPaymentResponseData result);
         //post or failure using
-        listener.onMerchantPaymentFailure(error);
+        listener.onMerchantPaymentFailure(EveryPayError error);
     }
 }
 ```
@@ -175,7 +183,7 @@ and pass an instance of the step when configuring EveryPay:
 Everypay.with(this).setMerchantParamsStep(new MyMerchantParamsStep()).setMerchantPaymentStep(new MyMerchantPaymentStep()) ... .build();
 ```
 
-`run()` needs to be called in background thread and its is asyncronous. If it throws an exception, the payment process is cancelled and the `stepFailure()` listener method is called on the main thread.
+`run()` needs to be called in background thread and its is asyncronous.
 
 ## Theming the card input form
 
@@ -185,7 +193,12 @@ For an example, see https://github.com/UnifiedPaymentSolutions/everypay-android/
 
 For more substantial theming, overriding the `layout/activity_cardform.xml` with your own layout is also a possibility.
 
-
+Addtionally you can keep the layout,but use your own theme, by overriding CardFormActivity in your manifest and specifing your theme as activity theme, like so : 
+```
+ <activity android:name="com.everypay.sdk.activity.CardFormActivity"
+            android:theme="@style/YourCustomTheme"/>
+```
+PS! This only works if you are using CardFormActivity, if you are using CardFormFragment directly, then you have to theme the acitvity that calls the fragment.
 ## Customising the card input form
 
 If the EveryPay card input form does not match your requirements, or if you wish to add custom branding beyond the configuration options, then you can create a custom one. There are two requirements for a custom card form:
@@ -200,7 +213,7 @@ After your custom card form has returned a Card model and the device info string
 
 In a complex app it's possible that you might need to customise most of the SDK: both the merchant server <-> app communication steps (you might already have your own APIs), the card input form, and perhaps the ways how the success/failure events are tied to the UI.
 
-In this case it might make more sense to skip the provided steps and `startFullPaymentFlow()`, and just run step 3 (Everypay API call) directly from your code.
+In this case it might make more sense to skip the provided steps and `startPaymentFlow()`, and just run step 3 (Everypay API call) directly from your code.
 
 It is provided as a Retrofit API call in both synchronous and asynchronous versions:
 
