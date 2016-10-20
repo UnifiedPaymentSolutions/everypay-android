@@ -5,7 +5,9 @@ import android.net.Uri;
 import android.os.Handler;
 import android.text.TextUtils;
 
+import com.everypay.sdk.api.EveryPayApi;
 import com.everypay.sdk.api.EveryPayError;
+import com.everypay.sdk.api.MerchantApi;
 import com.everypay.sdk.api.responsedata.EveryPayTokenResponseData;
 import com.everypay.sdk.api.responsedata.MerchantParamsResponseData;
 import com.everypay.sdk.api.responsedata.MerchantPaymentResponseData;
@@ -34,9 +36,8 @@ public class EveryPaySession {
     private static final String TAG_EVERYPAY_SESSION_GET_MERHANT_PARAMS = "com.everypay.sdk.TAG_EVERYPAY_SESSION_GET_MERHANT_PARAMS";
     private static final String TAG_EVERYPAY_SESSION_SAVE_CARD = "com.everypay.sdk.TAG_EVERYPAY_SESSION_SAVE_CARD";
     private static final String TAG_EVERYPAY_SESSION_MERCHANT_PAYMENT = "com.everypay.sdk.TAG_EVERYPAY_SESSION_MERCHANT_PAYMENT";
-    private static final String ACCOUNT_ID_3DS = "EUR3D1";
-    private static final String ACCOUNT_ID_NON_3DS = "EUR1";
-    private static final CharSequence PAYMENT_STATE_AUTHORISED = "authorised";
+    private static final String ACCOUNT_ID_3DS_INDICATOR = "3D";
+    private static final CharSequence PAYMENT_STATE_FAILED = "failed";
     private static final String PARAMETER_PAYMENT_REFERENCE = "payment_reference";
     private static final String PARAMETER_SECURE_CODE_ONE = "secure_code_one";
     private static final String PARAMETER_MOBILE_3DS_HMAC = "mobile_3ds_hmac";
@@ -90,6 +91,8 @@ public class EveryPaySession {
 
 
     public void startPaymentFlow() {
+        EveryPayApi.createNewInstance(ep.getContext(), ep.getEverypayUrl());
+        MerchantApi.createNewInstance(ep.getContext(), ep.getMerchantUrl());
         callStepStarted(merchantParamsStep);
         getMerchantParams(TAG_EVERYPAY_SESSION_GET_MERHANT_PARAMS);
     }
@@ -107,7 +110,7 @@ public class EveryPaySession {
             @Override
             public void onMerchantParamsFailure(EveryPayError error) {
                 log.d("EverypaySession merchantParams failed");
-                callStepFailure(merchantParamsStep, error.getMessage());
+                callStepFailure(merchantParamsStep, error);
             }
         });
 
@@ -121,19 +124,19 @@ public class EveryPaySession {
             public void onEveryPayTokenSucceed(EveryPayTokenResponseData responseData) {
                 log.d("EveryPaySession saveCard succeed");
                 callStepSuccess(everyPayTokenStep);
-                if(TextUtils.equals(responseData.getPaymentState(), PAYMENT_STATE_WAITING_FOR_3DS) && TextUtils.equals(accountId, ACCOUNT_ID_3DS)) {
+                if(TextUtils.equals(responseData.getPaymentState(), PAYMENT_STATE_WAITING_FOR_3DS) && accountId.contains(ACCOUNT_ID_3DS_INDICATOR)) {
                     startwebViewStep(context,buildUrlForWebView(ep, responseData.getPaymentReference(), responseData.getSecureCodeOne(), merchantParamsResponseData.getHmac()), id, ep);
-                } else if(TextUtils.equals(responseData.getPaymentState(), PAYMENT_STATE_AUTHORISED) && TextUtils.equals(accountId, ACCOUNT_ID_NON_3DS)){
+                } else if(!TextUtils.equals(responseData.getPaymentState(), PAYMENT_STATE_FAILED)){
                     merchantPayment(TAG_EVERYPAY_SESSION_MERCHANT_PAYMENT, responseData, merchantParamsResponseData.getHmac());
                 } else {
-                    callStepFailure(everyPayTokenStep, "Unknown account id or payment state");
+                    callStepFailure(everyPayTokenStep, new EveryPayError(EveryPayError.ERROR_UNKNOWN_ACCOUNT_ID_OR_PAYMENT_STATE, context.getString(R.string.ep_err_unknown_account_id_or_payment_state)));
                 }
             }
 
             @Override
             public void onEveryPayTokenFailure(EveryPayError error) {
                 log.d("EveryPaySession saveCard failure");
-                callStepFailure(everyPayTokenStep, error.getMessage());
+                callStepFailure(everyPayTokenStep, error);
             }
         });
     }
@@ -146,13 +149,13 @@ public class EveryPaySession {
             public void onMerchantPaymentSucceed(MerchantPaymentResponseData responseData) {
                 log.d("EveryPaySession callMakePayment succeed");
                 callStepSuccess(merchantPaymentStep);
-                callFullSuccess();
+                callFullSuccess(responseData);
             }
 
             @Override
             public void onMerchantPaymentFailure(EveryPayError error) {
                 log.d("EveryPaySession callMakePayment failure");
-                callStepFailure(merchantPaymentStep, error.getMessage());
+                callStepFailure(merchantPaymentStep, error);
             }
         });
     }
@@ -182,7 +185,13 @@ public class EveryPaySession {
             @Override
             public void onWebAuthFailure(EveryPayError error) {
                 log.d("EveryPaySession webView finished with failure");
-                callStepFailure(webAuthStep, error.getMessage());
+                callStepFailure(webAuthStep, error);
+            }
+
+            @Override
+            public void onWebAuthCanceled(EveryPayError error) {
+                log.d("EveryPay webView finished with cancel");
+                callStepFailure(webAuthStep, error);
             }
         });
     }
@@ -225,18 +234,18 @@ public class EveryPaySession {
         }
     }
 
-    private void callFullSuccess() {
+    private void callFullSuccess(final MerchantPaymentResponseData responseData) {
         if (listener != null) {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    listener.fullSuccess();
+                    listener.fullSuccess(responseData);
                 }
             });
         }
     }
 
-    private void callStepFailure(final Step step, final String errorMessage) {
+    private void callStepFailure(final Step step, final EveryPayError errorMessage) {
         if (listener != null) {
             handler.post(new Runnable() {
                 @Override

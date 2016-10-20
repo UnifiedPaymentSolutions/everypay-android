@@ -16,7 +16,7 @@ public abstract class EveryPayCallback<T> implements Callback<T> {
     @Override
     public void onResponse(Call<T> call, Response<T> response) {
         ErrorHelper resp = getBody(response);
-        if (resp == null) {
+        if (resp == null ) {
             onFailure(call, null, new RuntimeException());
             return;
         }

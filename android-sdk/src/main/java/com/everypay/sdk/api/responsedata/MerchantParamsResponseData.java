@@ -3,19 +3,28 @@ package com.everypay.sdk.api.responsedata;
 
 import com.everypay.sdk.api.ErrorHelper;
 import com.everypay.sdk.api.EveryPayError;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
 public class MerchantParamsResponseData extends ErrorHelper {
 
     private static final long serialVersionUID = 3727496590524886343L;
+    @SerializedName("api_username")
     public String apiUsername;  // Merchant ID
+    @SerializedName("account_id")
     public String accountId;  // Merchant account & currency
+    @SerializedName("user_ip")
     public String userIp;
+    @SerializedName("nonce")
     public String nonce;
+    @SerializedName("timestamp")
     public long timestamp;
+    @SerializedName("hmac")
     public String hmac;
+    @SerializedName("api_version")
     public String apiVersion;
+    @SerializedName("order_reference")
     public String orderReference;
 
     public MerchantParamsResponseData( ArrayList<EveryPayError> errors) {

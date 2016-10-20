@@ -3,15 +3,12 @@ package com.everypay.sdk.steps;
 import android.support.annotation.Nullable;
 
 import com.everypay.sdk.EveryPay;
-import com.everypay.sdk.api.ErrorHelper;
 import com.everypay.sdk.api.EveryPayApi;
 import com.everypay.sdk.api.EveryPayError;
 import com.everypay.sdk.api.responsedata.EveryPayTokenResponseData;
 import com.everypay.sdk.inter.EveryPay3DsConfirmListener;
 import com.everypay.sdk.inter.EveryPayCallback;
-import com.everypay.sdk.util.EveryPayException;
 import com.everypay.sdk.util.Log;
-import com.everypay.sdk.util.Util;
 
 import java.util.HashMap;
 
@@ -21,6 +18,8 @@ import retrofit2.Response;
 public class EveryPay3DsConfirmStep extends Step {
 
     private static final Log log = Log.getInstance(MerchantPaymentStep.class);
+    private static final String PARAMETER_MOBILE_3DS_HMAC = "mobile_3ds_hmac";
+    private static final String PARAMETER_API_VERSION = "api_version";
 
     @Override
     public StepType getType() {
@@ -31,10 +30,10 @@ public class EveryPay3DsConfirmStep extends Step {
         if(ep != null) {
             ep.setListener(tag, listener);
         }
-        EveryPayApi.EveryPayApiCalls apiCalls = EveryPayApi.getInstance(ep.getEverypayUrl()).getApiCalls();
+        EveryPayApi.EveryPayApiCalls apiCalls = EveryPayApi.getInstance(ep.getContext(), ep.getEverypayUrl()).getApiCalls();
         HashMap<String, String> params = new HashMap<>();
-        params.put("mobile_3ds_hmac", hmac);
-        params.put("api_version", apiVersion);
+        params.put(PARAMETER_MOBILE_3DS_HMAC, hmac);
+        params.put(PARAMETER_API_VERSION, apiVersion);
        final Call<EveryPayTokenResponseData> call = apiCalls.encryptedPaymentInstrumentConfirmed(paymentReference, params);
        call.enqueue(new EveryPayCallback<EveryPayTokenResponseData>() {
            @Override

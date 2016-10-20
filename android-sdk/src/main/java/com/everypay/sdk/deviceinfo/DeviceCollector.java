@@ -9,34 +9,40 @@ import android.util.Log;
 import com.everypay.sdk.EveryPay;
 import com.everypay.sdk.deviceinfo.fieldcollectors.AndroidIdCollector;
 import com.everypay.sdk.deviceinfo.fieldcollectors.AppInstallCollector;
-import com.everypay.sdk.deviceinfo.fieldcollectors.GpsCollector;
 import com.everypay.sdk.deviceinfo.fieldcollectors.HardwareCollector;
 import com.everypay.sdk.deviceinfo.fieldcollectors.NetworkMacsCollector;
 import com.everypay.sdk.deviceinfo.fieldcollectors.OsCollector;
 import com.everypay.sdk.deviceinfo.fieldcollectors.WifiMacCollector;
-import com.everypay.sdk.util.CustomGson;
+import com.google.gson.Gson;
 
 public class DeviceCollector {
 
     public static long DEFAULT_TIMEOUT_MILLIS = 5000;
 
-    Context context;
-    Handler handler;
-    GpsCollector gpsCollector;
-    long startMillis;
+    private Context context;
+    private Handler handler;
+    private long startMillis;
+
+    private DeviceInfoListener listener;
 
     public DeviceCollector(Context context) {
         this.context = context.getApplicationContext();
         this.handler = new Handler();
     }
 
-    public synchronized void start() {
-        startMillis = SystemClock.elapsedRealtime();
-        gpsCollector = new GpsCollector(context);
-        gpsCollector.start();
+    public DeviceInfoListener getListener() {
+        return listener;
     }
 
-    public synchronized void collectWithTimeout(final DeviceInfoListener listener, long timeout) {
+    public void setListener(DeviceInfoListener listener) {
+        this.listener = listener;
+    }
+
+    public synchronized void start() {
+        startMillis = SystemClock.elapsedRealtime();
+    }
+
+    public synchronized void collectWithTimeout(long timeout) {
         long remainingTimeout = Math.max(0, startMillis - SystemClock.elapsedRealtime() + timeout);
         Log.d(EveryPay.TAG, "Remaining timeout " + remainingTimeout + "ms");
         handler.postDelayed(new Runnable() {
@@ -50,22 +56,22 @@ public class DeviceCollector {
                 result.wifiMac = new WifiMacCollector().getField(context);
                 result.netMacs = new NetworkMacsCollector().getField(context);
 
-                result.gps = gpsCollector.stopAndGetInfoField();
+
 
                 if (listener != null) {
-                    listener.deviceInfoCollected(CustomGson.getInstance().toJson(result));
+                    Gson gson = new Gson();
+                    listener.deviceInfoCollected(gson.toJson(result));
                 }
             }
         }, remainingTimeout);
     }
 
-    public synchronized void collectWithDefaultTimeout(DeviceInfoListener listener) {
-        collectWithTimeout(listener, DEFAULT_TIMEOUT_MILLIS);
+    public synchronized void collectWithDefaultTimeout() {
+        collectWithTimeout(DEFAULT_TIMEOUT_MILLIS);
     }
 
     public synchronized void cancel() {
-        if (gpsCollector != null)
-            gpsCollector.stopAndGetInfoField();
+
     }
 
     public interface DeviceInfoListener {

@@ -7,4 +7,5 @@
 
     <color name="ep_card_field_normal">#ff222222</color>
     <color name="ep_card_field_invalid">#ff7d0005</color>
+    <color name="ep_background_generic_2">#92000000</color>
 </resources>

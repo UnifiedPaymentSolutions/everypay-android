@@ -1,4 +1,4 @@
-package com.everypay.sdk.views;
+package com.everypay.sdk.util;
 
 import android.content.Context;
 import android.content.res.Resources;

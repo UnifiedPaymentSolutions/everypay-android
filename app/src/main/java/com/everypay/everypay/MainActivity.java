@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (checkPlayServices()) {
-            initializeChoices();
             attachUiEvents();
         } else {
             finish();
@@ -72,11 +71,17 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
 
     private void initializeChoices() {
         // Account Id choices
-        accountIdChoices = new ArrayList<>();
+        if(accountIdChoices == null) {
+            accountIdChoices = new ArrayList<>();
+        }
+        accountIdChoices.clear();
         accountIdChoices.add(ACCOUNT_ID_3DS);
         accountIdChoices.add(ACCOUNT_ID_NON_3DS);
         // base URL choices
-        baseUrlMap = new HashMap<>();
+        if(baseUrlMap == null) {
+            baseUrlMap = new HashMap<>();
+        }
+        baseUrlMap.clear();
         // array of URLs in the order: merchantApiBaseUrl, EveryPayApiBaseUrl, EveryPayHost
         ArrayList<String> stagingURLs = new ArrayList<>();
         stagingURLs.add(EveryPay.MERCHANT_API_URL_STAGING);
@@ -150,6 +155,8 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
                 initial.setExpMonth(MainActivity.this.getResources().getString(R.string.ep_initial_card_exp_month));
                 initial.setCVC(MainActivity.this.getResources().getString(R.string.ep_initial_card_cvc));
 
+                initializeChoices();
+
                 CardFormActivity.startForResult(MainActivity.this, initial);
             }
         });
@@ -201,39 +208,39 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
             String deviceInfo = extras.getString(EXTRA_DEVICE_INFO);
             String accountId = accountIdChoices.size() > position ? accountIdChoices.get(position) : null;
             if (card != null && !TextUtils.isEmpty(deviceInfo) && accountId != null) {
+                EveryPay ep = EveryPay.getDefault();
+                if(ep != null) {
+                    ep.startFullPaymentFlow(TAG_START_FULL_PAYMENT_FLOW, card, deviceInfo, new EveryPayListener() {
 
-                EveryPay.getDefault().startFullPaymentFlow(TAG_START_FULL_PAYMENT_FLOW, card, deviceInfo, new EveryPayListener() {
-
-                    @Override
-                    public void stepStarted(StepType step) {
-                        log.d("Started step " + step);
-                        hideStatusViews(step);
-                        statuses[step.ordinal()].progress.setVisibility(View.VISIBLE);
-                    }
-
-                    @Override
-                    public void stepSuccess(StepType step) {
-                        log.d("Completed step " + step);
-                        hideStatusViews(step);
-                        statuses[step.ordinal()].good.setVisibility(View.VISIBLE);
-                    }
-
-                    @Override
-                    public void fullSuccess(MerchantPaymentResponseData responseData) {
-                        displayMessageDialog(getString(R.string.ep_title_payment_successful), getString(R.string.ep_text_payment_successful, responseData.toString()));
-                    }
-
-
-
-                    @Override
-                    public void stepFailure(StepType step, EveryPayError error) {
-                        hideStatusViews(step);
-                        if(!step.equals(StepType.WEB_AUTH_STEP)){
-                            statuses[step.ordinal()].bad.setVisibility(View.VISIBLE);
+                        @Override
+                        public void stepStarted(StepType step) {
+                            log.d("Started step " + step);
+                            hideStatusViews(step);
+                            statuses[step.ordinal()].progress.setVisibility(View.VISIBLE);
                         }
-                        displayMessageDialog(getString(R.string.ep_title_step_failed), getString(R.string.ep_text_step_failed,step,error.getMessage()));
-                    }
-                }, accountId);
+
+                        @Override
+                        public void stepSuccess(StepType step) {
+                            log.d("Completed step " + step);
+                            hideStatusViews(step);
+                            statuses[step.ordinal()].good.setVisibility(View.VISIBLE);
+                        }
+
+                        @Override
+                        public void fullSuccess(MerchantPaymentResponseData responseData) {
+                            displayMessageDialog(getString(R.string.ep_title_payment_successful), getString(R.string.ep_text_payment_successful, responseData));
+                        }
+
+                        @Override
+                        public void stepFailure(StepType step, EveryPayError error) {
+                            hideStatusViews(step);
+                            if (!step.equals(StepType.WEB_AUTH_STEP)) {
+                                statuses[step.ordinal()].bad.setVisibility(View.VISIBLE);
+                            }
+                            displayMessageDialog(getString(R.string.ep_title_step_failed), getString(R.string.ep_text_step_failed, step, error.getMessage()));
+                        }
+                    }, accountId);
+                }
             }
         }
     }
@@ -283,7 +290,6 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
         outState.putStringArrayList(STATE_ACCOUNT_ID_CHOICES, accountIdChoices);
         outState.putSerializable(STATE_BASE_URL_CHOICES, baseUrlMap);
     }

@@ -8,7 +8,8 @@
 
 
     <application >
-        <activity android:name=".views.CardFormActivity"/>
+        <activity android:name=".activity.CardFormActivity"
+            android:theme="@style/ep_FloatingDialogTheme"/>
         <activity android:name=".PaymentBrowserActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"/>
     </application>

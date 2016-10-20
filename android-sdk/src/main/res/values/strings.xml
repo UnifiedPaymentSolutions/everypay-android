@@ -31,6 +31,8 @@
     <string name="ep_err_ssl_exception">SSL connection failure.</string>
     <string name="ep_err_unknown">Unknown exception.</string>
     <string name="ep_err_web_auth">3Ds authentication failed</string>
+    <string name="ep_err_web_auth_canceled">Web Auth canceled</string>
+    <string name="ep_err_unknown_account_id_or_payment_state">Unknown accountId or payment state</string>
 
 
     <string-array name="ep_cc_month_values" translatable="false">
