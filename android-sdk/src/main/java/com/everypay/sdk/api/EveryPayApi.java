@@ -1,16 +1,22 @@
 package com.everypay.sdk.api;
 
 
+import android.content.Context;
+
 import com.everypay.sdk.Config;
 import com.everypay.sdk.api.requestdata.EveryPayTokenRequestData;
 import com.everypay.sdk.api.responsedata.EveryPayTokenResponseData;
 import com.everypay.sdk.util.CustomGson;
 import com.everypay.sdk.util.Log;
+import com.google.android.gms.security.ProviderInstaller;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.ConnectionSpec;
 import okhttp3.OkHttpClient;
+import okhttp3.TlsVersion;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -39,7 +45,8 @@ public class EveryPayApi {
     private static volatile EveryPayApi instance;
     private final EveryPayApiCalls apiCalls;
 
-    public EveryPayApi(final String baseUrl) {
+    public EveryPayApi(final Context appContext, final String baseUrl) {
+        patchSSLProvider(appContext);
         final HttpLoggingInterceptor interceptorLogging = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
             @Override
             public void log(String message) {
@@ -47,12 +54,16 @@ public class EveryPayApi {
             }
         });
         interceptorLogging.setLevel(Config.USE_DEBUG ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE);
-
+        final ConnectionSpec connectionSpec = new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
+                .tlsVersions(TlsVersion.TLS_1_2, TlsVersion.TLS_1_1)
+                .supportsTlsExtensions(true)
+                .build();
         final OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder()
                 .connectTimeout(TIMEOUT_CONNECT, TimeUnit.MILLISECONDS)
                 .writeTimeout(TIMEOUT_WRITE, TimeUnit.MILLISECONDS)
                 .readTimeout(TIMEOUT_READ, TimeUnit.MILLISECONDS)
-                .addInterceptor(interceptorLogging);
+                .addInterceptor(interceptorLogging)
+                .connectionSpecs(Collections.singletonList(connectionSpec));
         final OkHttpClient client = okHttpBuilder.build();
 
         final Retrofit retrofit = new Retrofit.Builder()
@@ -67,24 +78,32 @@ public class EveryPayApi {
         return apiCalls;
     }
 
-    public static EveryPayApi getInstance(final String baseUrl) {
-        if(instance == null) {
+    public static EveryPayApi getInstance(final Context appContext, final String baseUrl) {
+        if (instance == null) {
             synchronized (EveryPayApi.class) {
-                if(instance == null) {
-                    createNewInstance(baseUrl);
+                if (instance == null) {
+                    createNewInstance(appContext, baseUrl);
                 }
             }
         }
         return instance;
     }
 
-    public static EveryPayApi createNewInstance(String baseUrl) {
-        synchronized (EveryPayApi.class) {
-            instance = new EveryPayApi(baseUrl);
-            return instance;
+    private void patchSSLProvider(final Context applicationContext) {
+        try {
+            ProviderInstaller.installIfNeeded(applicationContext);
+            log.d("patchSSLProvider patched");
+        } catch (Exception e) {
+            log.d("patchSSLProvider", e);
         }
     }
 
+    public static EveryPayApi createNewInstance(Context appContext, String baseUrl) {
+        synchronized (EveryPayApi.class) {
+            instance = new EveryPayApi(appContext, baseUrl);
+            return instance;
+        }
+    }
 
 
     public interface EveryPayApiCalls {
@@ -93,14 +112,14 @@ public class EveryPayApi {
                 "Accept: application/json"
         })
         @POST("encrypted_payment_instruments")
-        Call<EveryPayTokenResponseData>saveCard(@Body EveryPayTokenRequestData params);
+        Call<EveryPayTokenResponseData> saveCard(@Body EveryPayTokenRequestData params);
 
 
         @GET("encrypted_payment_instruments/{paymentReference}")
-        Call<EveryPayTokenResponseData>encryptedPaymentInstrumentConfirmed(@Path("paymentReference") String paymentReference, @QueryMap Map<String, String> params);
+        Call<EveryPayTokenResponseData> encryptedPaymentInstrumentConfirmed(@Path("paymentReference") String paymentReference, @QueryMap Map<String, String> params);
 
         @GET("authentication3ds/new")
-        Call<String>auth(@QueryMap Map<String, String> params);
+        Call<String> auth(@QueryMap Map<String, String> params);
     }
 
 }

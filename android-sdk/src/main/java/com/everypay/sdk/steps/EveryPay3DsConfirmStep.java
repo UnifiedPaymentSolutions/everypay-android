@@ -30,7 +30,7 @@ public class EveryPay3DsConfirmStep extends Step {
         if(ep != null) {
             ep.setListener(tag, listener);
         }
-        EveryPayApi.EveryPayApiCalls apiCalls = EveryPayApi.getInstance(ep.getEverypayUrl()).getApiCalls();
+        EveryPayApi.EveryPayApiCalls apiCalls = EveryPayApi.getInstance(ep.getContext(), ep.getEverypayUrl()).getApiCalls();
         HashMap<String, String> params = new HashMap<>();
         params.put(PARAMETER_MOBILE_3DS_HMAC, hmac);
         params.put(PARAMETER_API_VERSION, apiVersion);

@@ -32,7 +32,7 @@ public class EveryPayTokenStep extends Step {
         if (ep != null) {
             ep.setListener(tag, listener);
         }
-        EveryPayApi.EveryPayApiCalls apiCalls = EveryPayApi.getInstance(ep.getEverypayUrl()).getApiCalls();
+        EveryPayApi.EveryPayApiCalls apiCalls = EveryPayApi.getInstance(ep.getContext(), ep.getEverypayUrl()).getApiCalls();
         final EveryPayTokenRequestData requestData = new EveryPayTokenRequestData(paramsResponse, card, deviceInfo);
         final Call<EveryPayTokenResponseData> call = apiCalls.saveCard(requestData);
         call.enqueue(new EveryPayCallback<EveryPayTokenResponseData>() {

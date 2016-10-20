@@ -9,12 +9,10 @@ import android.util.Log;
 import com.everypay.sdk.EveryPay;
 import com.everypay.sdk.deviceinfo.fieldcollectors.AndroidIdCollector;
 import com.everypay.sdk.deviceinfo.fieldcollectors.AppInstallCollector;
-import com.everypay.sdk.deviceinfo.fieldcollectors.GpsCollector;
 import com.everypay.sdk.deviceinfo.fieldcollectors.HardwareCollector;
 import com.everypay.sdk.deviceinfo.fieldcollectors.NetworkMacsCollector;
 import com.everypay.sdk.deviceinfo.fieldcollectors.OsCollector;
 import com.everypay.sdk.deviceinfo.fieldcollectors.WifiMacCollector;
-import com.everypay.sdk.util.CustomGson;
 import com.google.gson.Gson;
 
 public class DeviceCollector {
@@ -23,7 +21,6 @@ public class DeviceCollector {
 
     private Context context;
     private Handler handler;
-    private GpsCollector gpsCollector;
     private long startMillis;
 
     private DeviceInfoListener listener;
@@ -43,8 +40,6 @@ public class DeviceCollector {
 
     public synchronized void start() {
         startMillis = SystemClock.elapsedRealtime();
-        gpsCollector = new GpsCollector(context);
-        gpsCollector.start();
     }
 
     public synchronized void collectWithTimeout(long timeout) {
@@ -61,7 +56,7 @@ public class DeviceCollector {
                 result.wifiMac = new WifiMacCollector().getField(context);
                 result.netMacs = new NetworkMacsCollector().getField(context);
 
-                result.gps = gpsCollector.stopAndGetInfoField();
+
 
                 if (listener != null) {
                     Gson gson = new Gson();
@@ -76,8 +71,7 @@ public class DeviceCollector {
     }
 
     public synchronized void cancel() {
-        if (gpsCollector != null)
-            gpsCollector.stopAndGetInfoField();
+
     }
 
     public interface DeviceInfoListener {

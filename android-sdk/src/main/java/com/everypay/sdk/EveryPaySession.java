@@ -91,7 +91,7 @@ public class EveryPaySession {
 
 
     public void startPaymentFlow() {
-        EveryPayApi.createNewInstance(ep.getEverypayUrl());
+        EveryPayApi.createNewInstance(ep.getContext(), ep.getEverypayUrl());
         MerchantApi.createNewInstance(ep.getContext(), ep.getMerchantUrl());
         callStepStarted(merchantParamsStep);
         getMerchantParams(TAG_EVERYPAY_SESSION_GET_MERHANT_PARAMS);
