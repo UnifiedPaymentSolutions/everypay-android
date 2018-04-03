@@ -1,7 +1,6 @@
 package com.everypay.sdk;
 
 import android.content.Context;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -11,10 +10,7 @@ import com.everypay.sdk.model.Card;
 import com.everypay.sdk.steps.MerchantParamsStep;
 import com.everypay.sdk.steps.MerchantPaymentStep;
 import com.everypay.sdk.util.Log;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 
-import java.io.Serializable;
 import java.util.WeakHashMap;
 
 

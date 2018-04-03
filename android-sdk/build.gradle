@@ -52,7 +52,7 @@ dependencies {
     compile 'com.jakewharton.timber:timber:4.1.2'
     compile 'com.github.rey5137:material:1.2.2', { transitive = false }
     compile 'com.google.android.gms:play-services-basement:8.4.0'
-    compile 'com.google.android.gms:play-services-gcm:8.4.0'
+    
 }
 
 
