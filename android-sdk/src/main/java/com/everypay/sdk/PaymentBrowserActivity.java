@@ -1,14 +1,18 @@
 package com.everypay.sdk;
 
 import android.annotation.SuppressLint;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.http.SslError;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Patterns;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.ConsoleMessage;
@@ -28,6 +32,7 @@ import com.everypay.sdk.util.Util;
 import com.everypay.sdk.util.WebViewStorage;
 import com.rey.material.widget.ProgressView;
 
+import java.net.URISyntaxException;
 import java.util.Locale;
 
 
@@ -39,6 +44,7 @@ public class PaymentBrowserActivity extends AppCompatActivity {
     private static final String BROWSER_FLOW_END_URL_PATH = "authentication3ds/";
     private static final String PAYMENT_STATE_AUTHORISED = "authorised";
     private static final String PAYMENT_STATE = "payment_state";
+    private static final String INTENT_FALLBACK_URL_KEY = "browser_fallback_url";
 
     private ViewGroup layoutRoot;
     private ProgressView progressBar;
@@ -223,6 +229,38 @@ public class PaymentBrowserActivity extends AppCompatActivity {
         return !TextUtils.isEmpty(url) && url.toLowerCase(Locale.ENGLISH).startsWith(browserFlowEndUrlPrefix) && !TextUtils.isEmpty(paymentState) && TextUtils.equals(paymentState, PAYMENT_STATE_AUTHORISED);
     }
 
+    private boolean handleIntent(WebView webView, String uri) {
+        if (TextUtils.isEmpty(uri)) return false;
+        boolean result = false;
+        try {
+            Intent intent = Intent.parseUri(uri, Intent.URI_INTENT_SCHEME);
+            if (intent != null) {
+                ResolveInfo info = getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
+                if (info != null) {
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    log.d("handleIntent - opening the app with intent: " + uri);
+                    result = true;
+                } else {
+                    String fallbackUrl = intent.getStringExtra(INTENT_FALLBACK_URL_KEY);
+                    if (!TextUtils.isEmpty(fallbackUrl) && webView != null) {
+                        webView.loadUrl(fallbackUrl);
+                        log.d("handleIntent - redirecting to a fallback url: " + fallbackUrl);
+                        result = true;
+                    }
+                }
+            }
+        } catch (URISyntaxException | ActivityNotFoundException e) {
+            log.e("handleIntent()", e);
+            result = false;
+        }
+        return result;
+    }
+
+    private boolean isInvalidWebUrl(String url) {
+        return !Patterns.WEB_URL.matcher(url).matches();
+    }
+
     private class WebClientImpl extends WebViewClient {
 
         @Override
@@ -231,6 +269,13 @@ public class PaymentBrowserActivity extends AppCompatActivity {
             boolean isBrowserFlowEndUrl = isBrowserFlowEndUrl(url);
             if (isBrowserFlowEndUrl) {
                 log.d("shouldOverrideUrlLoading (yes, payment end): " + url);
+                onBrowserFlowEnded(url);
+                return true;
+            } else if (isInvalidWebUrl(url) && handleIntent(view, url)) {
+                log.d("shouldOverrideUrlLoading (yes, received and handled intent): " + url);
+                return true;
+            } else if (isInvalidWebUrl(url)) {
+                log.d("shouldOverrideUrlLoading (yes, unknown url, ending the browser flow): " + url);
                 onBrowserFlowEnded(url);
                 return true;
             }
