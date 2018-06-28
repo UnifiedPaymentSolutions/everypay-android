@@ -257,6 +257,9 @@ public class PaymentBrowserActivity extends AppCompatActivity {
         return result;
     }
 
+    private boolean isInvalidWebUrl(String url) {
+        return !Patterns.WEB_URL.matcher(url).matches();
+    }
 
     private class WebClientImpl extends WebViewClient {
 
@@ -268,11 +271,12 @@ public class PaymentBrowserActivity extends AppCompatActivity {
                 log.d("shouldOverrideUrlLoading (yes, payment end): " + url);
                 onBrowserFlowEnded(url);
                 return true;
-            } else if (handleIntent(view, url)) {
+            } else if (isInvalidWebUrl(url) && handleIntent(view, url)) {
                 log.d("shouldOverrideUrlLoading (yes, received and handled intent): " + url);
                 return true;
-            } else if (!Patterns.WEB_URL.matcher(url).matches()) {
-                log.d("shouldOverrideUrlLoading (yes, unknown url, aborting): " + url);
+            } else if (isInvalidWebUrl(url)) {
+                log.d("shouldOverrideUrlLoading (yes, unknown url, ending the browser flow): " + url);
+                onBrowserFlowEnded(url);
                 return true;
             }
 
