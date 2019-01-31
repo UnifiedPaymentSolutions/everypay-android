@@ -1,4 +1,6 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
 
 
 
@@ -63,6 +65,32 @@ dependencies {
     implementation 'com.google.android.gms:play-services-gcm:16.0.0'
 }
 
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'android-sdk'
 
+
+    publishedGroupId = 'com.everypay.sdk'
+    libraryName = 'EveryPayAndroidSDK'
+    artifact = 'android-sdk'
+
+    libraryDescription = 'EveryPay Android SDK'
+
+    siteUrl = 'https://github.com/UnifiedPaymentSolutions/everypay-android'
+    gitUrl = 'https://github.com/UnifiedPaymentSolutions/everypay-android.git'
+
+    libraryVersion = project.version
+
+    developerId = 'olevabel'
+    developerName = 'Olev Abel'
+    developerEmail = 'olev.abel@lab.mobi'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+
+    apply from: 'installv1.gradle'
+    apply from: 'bintrayv1.gradle'
+}
 
 
