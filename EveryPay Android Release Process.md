@@ -12,7 +12,7 @@
 
 ## A. Prerequisites
 
-- 0) Set environment variables BINTRAY_USER and BINTRAY_API_KEY according to your Bintray credentials.
+- 0) Set ~/.gradle/gradle.properties variables BINTRAY_USER and BINTRAY_API_KEY according to your Bintray credentials.
 - 1) Update version under project root build.gradle file. Version number according to scheme:
 
     a)    MAJOR version when you make incompatible API changes.
