@@ -1,9 +1,3 @@
-/**
- * Copyright 2016 Cybernetica AS
- * All rights reserved.
- * The usage of this code is subject to appropriate license agreement.
- * Please contact info@cyber.ee for licensing.
- */
 package com.everypay.sdk.fragment;
 
 import android.content.DialogInterface;
@@ -13,7 +7,6 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.everypay.sdk.R;
 
 
@@ -56,7 +49,7 @@ public class ProgressDialogFragment extends DialogFragment {
         super.onCancel(dialog);
         final ProgressDialogFragmentListener listener = getListener();
         if (listener != null) {
-            listener.onProgressDialogFragmentCanceled(getTargetRequestCode());
+            listener.onProgressDialogFragmentCanceled(getTag());
         }
     }
 
@@ -78,6 +71,6 @@ public class ProgressDialogFragment extends DialogFragment {
     }
 
     public interface ProgressDialogFragmentListener {
-        void onProgressDialogFragmentCanceled(int requestCode);
+        void onProgressDialogFragmentCanceled(String tag);
     }
 }

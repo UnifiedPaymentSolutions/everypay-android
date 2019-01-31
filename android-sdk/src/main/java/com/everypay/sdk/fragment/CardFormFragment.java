@@ -18,7 +18,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.everypay.sdk.R;
 import com.everypay.sdk.deviceinfo.DeviceCollector;
 import com.everypay.sdk.model.Card;
 import com.everypay.sdk.model.CardError;
@@ -26,6 +25,7 @@ import com.everypay.sdk.model.CardType;
 import com.everypay.sdk.util.CardFormTextWatcher;
 import com.everypay.sdk.util.DialogUtil;
 import com.everypay.sdk.util.Reflect;
+import com.everypay.sdk.R;
 
 public class CardFormFragment extends BaseFragment implements DeviceCollector.DeviceInfoListener, ProgressDialogFragment.ProgressDialogFragmentListener {
 
@@ -36,7 +36,6 @@ public class CardFormFragment extends BaseFragment implements DeviceCollector.De
     private static final String STATE_PARTIAL_CARD = "com.everypay.STATE_PARTIAL_CARD";
     private static final String ARG_INITIAL_CARD_DATA = "com.everypay.sdk.ARG_INITIAL_CARD_DATA";
     private static final String TAG_DEVICEINFO_COLLECTOR_PROGRESS = "com.everypay.sdk.TAG_DEVICEINFO_COLLECTOR_PROGRESS";
-    private static final int REQUEST_CODE_DEVICEINFO_COLLECTOR_PROGRESS = 101;
 
     private EditText name;
     private EditText number;
@@ -146,7 +145,7 @@ public class CardFormFragment extends BaseFragment implements DeviceCollector.De
                     if(collector != null && collector.getListener() == null) {
                         collector.setListener(CardFormFragment.this);
                     }
-                    DialogUtil.showDialogFragment(ProgressDialogFragment.newInstance(), TAG_DEVICEINFO_COLLECTOR_PROGRESS, CardFormFragment.this, REQUEST_CODE_DEVICEINFO_COLLECTOR_PROGRESS);
+                    DialogUtil.showDialogFragment(ProgressDialogFragment.newInstance(), TAG_DEVICEINFO_COLLECTOR_PROGRESS, CardFormFragment.this);
                     collector.collectWithDefaultTimeout();
                 }
             }
@@ -243,8 +242,8 @@ public class CardFormFragment extends BaseFragment implements DeviceCollector.De
     }
 
     @Override
-    public void onProgressDialogFragmentCanceled(int requestCode) {
-        if (requestCode == REQUEST_CODE_DEVICEINFO_COLLECTOR_PROGRESS) {
+    public void onProgressDialogFragmentCanceled(String tag) {
+        if (TextUtils.equals(tag, TAG_DEVICEINFO_COLLECTOR_PROGRESS)) {
             collector.setListener(null);
             collector.cancel();
         }

@@ -55,7 +55,7 @@ public class SingleChoiceDialogFragment extends DialogFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (getListener() != null) {
-                    getListener().onSingleChoicePicked(getTargetRequestCode(), position, getExtras());
+                    getListener().onSingleChoicePicked(getTag(), position, getExtras());
                 }
                 dismiss();
             }
@@ -67,7 +67,7 @@ public class SingleChoiceDialogFragment extends DialogFragment {
     public void onCancel(DialogInterface dialog) {
         super.onCancel(dialog);
         if (getListener() != null) {
-            getListener().onSingleChoiceCanceled(getTargetRequestCode(), getExtras());
+            getListener().onSingleChoiceCanceled(getTag(), getExtras());
         }
     }
 
@@ -85,8 +85,8 @@ public class SingleChoiceDialogFragment extends DialogFragment {
     }
 
     public interface SingleChoiceDialogFragmentListener {
-        void onSingleChoicePicked(int requestCode, int position, Bundle extras);
+        void onSingleChoicePicked(String tag, int position, Bundle extras);
 
-        void onSingleChoiceCanceled(int requestCode, Bundle extras);
+        void onSingleChoiceCanceled(String tag, Bundle extras);
     }
 }

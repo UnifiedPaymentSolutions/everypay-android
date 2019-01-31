@@ -38,7 +38,7 @@ public class DialogUtil {
                 }
                 Log.getInstance(DialogUtil.class).d("executePendingActionsIfAny: Retrying " + action.tag);
                 // Retry
-                showDialogFragment(activity, action.fragment, action.tag, action.targetFragment, action.requestCode, 1, false);
+                showDialogFragment(activity, action.fragment, action.tag, action.targetFragment, 1, false);
 
                 // Forget
                 iter.remove();
@@ -46,13 +46,13 @@ public class DialogUtil {
         }
     }
 
-    private static void addRetryForResume(final FragmentActivity activity, final DialogFragment dialog, final String tag, final Fragment targetFragment, final int requestCode) {
+    private static void addRetryForResume(final FragmentActivity activity, final DialogFragment dialog, final String tag, final Fragment targetFragment) {
         if (activity == null || dialog == null || TextUtils.isEmpty(tag)) {
             return;
         }
 
         synchronized (pendingDialogActions) {
-            final PendingDialogAction newAction = new PendingDialogAction(activity, dialog, tag, requestCode, targetFragment);
+            final PendingDialogAction newAction = new PendingDialogAction(activity, dialog, tag, targetFragment);
             for (PendingDialogAction pendingDialogAction : pendingDialogActions) {
                 if (pendingDialogAction.isSameAs(newAction)) {
                     pendingDialogAction.fragment = newAction.fragment;
@@ -90,15 +90,15 @@ public class DialogUtil {
         }
     }
 
-    public static void showDialogFragment(final DialogFragment dialog, final String tag, final Fragment targetFragment, final int requestCode) {
-        showDialogFragment(targetFragment.getActivity(), dialog, tag, targetFragment, requestCode, 3, true);
+    public static void showDialogFragment(final DialogFragment dialog, final String tag, final Fragment targetFragment) {
+        showDialogFragment(targetFragment.getActivity(), dialog, tag, targetFragment, 3, true);
     }
 
-    public static void showDialogFragment(final FragmentActivity activity, final DialogFragment dialog, final String tag, final Fragment targetFragment, final int requestCode) {
-        showDialogFragment(activity, dialog, tag, targetFragment, requestCode, 3, true);
+    public static void showDialogFragment(final FragmentActivity activity, final DialogFragment dialog, final String tag, final Fragment targetFragment) {
+        showDialogFragment(activity, dialog, tag, targetFragment, 3, true);
     }
 
-    public static void showDialogFragment(final FragmentActivity activity, final DialogFragment dialog, final String tag, final Fragment targetFragment, final int requestCode, final int retryCount, final boolean retryOnResume) {
+    public static void showDialogFragment(final FragmentActivity activity, final DialogFragment dialog, final String tag, final Fragment targetFragment, final int retryCount, final boolean retryOnResume) {
         if (activity == null || dialog == null || TextUtils.isEmpty(tag)) {
             Log.getInstance(DialogUtil.class).e("showDialogFragment: activity == null || dialog == null || TextUtils.isEmpty(tag)");
             // Fail
@@ -112,10 +112,12 @@ public class DialogUtil {
         }
 
         try {
-            final FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction();
+            final FragmentTransaction ft = targetFragment != null ? targetFragment.getFragmentManager().beginTransaction() : activity.getSupportFragmentManager().beginTransaction();
             removePreviousFragmentIfAny(activity, ft, tag);
             // Create and show the dialog.
-            dialog.setTargetFragment(targetFragment != null ? targetFragment : dialog /* TODO: Is this safe? Set itself as the target to retain the requestAdd code */, requestCode);
+            if (targetFragment != null) {
+                dialog.setTargetFragment(targetFragment, 0);
+            }
             dialog.show(ft, tag);
         } catch (IllegalStateException e) {
             Log.getInstance(DialogUtil.class).e("showDialogFragment:", e);
@@ -126,11 +128,11 @@ public class DialogUtil {
 
                     @Override
                     public void run() {
-                        showDialogFragment(activity, dialog, tag, targetFragment, requestCode, retryCount - 1, retryOnResume);
+                        showDialogFragment(activity, dialog, tag, targetFragment, retryCount - 1, retryOnResume);
                     }
                 }, 800l);
             } else if (retryCount == 0 && retryOnResume) {
-                addRetryForResume(activity, dialog, tag, targetFragment, requestCode);
+                addRetryForResume(activity, dialog, tag, targetFragment);
             }
         }
 
@@ -198,15 +200,13 @@ public class DialogUtil {
 
     private static class PendingDialogAction {
         public String tag;
-        public int requestCode;
         public DialogFragment fragment;
         public Fragment targetFragment;
         public Class activityClazz;
 
-        public PendingDialogAction(Activity activity, DialogFragment fragment, String tag, int requestCode, Fragment targetFragment) {
+        public PendingDialogAction(Activity activity, DialogFragment fragment, String tag, Fragment targetFragment) {
             this.activityClazz = activity.getClass();
             this.tag = tag;
-            this.requestCode = requestCode;
             this.fragment = fragment;
             this.targetFragment = targetFragment;
         }
@@ -216,7 +216,7 @@ public class DialogUtil {
         }
 
         public String getId() {
-            return tag + "_" + requestCode + "_" + targetFragment + "_" + activityClazz;
+            return tag  + "_" + targetFragment + "_" + activityClazz;
         }
 
         public boolean isForActivity(final Activity activity) {

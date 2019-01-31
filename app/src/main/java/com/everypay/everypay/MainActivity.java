@@ -23,6 +23,7 @@ import com.everypay.sdk.model.Card;
 import com.everypay.sdk.steps.StepType;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.everypay.everypay.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,10 +45,7 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
     private static final String STATE_BASE_URL_CHOICES = "com.everypay.everypay.STATE_BASE_URL_CHOICES";
 
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-    private static final int REQUEST_CODE_ACCOUNT_ID_CHOICE = 100;
-    private static final int REQUEST_CODE_BASE_URL_CHOICE = 101;
     private static final String TAG_MESSAGE_DIALOG = "com.everypay.everypay.TAG_MESSAGE_DIALOG";
-    private static final int REQUEST_CODE_MESSAGE_DIALOG = 102;
     private static com.everypay.sdk.util.Log log = com.everypay.sdk.util.Log.getInstance(MainActivity.class);
 
     private ArrayList<String> accountIdChoices;
@@ -111,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
                 extras.putParcelable(EXTRA_CARD, result.first);
                 extras.putString(EXTRA_DEVICE_INFO, result.second);
                 SingleChoiceDialogFragment fragment = SingleChoiceDialogFragment.newInstance(getString(R.string.title_choose_environment), getString(R.string.text_choose_environment), environments, extras);
-                DialogUtil.showDialogFragment(MainActivity.this, fragment, TAG_ENVIRONMENT_CHOICE_DIALOG, null, REQUEST_CODE_BASE_URL_CHOICE);
+                DialogUtil.showDialogFragment(MainActivity.this, fragment, TAG_ENVIRONMENT_CHOICE_DIALOG, null);
                 statuses[0].good.setVisibility(View.VISIBLE);
 
             } else {
@@ -192,18 +190,18 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
     }
 
     @Override
-    public void onSingleChoicePicked(int requestCode, int position, Bundle extras) {
-        if (requestCode == REQUEST_CODE_BASE_URL_CHOICE) {
+    public void onSingleChoicePicked(String tag, int position, Bundle extras) {
+        if (TextUtils.equals(TAG_ENVIRONMENT_CHOICE_DIALOG, tag)) {
             String baseURLKey = environments.size() > position ? environments.get(position) : null;
             if (!TextUtils.isEmpty(baseURLKey)) {
                 ArrayList<String> baseURLs = baseUrlMap.get(baseURLKey);
                 if (baseURLs != null && baseURLs.size() != 0) {
                     EveryPay.with(this).setEverypayApiBaseUrl(baseURLs.get(1)).setMerchantApiBaseUrl(baseURLs.get(0)).setEveryPayHost(baseURLs.get(2)).build(API_VERSION).setDefault();
                     SingleChoiceDialogFragment dialogFragment = SingleChoiceDialogFragment.newInstance(getString(R.string.title_choose_account), getString(R.string.text_choose_account_id), accountIdChoices, extras);
-                    DialogUtil.showDialogFragment(MainActivity.this, dialogFragment, TAG_ACCOUNT_CHOICE_DIALOG, null, REQUEST_CODE_ACCOUNT_ID_CHOICE);
+                    DialogUtil.showDialogFragment(MainActivity.this, dialogFragment, TAG_ACCOUNT_CHOICE_DIALOG, null);
                 }
             }
-        } else if (requestCode == REQUEST_CODE_ACCOUNT_ID_CHOICE) {
+        } else if (TextUtils.equals(TAG_ACCOUNT_CHOICE_DIALOG, tag)) {
             Card card = extras.getParcelable(EXTRA_CARD);
             String deviceInfo = extras.getString(EXTRA_DEVICE_INFO);
             String accountId = accountIdChoices.size() > position ? accountIdChoices.get(position) : null;
@@ -247,12 +245,12 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
 
     private void displayMessageDialog(String title, String message) {
         MessageDialogFragment fragment = MessageDialogFragment.newInstance(title, message, getString(R.string.ep_btn_ok));
-        DialogUtil.showDialogFragment(MainActivity.this, fragment, TAG_MESSAGE_DIALOG, null, REQUEST_CODE_MESSAGE_DIALOG);
+        DialogUtil.showDialogFragment(MainActivity.this, fragment, TAG_MESSAGE_DIALOG, null);
     }
 
     @Override
-    public void onSingleChoiceCanceled(int requestCode, Bundle extras) {
-
+    public void onSingleChoiceCanceled(String tag, Bundle extras) {
+        log.d("onSingleChoiceCanceled - tag " + tag);
     }
 
     private class StepStatusViews {
@@ -290,6 +288,7 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
         outState.putStringArrayList(STATE_ACCOUNT_ID_CHOICES, accountIdChoices);
         outState.putSerializable(STATE_BASE_URL_CHOICES, baseUrlMap);
     }
