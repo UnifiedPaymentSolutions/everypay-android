@@ -35,7 +35,7 @@ Add the following line to your `app/build.gradle` file:
 ```
 dependencies {
     ... Other dependencies ...
-   compile 'com.everypay.sdk:android-sdk:1.0.10'
+   compile 'com.everypay.sdk:android-sdk:1.1.0'
 }
 ```
 **NB! SDK minSdkVersion is 19 so it's supporting Android 4.4+**
