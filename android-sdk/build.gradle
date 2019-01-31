@@ -68,6 +68,7 @@ dependencies {
 ext {
     bintrayRepo = 'maven'
     bintrayName = 'android-sdk'
+    userOrganization = 'everypay'
 
 
     publishedGroupId = 'com.everypay.sdk'
