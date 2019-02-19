@@ -43,5 +43,5 @@ def GROUP_BUILD_TASKS = 'Build'
 task buildGreenhouseDebug(dependsOn: ['clean', 'build'])
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.everypay.sdk:android-sdk:1.1.0'
+    implementation 'com.everypay.sdk:android-sdk:1.0.15'
 }
