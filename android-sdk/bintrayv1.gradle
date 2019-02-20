@@ -50,8 +50,8 @@ publishing {
 }
 bintray {
 
-    user = bintrayUserEnvVar != null ? bintrayUserEnvVar : (bintrayUserProp != null ? bintrayUserProp : "")
-    key = bintrayKeyEnvVar != null ? bintrayKeyEnvVar : (bintrayKeyProp != null ? bintrayKeyProp : "")
+    user = bintrayUserEnvVar != null ? bintrayUserEnvVar : ""
+    key = bintrayKeyEnvVar != null ? bintrayKeyEnvVar : ""
     publications = ['EveryPayPublication']
     configurations = ['archives']
     pkg {

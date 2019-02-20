@@ -66,11 +66,7 @@ dependencies {
 
 ext {
     bintrayUserEnvVar = System.getenv("BINTRAY_USER") != null && !System.getenv("BINTRAY_USER").isEmpty() ? System.getenv("BINTRAY_USER") : null
-    bintrayUserProp = project.hasProperty("BINTRAY_USER") ? project.getProperties().get("BINTRAY_USER") : null
-
     bintrayKeyEnvVar = System.getenv("BINTRAY_API_KEY") != null && !System.getenv("BINTRAY_API_KEY").isEmpty() ? System.getenv("BINTRAY_API_KEY") : null
-    bintrayKeyProp = project.hasProperty("BINTRAY_API_KEY") ? project.getProperties().get("BINTRAY_API_KEY") : null
-
     bintrayRepo = 'maven'
     bintrayName = 'android-sdk-beta'
     userOrganization = 'everypay'
