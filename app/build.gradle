@@ -39,8 +39,8 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
-def GROUP_BUILD_TASKS = 'Build'
-task buildGreenhouseDebug(dependsOn: ['clean', 'build'])
+
+task buildRelease(dependsOn: ['clean', 'build'])
 dependencies {
-    implementation 'com.everypay.sdk:android-sdk:1.1.0'
+    implementation 'com.everypay.sdk:android-sdk-beta:1.1.1'
 }
