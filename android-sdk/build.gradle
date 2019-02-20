@@ -49,7 +49,6 @@ android {
 
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
     //noinspection GradleCompatible
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.google.code.gson:gson:2.8.5'
@@ -81,6 +80,7 @@ ext {
     gitUrl = 'https://github.com/UnifiedPaymentSolutions/everypay-android.git'
 
     libraryVersion = project.version
+    artifactDir = buildDir
 
     developerId = 'olevabel'
     developerName = 'Olev Abel'
