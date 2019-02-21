@@ -42,5 +42,5 @@ android {
 
 task buildRelease(dependsOn: ['clean', 'build'])
 dependencies {
-    implementation project(':android-sdk')
+    implementation "com.everypay.sdk:android-sdk-beta:1.1.2"
 }
