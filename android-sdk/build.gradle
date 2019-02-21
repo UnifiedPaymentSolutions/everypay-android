@@ -68,13 +68,13 @@ ext {
     bintrayUserEnvVar = System.getenv("BINTRAY_USER") != null && !System.getenv("BINTRAY_USER").isEmpty() ? System.getenv("BINTRAY_USER") : null
     bintrayKeyEnvVar = System.getenv("BINTRAY_API_KEY") != null && !System.getenv("BINTRAY_API_KEY").isEmpty() ? System.getenv("BINTRAY_API_KEY") : null
     bintrayRepo = 'maven'
-    bintrayName = 'android-sdk-beta'
+    bintrayName = 'android-sdk'
     userOrganization = 'everypay'
 
 
     publishedGroupId = 'com.everypay.sdk'
     libraryName = 'EveryPayAndroidSDK'
-    artifactName = 'android-sdk-beta'
+    artifactName = 'android-sdk'
 
     libraryDescription = 'EveryPay Android SDK'
 
