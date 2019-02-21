@@ -20,17 +20,12 @@ artifacts {
     archives sourcesJar
 }
 
-// Bintray
-//Properties properties = new Properties()
-//properties.load(project.rootProject.file('local.properties').newDataInputStream())
-
 
 publishing {
     publications {
         EveryPayPublication(MavenPublication) {
-            println(artifactDir)
-            artifact("$artifactDir/outputs/aar/android-sdk-release.aar")
-            artifactId artifact
+            artifact(artifactDir)
+            artifactId artifactName
             version libraryVersion
             pom.withXml {
                 def dependenciesNode = asNode().getAt('dependencies')[0] ?: asNode().appendNode('dependencies')

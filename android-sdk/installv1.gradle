@@ -9,7 +9,7 @@ install {
             project {
                 packaging 'aar'
                 groupId publishedGroupId
-                artifactId artifact
+                artifactId artifactName
 
                 // Add your description here
                 name libraryName
