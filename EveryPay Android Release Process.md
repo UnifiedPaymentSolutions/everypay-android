@@ -34,11 +34,12 @@ Additional labels for pre-release and build metadata are available as extensions
 ## D. Testing Bintray dependency and updating git repo
 
 - 1) Change to everypay-android git repo master branch
-- 2) Change dependency version under app module build.gradle to latest SDK version
+- 2) Change dependency version under app module build.gradle to latest pre-release SDK version
 - 3) Sync gradle files
 - 4) Build application and test through all the flows
 - 5) If everything is correct then in command line/terminal call ./graldew bintrayUpload in master branch to publish the new release
-- 6) Make new release with tag with prefix v and corresponding SDK version.
+- 6) Turn the dependency to newest published SDK version. And test 
+- 7) Make new release with tag with prefix v and corresponding SDK version.
 
 
 ## E. Standard troubleshooting questions
