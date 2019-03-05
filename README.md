@@ -35,7 +35,7 @@ Add the following line to your `app/build.gradle` file:
 ```
 dependencies {
     ... Other dependencies ...
-   compile 'com.everypay.sdk:android-sdk:1.0.10'
+   compile 'com.everypay.sdk:android-sdk:1.1.1'
 }
 ```
 **NB! SDK minSdkVersion is 19 so it's supporting Android 4.4+**
@@ -92,6 +92,9 @@ EveryPay.getDefault().setListener(TAG [1], ServiceListener [2]);
 
 [1] UI tag for finding 
 [2] ServiceListener subclass for resetting listener
+
+**NOTE That starting form SDK version 1.1.3 we do not collect device info, to comply with Google Privacy Regulations. This means that all public APIs that were using deviceInfo does not have this parameter any more. See concrete examples below.**
+
 ### Start the payment flow
 
 When the user is ready to start, start CardFormActivity:
@@ -117,10 +120,10 @@ In the same activity, override and handle `onActivityResult()`, which is called 
 @Override
 protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     if (requestCode == CardFormActivity.REQUEST_CODE) {
-        Pair<Card, String> result = CardFormActivity.getCardAndDeviceInfoFromResult(resultCode, data);
+        Card result = CardFormActivity.getCardFromResult(resultCode, data);
         if (result != null) {
             Log.d("logtag", "Valid card entered, starting payment flow");
-            Everypay.getDefault().startFullPaymentFlow(tag, result.first, result.second, everypayListener);
+            Everypay.getDefault().startFullPaymentFlow(tag, result.first, everypayListener);
         } else {
             Log.e("logtag", "No valid card entered.");
         }
@@ -133,7 +136,7 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 Alternatively you can only use CardFormFragment, if for any reason you don't want to use separate acitvity for card form. In order to get result data from this fragment you have to implement following :
 ```
 @Override
-public void retrieveCardData(String deviceInfo, Card card) {
+public void retrieveCardData( Card card) {
        // In this method you can get all the necessary data
     }
 ```
@@ -157,7 +160,7 @@ To provide a replacement, create subclasses of MerchantParamsStep and MerchantPa
 ```
 public class MyMerchantParamsStep extends MerchantParamsStep {
     @Override
-    public void run(String tag, Everypay ep, String deviceInfo, String apiVersion, MerchantParamsListener listener) {
+    public void run(String tag, Everypay ep, String apiVersion, MerchantParamsListener listener) {
         // Your implementation
         // post the result back to main thread using 
         listener.onMerchantParamsSucceed(MerchantParamsResponseData result);
@@ -218,9 +221,9 @@ In this case it might make more sense to skip the provided steps and `startPayme
 It is provided as a Retrofit API call in both synchronous and asynchronous versions:
 
 ```
-EverypayTokenResponseData respWithToken = Everypay.getDefault().getEverypayApi().saveCard(new EverypayTokenRequestData(paramsResponse, card, deviceInfo));
+EverypayTokenResponseData respWithToken = Everypay.getDefault().getEverypayApi().saveCard(new EverypayTokenRequestData(paramsResponse, card));
 
-Everypay.getDefault().getEverypayApi().saveCard(new EverypayTokenRequestData(paramsResponse, card, deviceInfo), callback);
+Everypay.getDefault().getEverypayApi().saveCard(new EverypayTokenRequestData(paramsResponse, card), callback);
 ```
 
 
