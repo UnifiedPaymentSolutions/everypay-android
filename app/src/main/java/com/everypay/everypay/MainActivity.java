@@ -106,8 +106,7 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
             Card result = CardFormActivity.getCardFromResult(resultCode, data);
             if (result != null) {
                 Bundle extras = new Bundle();
-                extras.putParcelable(EXTRA_CARD, result.first);
-                extras.putString(EXTRA_DEVICE_INFO, result.second);
+                extras.putParcelable(EXTRA_CARD, result);
                 SingleChoiceDialogFragment fragment = SingleChoiceDialogFragment.newInstance(getString(R.string.title_choose_environment), getString(R.string.text_choose_environment), environments, extras);
                 DialogUtil.showDialogFragment(MainActivity.this, fragment, TAG_ENVIRONMENT_CHOICE_DIALOG, null);
                 statuses[0].good.setVisibility(View.VISIBLE);

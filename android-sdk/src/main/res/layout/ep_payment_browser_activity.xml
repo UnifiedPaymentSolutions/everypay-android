@@ -4,11 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+    
     <FrameLayout
         android:id="@+id/layout_payment_browser_container"
         android:layout_width="match_parent"
@@ -16,5 +12,4 @@
         android:keepScreenOn="true"/>
 
         <include layout="@layout/ep_include_toolbar_progress_bar" />
-    </FrameLayout>
 </LinearLayout>

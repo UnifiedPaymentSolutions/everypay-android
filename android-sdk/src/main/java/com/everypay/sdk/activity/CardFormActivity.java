@@ -57,14 +57,15 @@ public class CardFormActivity extends BaseActivity {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         if (fragment == null) {
-            if(getIntent().getExtras().getParcelable(EXTRA_INITIAL_DATA) == null) {
-                fragment = CardFormFragment.newInstance();
+            if(getIntent() != null && getIntent().getExtras() != null && getIntent().getExtras().getParcelable(EXTRA_INITIAL_DATA) != null) {
+                fragment = CardFormFragment.newInstance(getIntent().getExtras().getParcelable(EXTRA_INITIAL_DATA));
             } else {
-                fragment = CardFormFragment.newInstance((Card) getIntent().getExtras().getParcelable(EXTRA_INITIAL_DATA));
+                fragment = CardFormFragment.newInstance();
             }
-            transaction.add(R.id.cardform_fragment_container, fragment, TAG_CARD_FORM_FRAGMENT).commit();
+
 
         }
+        transaction.add(R.id.cardform_fragment_container, fragment, TAG_CARD_FORM_FRAGMENT).commit();
     }
 
 
