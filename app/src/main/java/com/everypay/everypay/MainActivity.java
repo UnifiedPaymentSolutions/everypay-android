@@ -182,8 +182,8 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (EveryPay.getDefault() != null) {
-            EveryPay.getDefault().removeListener(TAG_START_FULL_PAYMENT_FLOW);
+        if (EveryPay.getInstance(getApplicationContext()) != null) {
+            EveryPay.getInstance(getApplicationContext()).removeListener(TAG_START_FULL_PAYMENT_FLOW);
         }
 
     }
@@ -193,9 +193,9 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
         if (TextUtils.equals(TAG_ENVIRONMENT_CHOICE_DIALOG, tag)) {
             String baseURLKey = environments.size() > position ? environments.get(position) : null;
             if (!TextUtils.isEmpty(baseURLKey)) {
-                ArrayList<String> baseURLs = baseUrlMap.get(baseURLKey);
+                ArrayList<String> baseURLs = baseUrlMap.get(baseURLKey);EveryPay.getInstance(getApplicationContext()).init(baseURLs.get(1), baseURLs.get(0), API_VERSION, baseURLs.get(2));
                 if (baseURLs != null && baseURLs.size() != 0) {
-                    EveryPay.with(this).setEverypayApiBaseUrl(baseURLs.get(1)).setMerchantApiBaseUrl(baseURLs.get(0)).setEveryPayHost(baseURLs.get(2)).build(API_VERSION).setDefault();
+
                     SingleChoiceDialogFragment dialogFragment = SingleChoiceDialogFragment.newInstance(getString(R.string.title_choose_account), getString(R.string.text_choose_account_id), accountIdChoices, extras);
                     DialogUtil.showDialogFragment(MainActivity.this, dialogFragment, TAG_ACCOUNT_CHOICE_DIALOG, null);
                 }
@@ -204,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
             Card card = extras.getParcelable(EXTRA_CARD);
             String accountId = accountIdChoices.size() > position ? accountIdChoices.get(position) : null;
             if (card != null && accountId != null) {
-                EveryPay ep = EveryPay.getDefault();
+                EveryPay ep = EveryPay.getInstance(getApplicationContext());
                 if(ep != null) {
                     ep.startFullPaymentFlow(TAG_START_FULL_PAYMENT_FLOW, card, new EveryPayListener() {
 

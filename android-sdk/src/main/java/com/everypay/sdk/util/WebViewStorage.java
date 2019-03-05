@@ -1,11 +1,7 @@
-/**
- * Copyright 2016 Cybernetica AS
- * All rights reserved.
- * The usage of this code is subject to appropriate license agreement.
- * Please contact info@cyber.ee for licensing.
- */
+
 package com.everypay.sdk.util;
 
+import android.annotation.SuppressLint;
 import android.webkit.WebView;
 
 /**
@@ -14,6 +10,7 @@ import android.webkit.WebView;
  * Created by Harri Kirik (harri35@gmail.com)
  */
 public class WebViewStorage {
+    @SuppressLint("StaticFieldLeak")
     private volatile static WebViewStorage instance;
     private WebView webView;
 
