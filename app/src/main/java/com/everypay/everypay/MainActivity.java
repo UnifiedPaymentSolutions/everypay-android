@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
 
         if (requestCode == CardFormActivity.REQUEST_CODE) {
             hideStatusViews(StepType.CARD_INPUT);
-            Pair<Card, String> result = CardFormActivity.getCardAndDeviceInfoFromResult(resultCode, data);
+            Card result = CardFormActivity.getCardFromResult(resultCode, data);
             if (result != null) {
                 Bundle extras = new Bundle();
                 extras.putParcelable(EXTRA_CARD, result.first);
@@ -203,12 +203,11 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
             }
         } else if (TextUtils.equals(TAG_ACCOUNT_CHOICE_DIALOG, tag)) {
             Card card = extras.getParcelable(EXTRA_CARD);
-            String deviceInfo = extras.getString(EXTRA_DEVICE_INFO);
             String accountId = accountIdChoices.size() > position ? accountIdChoices.get(position) : null;
-            if (card != null && !TextUtils.isEmpty(deviceInfo) && accountId != null) {
+            if (card != null && accountId != null) {
                 EveryPay ep = EveryPay.getDefault();
                 if(ep != null) {
-                    ep.startFullPaymentFlow(TAG_START_FULL_PAYMENT_FLOW, card, deviceInfo, new EveryPayListener() {
+                    ep.startFullPaymentFlow(TAG_START_FULL_PAYMENT_FLOW, card, new EveryPayListener() {
 
                         @Override
                         public void stepStarted(StepType step) {

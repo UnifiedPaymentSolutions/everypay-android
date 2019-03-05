@@ -44,9 +44,9 @@ public class CardFormActivity extends BaseActivity {
         fromActivity.startActivityForResult(intent, REQUEST_CODE);
     }
 
-    public static Pair<Card, String> getCardAndDeviceInfoFromResult(int resultCode, Intent data) {
+    public static Card getCardFromResult(int resultCode, Intent data) {
         if (resultCode == RESULT_OK && data != null) {
-            return new Pair<>((Card) data.getParcelableExtra(EXTRA_CARD), data.getStringExtra(EXTRA_DEVICE_INFO));
+            return data.getParcelableExtra(EXTRA_CARD);
         }
         return null;
     }
