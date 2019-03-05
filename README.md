@@ -32,10 +32,10 @@ Example implementation is provided for steps 2 and 4, even if they are likely to
 
 Add the following line to your `app/build.gradle` file:
 
-```
+```groovy
 dependencies {
     ... Other dependencies ...
-   compile 'com.everypay.sdk:android-sdk:1.0.10'
+   compile 'com.everypay.sdk:android-sdk:2.0.0'
 }
 ```
 **NB! SDK minSdkVersion is 19 so it's supporting Android 4.4+**
@@ -47,23 +47,18 @@ If you wish to download a copy of the SDK to add it to your project manually, th
 
 ### Configure the SDK parameters
 
+**NOTE: EveryPay object initialization changed as of version 2.0.0. First you need to call init(EVERYPAY_API_BASE_URL,  MERCHANT_API_BASE_URL, API_VERSION, EVERYPAY_HOST_URL )**
+
 Create a new EveryPay object, for example in your payment activity onCreate():
 
-```
-EveryPay.with(this).setEverypayApiBaseUrl(EVERYPAY_API_BASE_URL).setMerchantApiBaseUrl(MERCHANT_API_BASE_URL).setEveryPayHost(EVERYPAY_HOST_URL).build(API_VERSION).;
+```java
+EveryPay.getInstance(appContext).init(EVERYPAY_API_BASE_URL, MERCHANT_API_BASE_URL, API_VERSION, EVERYPAY_HOST_URL);
 ```
 
-Or create and save one as the default for the app, for example in your Application subclass's onCreate(), and fetch it in the activity:
-
-```
-EveryPay.with(this).setEverypayApiBaseUrl(EveryPay.EVERYPAY_API_URL_TESTING).setMerchantApiBaseUrl(EveryPay.MERCHANT_API_URL_TESTING).build(API_VERSION).setDefault();
-
-EveryPay ep = EveryPay.getDefault();
-```
 EVERYPAY_HOST_URL is the host of Everypay GW i.e gw-demo.every-pay.com
 ### Add a listener for payment flow events
 
-```
+```java
 EveryPayListener epListener = new EveryPayListener() {
     @Override
     public void stepStarted(StepType step) {
@@ -92,11 +87,14 @@ EveryPay.getDefault().setListener(TAG [1], ServiceListener [2]);
 
 [1] UI tag for finding 
 [2] ServiceListener subclass for resetting listener
+
+**NOTE That starting form SDK version 2.0.0 we do not collect device info, to comply with Google Privacy Regulations. This means that all public APIs that were using deviceInfo does not have this parameter any more. See concrete examples below.**
+
 ### Start the payment flow
 
 When the user is ready to start, start CardFormActivity:
 
-```
+```java
 findViewById(R.id.pay_button).setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View v) {
@@ -113,14 +111,14 @@ findViewById(R.id.pay_button).setOnClickListener(new View.OnClickListener() {
 
 In the same activity, override and handle `onActivityResult()`, which is called after CardFormActivity finishes. Note the call to `startFullPaymentFlow()` with the received card, device info and the listener you created.
 
-```
+```java
 @Override
 protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     if (requestCode == CardFormActivity.REQUEST_CODE) {
-        Pair<Card, String> result = CardFormActivity.getCardAndDeviceInfoFromResult(resultCode, data);
+        Card result = CardFormActivity.getCardFromResult(resultCode, data);
         if (result != null) {
             Log.d("logtag", "Valid card entered, starting payment flow");
-            Everypay.getDefault().startFullPaymentFlow(tag, result.first, result.second, everypayListener);
+            Everypay.getInstance(appContext).startFullPaymentFlow(tag, result, everypayListener);
         } else {
             Log.e("logtag", "No valid card entered.");
         }
@@ -131,9 +129,9 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 ```
 
 Alternatively you can only use CardFormFragment, if for any reason you don't want to use separate acitvity for card form. In order to get result data from this fragment you have to implement following :
-```
+```java
 @Override
-public void retrieveCardData(String deviceInfo, Card card) {
+public void retrieveCardData( Card card) {
        // In this method you can get all the necessary data
     }
 ```
@@ -143,21 +141,23 @@ The API call steps of the payment flow will run on a background thread, and resu
 
 ## Required Android permissions
 
-The SDK requires `<uses-permission android:name="android.permission.INTERNET" />` for internet access, and `<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>` for device info.
-
-If the app uses location services and has the `<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />` permission, then it will collect user location as an extra device info field. If the permission is missing from the app, then user location is skipped.
+The SDK requires `<uses-permission android:name="android.permission.INTERNET" />` for internet access.
 
 
 ## Customising the app <-> merchant server communication steps
+
+
+
+**Note as of SDK version 2.0.0 the initialization of the EveryPay object has changed. You must call init(EVERYPAY_API_BASE_URL,  MERCHANT_API_BASE_URL, API_VERSION, EVERYPAY_HOST_URL , MERCHANT_PARAM_STEP, MERCHANT_PAYMENT_STEP)  before starting payment flow.**
 
 The SDK includes example implementation for the app - merchant API calls, with the minimal required data for a payment. However, most apps using EveryPay will want to replace the communication step between the app and your server - for example to add your own user accounts, save shopping baskets or subscription plans.
 
 To provide a replacement, create subclasses of MerchantParamsStep and MerchantPaymentStep:
 
-```
+```java
 public class MyMerchantParamsStep extends MerchantParamsStep {
     @Override
-    public void run(String tag, Everypay ep, String deviceInfo, String apiVersion, MerchantParamsListener listener) {
+    public void run(String tag, Everypay ep, String apiVersion, MerchantParamsListener listener) {
         // Your implementation
         // post the result back to main thread using 
         listener.onMerchantParamsSucceed(MerchantParamsResponseData result);
@@ -179,8 +179,8 @@ public class MyMerchantPaymentStep extends MerchantPaymentStep {
 
 and pass an instance of the step when configuring EveryPay:
 
-```
-Everypay.with(this).setMerchantParamsStep(new MyMerchantParamsStep()).setMerchantPaymentStep(new MyMerchantPaymentStep()) ... .build();
+```java
+EveryPay.getInstance(appContext).init(EVERYPAY_API_BASE_URL, MERCHANT_API_BASE_URL, API_VERSION, EVERYPAY_HOST_URL, MyMerchantParamsStep, MyMerchantPaymentStep);
 ```
 
 `run()` needs to be called in background thread and its is asyncronous.
@@ -194,17 +194,16 @@ For an example, see https://github.com/UnifiedPaymentSolutions/everypay-android/
 For more substantial theming, overriding the `layout/activity_cardform.xml` with your own layout is also a possibility.
 
 Addtionally you can keep the layout,but use your own theme, by overriding CardFormActivity in your manifest and specifing your theme as activity theme, like so : 
-```
+```xml
  <activity android:name="com.everypay.sdk.activity.CardFormActivity"
             android:theme="@style/YourCustomTheme"/>
 ```
 PS! This only works if you are using CardFormActivity, if you are using CardFormFragment directly, then you have to theme the acitvity that calls the fragment.
 ## Customising the card input form
 
-If the EveryPay card input form does not match your requirements, or if you wish to add custom branding beyond the configuration options, then you can create a custom one. There are two requirements for a custom card form:
+If the EveryPay card input form does not match your requirements, or if you wish to add custom branding beyond the configuration options, then you can create a custom one. There is one requirement for a custom card form:
 
 * It should construct a [Card model](https://github.com/UnifiedPaymentSolutions/everypay-android/blob/master/sdk/src/main/java/com/everypay/sdk/model/Card.java). The Card model can also be used to validate the inputs.
-* Use the [`DeviceInfoCollector`](https://github.com/UnifiedPaymentSolutions/everypay-android/blob/master/sdk/src/main/java/com/everypay/sdk/deviceinfo/DeviceCollector.java) to obtain a device fingerprint. Collecting the device info in the background while the user is entering card details is a good choice, since it may take tens of seconds to get the (optional) GPS location.
 
 After your custom card form has returned a Card model and the device info string, pass them to `Everypay.startFullPaymentFlow()` as usual.
 
@@ -217,10 +216,10 @@ In this case it might make more sense to skip the provided steps and `startPayme
 
 It is provided as a Retrofit API call in both synchronous and asynchronous versions:
 
-```
-EverypayTokenResponseData respWithToken = Everypay.getDefault().getEverypayApi().saveCard(new EverypayTokenRequestData(paramsResponse, card, deviceInfo));
+```java
+EverypayTokenResponseData respWithToken = Everypay.getInstance(appContext).getEverypayApi().saveCard(new EverypayTokenRequestData(paramsResponse, card));
 
-Everypay.getDefault().getEverypayApi().saveCard(new EverypayTokenRequestData(paramsResponse, card, deviceInfo), callback);
+Everypay.getInstance(appContext).getEverypayApi().saveCard(new EverypayTokenRequestData(paramsResponse, card), callback);
 ```
 
 

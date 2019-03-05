@@ -27,13 +27,13 @@ public class EveryPayTokenStep extends Step {
         return StepType.EVERYPAY_TOKEN;
     }
 
-    public void run(final String tag, final EveryPay ep, MerchantParamsResponseData paramsResponse, Card card, String deviceInfo, final EveryPayTokenListener listener) {
+    public void run(final String tag, final EveryPay ep, MerchantParamsResponseData paramsResponse, Card card, final EveryPayTokenListener listener) {
         log.d("EveryPayTokenStep run called");
         if (ep != null) {
             ep.setListener(tag, listener);
         }
         EveryPayApi.EveryPayApiCalls apiCalls = EveryPayApi.getInstance(ep.getContext(), ep.getEverypayUrl()).getApiCalls();
-        final EveryPayTokenRequestData requestData = new EveryPayTokenRequestData(paramsResponse, card, deviceInfo);
+        final EveryPayTokenRequestData requestData = new EveryPayTokenRequestData(paramsResponse, card);
         final Call<EveryPayTokenResponseData> call = apiCalls.saveCard(requestData);
         call.enqueue(new EveryPayCallback<EveryPayTokenResponseData>() {
             @Override
