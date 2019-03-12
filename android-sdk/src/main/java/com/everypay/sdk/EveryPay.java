@@ -1,5 +1,6 @@
 package com.everypay.sdk;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +12,7 @@ import com.everypay.sdk.steps.MerchantParamsStep;
 import com.everypay.sdk.steps.MerchantPaymentStep;
 import com.everypay.sdk.util.Log;
 
+import java.io.IOException;
 import java.util.WeakHashMap;
 
 
@@ -34,15 +36,36 @@ public class EveryPay {
 
     private static final Log log = Log.getInstance(EveryPay.class);
 
-    static EveryPay defaultInstance;
-    public static synchronized EveryPay getDefault() {
-        if (defaultInstance == null) {
-            return null;
+    private final Object initEPLock = new Object();
+
+    @SuppressLint("StaticFieldLeak")
+    private static volatile EveryPay instance;
+    public static EveryPay getInstance(final Context context) {
+        if (instance == null) {
+            instance = new EveryPay(context.getApplicationContext());
         }
-        return defaultInstance;
+        return instance;
     }
 
-    private Context context;
+    public void init(String everypayUrl, String merchantUrl, String apiVersion, String everyPayHost) {
+        init(everypayUrl, merchantUrl, apiVersion, everyPayHost, new MerchantParamsStep(), new MerchantPaymentStep());
+    }
+
+    public void init (String everypayUrl, String merchantUrl, String apiVersion, String everyPayHost, MerchantParamsStep merchantParamsStep, MerchantPaymentStep merchantPaymentStep) {
+        this.everypayUrl = everypayUrl;
+        this.merchantUrl = merchantUrl;
+        this.apiVersion = apiVersion;
+        this.everyPayHost = everyPayHost;
+        this.merchantParamsStep = merchantParamsStep;
+        this.merchantPaymentStep = merchantPaymentStep;
+        this.isInitDone = true;
+    }
+
+    private EveryPay(Context appContext) {
+        this.context = appContext.getApplicationContext();
+    }
+
+    private final Context context;
     private String everypayUrl;
     private String everyPayHost;
     private String merchantUrl;
@@ -50,6 +73,7 @@ public class EveryPay {
     private MerchantParamsStep merchantParamsStep;
     private EveryPaySession session;
     private MerchantPaymentStep merchantPaymentStep;
+    private boolean isInitDone;
     private final WeakHashMap<String, ServiceListener> listeners = new WeakHashMap<>();
 
     private EveryPay(Context appContext, String everypayUrl, String merchantUrl, MerchantParamsStep merchantParamsStep, MerchantPaymentStep merchantPaymentStep, String apiVersion, String everyPayHost) {
@@ -60,15 +84,6 @@ public class EveryPay {
         this.merchantPaymentStep = merchantPaymentStep;
         this.apiVersion = apiVersion;
         this.everyPayHost = everyPayHost;
-    }
-
-    public static Builder with(Context context) {
-        return new Builder(context);
-    }
-
-    public EveryPay setDefault() {
-        defaultInstance = this;
-        return this;
     }
 
     public Context getContext() {
@@ -95,11 +110,25 @@ public class EveryPay {
         return  merchantPaymentStep;
     }
 
-    public void startFullPaymentFlow(String tag, Card card, String deviceInfo, EveryPayListener callback, String accountId) {
+    public void startFullPaymentFlow(String tag, Card card, EveryPayListener callback, String accountId) {
+        throwIfNoInit();
         setListener(tag, callback);
         Log.setLogLevel(Config.USE_DEBUG ? Log.LOG_LEVEL_DEBUG: Log.LOG_LEVEL_RELEASE);
-        session = new EveryPaySession(context, defaultInstance, card, deviceInfo, callback, apiVersion, accountId);
+        session = new EveryPaySession(context, instance, card, callback, apiVersion, accountId);
         session.startPaymentFlow();
+    }
+
+    private void throwIfNoInit() {
+        if (!isInitDone()) {
+            log.e("throwIfNoInit : Init not done !");
+            throw new RuntimeException("EveryPay not initialized. Did you call EveryPay.init() first ?");
+        }
+    }
+
+    private boolean isInitDone() {
+        synchronized (initEPLock) {
+            return isInitDone;
+        }
     }
 
     /**
@@ -129,6 +158,7 @@ public class EveryPay {
      */
     public <T extends ServiceListener> T getListener(final String tag, final boolean forgetListener, @NonNull final Class<T> type) {
         log.d("getListener: " + tag + ", forgetListener: " + forgetListener);
+        //noinspection ConstantConditions
         if (TextUtils.isEmpty(tag) || type == null) {
             return null;
         }
@@ -154,55 +184,6 @@ public class EveryPay {
             listeners.remove(tag);
         }
     }
-    public static class Builder {
-        Context context;
-        String everypayUrl;
-        String merchantUrl;
-        String everyPayHost;
-        String apiVersion;
-        MerchantParamsStep merchantParamsStep;
-        MerchantPaymentStep merchantPaymentStep;
-
-        private Builder(Context context) {
-            this.context = context;
-            this.merchantParamsStep = null;
-            this.merchantPaymentStep = null;
-        }
-
-        public Builder setEverypayApiBaseUrl(String url) {
-            this.everypayUrl = url;
-            return this;
-        }
-
-        public Builder setMerchantApiBaseUrl(String url) {
-            this.merchantUrl = url;
-            return this;
-        }
-
-        public Builder setMerchantParamsStep(MerchantParamsStep merchantParamsStep) {
-            this.merchantParamsStep = merchantParamsStep;
-            return this;
-        }
-
-        public Builder setMerchantPaymentStep(MerchantPaymentStep merchantPaymentStep) {
-            this.merchantPaymentStep = merchantPaymentStep;
-            return this;
-        }
-        public Builder setEveryPayHost(String everyPayHost) {
-            this.everyPayHost = everyPayHost;
-            return this;
-        }
-
-        public EveryPay build(String apiVersion) {
-            if (merchantParamsStep == null)
-                merchantParamsStep = new MerchantParamsStep();
-            if (merchantPaymentStep == null)
-                merchantPaymentStep = new MerchantPaymentStep();
-            return new EveryPay(context.getApplicationContext(), everypayUrl, merchantUrl, merchantParamsStep, merchantPaymentStep, apiVersion, everyPayHost);
-        }
-
-    }
-
 
 
 

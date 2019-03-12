@@ -47,7 +47,6 @@ public class EveryPaySession {
     private String id;
     private EveryPay ep;
     private String apiVersion;
-    private String deviceInfo;
     private String accountId;
     private String hmac;
     private EveryPayListener listener;
@@ -64,7 +63,7 @@ public class EveryPaySession {
     private WebAuthStep webAuthStep;
 
 
-    public EveryPaySession(Context context, EveryPay ep, Card card, String deviceInfo, EveryPayListener listener, String apiVersion, String accountId) {
+    public EveryPaySession(Context context, EveryPay ep, Card card, EveryPayListener listener, String apiVersion, String accountId) {
         this.handler = new Handler();
         this.context = context;
         this.ep = ep;
@@ -75,8 +74,6 @@ public class EveryPaySession {
         if (card == null)
             throw new IllegalArgumentException(EXCEPTION_CARD_IS_NULL);
         this.card = card;
-
-        this.deviceInfo = deviceInfo;
 
         this.listener = listener;
         if (listener == null)
@@ -119,7 +116,7 @@ public class EveryPaySession {
     private void saveCard(final String tag, final MerchantParamsResponseData merchantParamsResponseData) {
         callStepStarted(everyPayTokenStep);
         log.d("saveCard called");
-        everyPayTokenStep.run(tag, ep, merchantParamsResponseData, card, deviceInfo, new EveryPayTokenListener() {
+        everyPayTokenStep.run(tag, ep, merchantParamsResponseData, card, new EveryPayTokenListener() {
             @Override
             public void onEveryPayTokenSucceed(EveryPayTokenResponseData responseData) {
                 log.d("EveryPaySession saveCard succeed");

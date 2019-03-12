@@ -1,6 +1,7 @@
 
 package com.everypay.sdk.util;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
@@ -112,7 +113,8 @@ public class DialogUtil {
         }
 
         try {
-            final FragmentTransaction ft = targetFragment != null ? targetFragment.getFragmentManager().beginTransaction() : activity.getSupportFragmentManager().beginTransaction();
+            @SuppressLint("CommitTransaction")
+            final FragmentTransaction ft = targetFragment != null && targetFragment.getFragmentManager() != null ? targetFragment.getFragmentManager().beginTransaction() : activity.getSupportFragmentManager().beginTransaction();
             removePreviousFragmentIfAny(activity, ft, tag);
             // Create and show the dialog.
             if (targetFragment != null) {
@@ -130,7 +132,7 @@ public class DialogUtil {
                     public void run() {
                         showDialogFragment(activity, dialog, tag, targetFragment, retryCount - 1, retryOnResume);
                     }
-                }, 800l);
+                }, 800L);
             } else if (retryCount == 0 && retryOnResume) {
                 addRetryForResume(activity, dialog, tag, targetFragment);
             }

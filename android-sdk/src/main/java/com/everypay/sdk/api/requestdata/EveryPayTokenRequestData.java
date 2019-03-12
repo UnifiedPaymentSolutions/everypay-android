@@ -11,8 +11,8 @@ public class EveryPayTokenRequestData {
     public EncryptedTokenRequestData encryptedPaymentInstrument;
 
 
-    public EveryPayTokenRequestData(MerchantParamsResponseData params, Card card, String deviceInfo) {
-        this.encryptedPaymentInstrument = new EncryptedTokenRequestData(params, card, deviceInfo);
+    public EveryPayTokenRequestData(MerchantParamsResponseData params, Card card) {
+        this.encryptedPaymentInstrument = new EncryptedTokenRequestData(params, card);
     }
 
     private static class EncryptedTokenRequestData {
@@ -41,12 +41,10 @@ public class EveryPayTokenRequestData {
         String ccVerification;
         @SerializedName("api_version")
         String apiVersion;
-        @SerializedName("device_info")
-        String deviceInfo;
         @SerializedName("order_reference")
         String orderReference;
 
-        public EncryptedTokenRequestData(MerchantParamsResponseData params, Card card, String deviceInfo) {
+        public EncryptedTokenRequestData(MerchantParamsResponseData params, Card card) {
             this.apiUsername = params.apiUsername;
             this.accountId = params.accountId;
             this.userIp = params.userIp;
@@ -60,7 +58,6 @@ public class EveryPayTokenRequestData {
             this.ccMonth = card.getExpMonth();
             this.ccVerification = card.getCVC();
 
-            this.deviceInfo = deviceInfo;
 
             this.apiVersion = params.apiVersion;
             this.orderReference = params.orderReference;
@@ -81,7 +78,6 @@ public class EveryPayTokenRequestData {
                     ", ccYear='" + ccYear +
                     ", ccVerification='" + ccVerification +
                     ", apiVersion='" + apiVersion +
-                    ", deviceInfo='" + deviceInfo +
                     ", orderReference='" + orderReference +
                     '}';
         }

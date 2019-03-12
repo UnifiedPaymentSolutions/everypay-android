@@ -15,7 +15,6 @@ public class CardFormActivity extends BaseActivity {
 
     public static final String EXTRA_INITIAL_DATA = "com.everypay.sdk.EXTRA_INITIAL_DATA";
     public static final String EXTRA_CARD = "com.everypay.sdk.EXTRA_CARD";
-    public static final String EXTRA_DEVICE_INFO = "com.everypay.sdk.EXTRA_DEVICE_INFO";
 
     private static final String METHOD_SET = "set";
     public static final int REQUEST_CODE = 13423;
@@ -44,9 +43,9 @@ public class CardFormActivity extends BaseActivity {
         fromActivity.startActivityForResult(intent, REQUEST_CODE);
     }
 
-    public static Pair<Card, String> getCardAndDeviceInfoFromResult(int resultCode, Intent data) {
+    public static Card getCardFromResult(int resultCode, Intent data) {
         if (resultCode == RESULT_OK && data != null) {
-            return new Pair<>((Card) data.getParcelableExtra(EXTRA_CARD), data.getStringExtra(EXTRA_DEVICE_INFO));
+            return data.getParcelableExtra(EXTRA_CARD);
         }
         return null;
     }
@@ -57,14 +56,15 @@ public class CardFormActivity extends BaseActivity {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         if (fragment == null) {
-            if(getIntent().getExtras().getParcelable(EXTRA_INITIAL_DATA) == null) {
-                fragment = CardFormFragment.newInstance();
+            if(getIntent() != null && getIntent().getExtras() != null && getIntent().getExtras().getParcelable(EXTRA_INITIAL_DATA) != null) {
+                fragment = CardFormFragment.newInstance(getIntent().getExtras().getParcelable(EXTRA_INITIAL_DATA));
             } else {
-                fragment = CardFormFragment.newInstance((Card) getIntent().getExtras().getParcelable(EXTRA_INITIAL_DATA));
+                fragment = CardFormFragment.newInstance();
             }
-            transaction.add(R.id.cardform_fragment_container, fragment, TAG_CARD_FORM_FRAGMENT).commit();
+
 
         }
+        transaction.add(R.id.cardform_fragment_container, fragment, TAG_CARD_FORM_FRAGMENT).commit();
     }
 
 

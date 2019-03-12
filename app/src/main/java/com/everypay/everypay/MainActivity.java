@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
     private static final String TAG_ACCOUNT_CHOICE_DIALOG = "com.everypay.everypay.TAG_ACCOUNT_CHOICE_DIALOG";
     private static final String TAG_ENVIRONMENT_CHOICE_DIALOG = "com.everypay.everypay.TAG_ENVIRONMENT_CHOICE_DIALOG";
     private static final String TAG_START_FULL_PAYMENT_FLOW = "com.everypay.everypay.TAG_START_FULL_PAYMENT_FLOW";
-    private static final String EXTRA_DEVICE_INFO = "com.everypay.everypay.EXTRA_DEVICE_INFO";
     private static final String STATE_ACCOUNT_ID_CHOICES = "com.everypay.everypay.STATE_ACCOUNT_ID_CHOICES";
     private static final String KEY_STAGING_ENVIRONMENT = "Staging Environment";
     private static final String KEY_DEMO_ENVIRONMENT = "Demo Environment";
@@ -103,11 +102,10 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
 
         if (requestCode == CardFormActivity.REQUEST_CODE) {
             hideStatusViews(StepType.CARD_INPUT);
-            Pair<Card, String> result = CardFormActivity.getCardAndDeviceInfoFromResult(resultCode, data);
+            Card result = CardFormActivity.getCardFromResult(resultCode, data);
             if (result != null) {
                 Bundle extras = new Bundle();
-                extras.putParcelable(EXTRA_CARD, result.first);
-                extras.putString(EXTRA_DEVICE_INFO, result.second);
+                extras.putParcelable(EXTRA_CARD, result);
                 SingleChoiceDialogFragment fragment = SingleChoiceDialogFragment.newInstance(getString(R.string.title_choose_environment), getString(R.string.text_choose_environment), environments, extras);
                 DialogUtil.showDialogFragment(MainActivity.this, fragment, TAG_ENVIRONMENT_CHOICE_DIALOG, null);
                 statuses[0].good.setVisibility(View.VISIBLE);
@@ -183,8 +181,8 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (EveryPay.getDefault() != null) {
-            EveryPay.getDefault().removeListener(TAG_START_FULL_PAYMENT_FLOW);
+        if (EveryPay.getInstance(getApplicationContext()) != null) {
+            EveryPay.getInstance(getApplicationContext()).removeListener(TAG_START_FULL_PAYMENT_FLOW);
         }
 
     }
@@ -194,21 +192,20 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
         if (TextUtils.equals(TAG_ENVIRONMENT_CHOICE_DIALOG, tag)) {
             String baseURLKey = environments.size() > position ? environments.get(position) : null;
             if (!TextUtils.isEmpty(baseURLKey)) {
-                ArrayList<String> baseURLs = baseUrlMap.get(baseURLKey);
+                ArrayList<String> baseURLs = baseUrlMap.get(baseURLKey);EveryPay.getInstance(getApplicationContext()).init(baseURLs.get(1), baseURLs.get(0), API_VERSION, baseURLs.get(2));
                 if (baseURLs != null && baseURLs.size() != 0) {
-                    EveryPay.with(this).setEverypayApiBaseUrl(baseURLs.get(1)).setMerchantApiBaseUrl(baseURLs.get(0)).setEveryPayHost(baseURLs.get(2)).build(API_VERSION).setDefault();
+
                     SingleChoiceDialogFragment dialogFragment = SingleChoiceDialogFragment.newInstance(getString(R.string.title_choose_account), getString(R.string.text_choose_account_id), accountIdChoices, extras);
                     DialogUtil.showDialogFragment(MainActivity.this, dialogFragment, TAG_ACCOUNT_CHOICE_DIALOG, null);
                 }
             }
         } else if (TextUtils.equals(TAG_ACCOUNT_CHOICE_DIALOG, tag)) {
             Card card = extras.getParcelable(EXTRA_CARD);
-            String deviceInfo = extras.getString(EXTRA_DEVICE_INFO);
             String accountId = accountIdChoices.size() > position ? accountIdChoices.get(position) : null;
-            if (card != null && !TextUtils.isEmpty(deviceInfo) && accountId != null) {
-                EveryPay ep = EveryPay.getDefault();
+            if (card != null && accountId != null) {
+                EveryPay ep = EveryPay.getInstance(getApplicationContext());
                 if(ep != null) {
-                    ep.startFullPaymentFlow(TAG_START_FULL_PAYMENT_FLOW, card, deviceInfo, new EveryPayListener() {
+                    ep.startFullPaymentFlow(TAG_START_FULL_PAYMENT_FLOW, card, new EveryPayListener() {
 
                         @Override
                         public void stepStarted(StepType step) {

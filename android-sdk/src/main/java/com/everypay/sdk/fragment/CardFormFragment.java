@@ -18,24 +18,21 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.everypay.sdk.deviceinfo.DeviceCollector;
 import com.everypay.sdk.model.Card;
 import com.everypay.sdk.model.CardError;
 import com.everypay.sdk.model.CardType;
 import com.everypay.sdk.util.CardFormTextWatcher;
-import com.everypay.sdk.util.DialogUtil;
 import com.everypay.sdk.util.Reflect;
 import com.everypay.sdk.R;
 
-public class CardFormFragment extends BaseFragment implements DeviceCollector.DeviceInfoListener, ProgressDialogFragment.ProgressDialogFragmentListener {
+public class CardFormFragment extends BaseFragment {
 
     private static final String EXTRA_CARD = "com.everypay.sdk.EXTRA_CARD";
-    private static final String EXTRA_DEVICE_INFO = "com.everypay.sdk.EXTRA_DEVICE_INFO";
 
     private static final String METHOD_SET = "set";
     private static final String STATE_PARTIAL_CARD = "com.everypay.STATE_PARTIAL_CARD";
     private static final String ARG_INITIAL_CARD_DATA = "com.everypay.sdk.ARG_INITIAL_CARD_DATA";
-    private static final String TAG_DEVICEINFO_COLLECTOR_PROGRESS = "com.everypay.sdk.TAG_DEVICEINFO_COLLECTOR_PROGRESS";
+
 
     private EditText name;
     private EditText number;
@@ -49,7 +46,6 @@ public class CardFormFragment extends BaseFragment implements DeviceCollector.De
     private int colorInvalid;
 
     private Card partialCard;
-    private DeviceCollector collector;
 
     public static CardFormFragment newInstance(Card initialData) {
         CardFormFragment fragment = new CardFormFragment();
@@ -67,29 +63,19 @@ public class CardFormFragment extends BaseFragment implements DeviceCollector.De
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.ep_fragment_cardform, container, false);
-        name = (EditText) rootView.findViewById(R.id.cc_holder_name);
-        number = (EditText) rootView.findViewById(R.id.cc_number);
-        cvc = (EditText) rootView.findViewById(R.id.cc_cvc);
-        month = (EditText) rootView.findViewById(R.id.cc_month);
-        year = (EditText) rootView.findViewById(R.id.cc_year);
-        typeIcon = (ImageView) rootView.findViewById(R.id.cc_type_icon);
-        done = (Button) rootView.findViewById(R.id.btn_done);
+        name = rootView.findViewById(R.id.cc_holder_name);
+        number = rootView.findViewById(R.id.cc_number);
+        cvc = rootView.findViewById(R.id.cc_cvc);
+        month = rootView.findViewById(R.id.cc_month);
+        year = rootView.findViewById(R.id.cc_year);
+        typeIcon = rootView.findViewById(R.id.cc_type_icon);
+        done = rootView.findViewById(R.id.btn_done);
 
         colorNormal = ContextCompat.getColor(getActivity(), R.color.ep_card_field_normal);
         colorInvalid = ContextCompat.getColor(getActivity(), R.color.ep_card_field_invalid);
 
         partialCard = savedInstanceState != null ? (Card) savedInstanceState.getParcelable(STATE_PARTIAL_CARD) : new Card();
 
-        if(getRetainObject() != null) {
-            if(getRetainObject() instanceof DeviceCollector) {
-                collector = (DeviceCollector) getRetainObject();
-                collector.setListener(this);
-            }
-        }else {
-            collector = new DeviceCollector(getActivity());
-            collector.setListener(CardFormFragment.this);
-        }
-        collector.start();
         attachUiEvents();
         loadInitialData();
 
@@ -124,30 +110,13 @@ public class CardFormFragment extends BaseFragment implements DeviceCollector.De
             }
         });
 
-        month.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showSelectDialog(month, getActivity().getResources().getString(R.string.ep_field_exp_month), R.string.ep_cc_month, R.array.ep_cc_month_values, R.array.ep_cc_month_names);
-            }
-        });
+        month.setOnClickListener(v -> showSelectDialog(month, getActivity().getResources().getString(R.string.ep_field_exp_month), R.string.ep_cc_month, R.array.ep_cc_month_values, R.array.ep_cc_month_names));
 
-        year.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showSelectDialog(year, getActivity().getResources().getString(R.string.ep_field_exp_year), R.string.ep_cc_year, R.array.ep_cc_year_values, R.array.ep_cc_year_values);
-            }
-        });
+        year.setOnClickListener(v -> showSelectDialog(year, getActivity().getResources().getString(R.string.ep_field_exp_year), R.string.ep_cc_year, R.array.ep_cc_year_values, R.array.ep_cc_year_values));
 
-        done.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (validateWithToast()) {
-                    if(collector != null && collector.getListener() == null) {
-                        collector.setListener(CardFormFragment.this);
-                    }
-                    DialogUtil.showDialogFragment(ProgressDialogFragment.newInstance(), TAG_DEVICEINFO_COLLECTOR_PROGRESS, CardFormFragment.this);
-                    collector.collectWithDefaultTimeout();
-                }
+        done.setOnClickListener(v -> {
+            if (validateWithToast()) {
+                retrieveCardData(partialCard);
             }
         });
     }
@@ -183,15 +152,12 @@ public class CardFormFragment extends BaseFragment implements DeviceCollector.De
 
     private void showSelectDialog(final EditText input, final String fieldName, int titleId, final int valuesId, final int displayId) {
         new AlertDialog.Builder(getActivity())
-                .setItems(displayId, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String[] displays = getResources().getStringArray(displayId);
-                        String[] values = getResources().getStringArray(valuesId);
-                        if (values != null && which < values.length && which < displays.length) {
-                            input.setText(displays[which]);
-                            Reflect.setString(partialCard, METHOD_SET + fieldName, values[which]);
-                        }
+                .setItems(displayId, (dialog, which) -> {
+                    String[] displays = getResources().getStringArray(displayId);
+                    String[] values = getResources().getStringArray(valuesId);
+                    if (values != null && which < values.length && which < displays.length) {
+                        input.setText(displays[which]);
+                        Reflect.setString(partialCard, METHOD_SET + fieldName, values[which]);
                     }
                 })
                 .show();
@@ -214,38 +180,12 @@ public class CardFormFragment extends BaseFragment implements DeviceCollector.De
        outState.putParcelable(STATE_PARTIAL_CARD, partialCard);
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if(collector != null) {
-            collector.setListener(null);
-            setRetainObject(collector);
-        }
-    }
-
-    public void retrieveCardData(String deviceInfo, Card card) {
+    public void retrieveCardData( Card card) {
         Intent result = new Intent();
         result.putExtra(EXTRA_CARD, card);
-        result.putExtra(EXTRA_DEVICE_INFO, deviceInfo);
-        getActivity().setResult(Activity.RESULT_OK, result);
-        getActivity().finish();
-    }
-
-    @Override
-    public void deviceInfoCollected(String deviceInfo) {
-        if(getActivity() == null) {
-            return;
-        }
-        DialogUtil.dismissDialogFragment(CardFormFragment.this, TAG_DEVICEINFO_COLLECTOR_PROGRESS);
-        partialCard.setName(partialCard.getName().trim());
-        retrieveCardData(deviceInfo, partialCard);
-    }
-
-    @Override
-    public void onProgressDialogFragmentCanceled(String tag) {
-        if (TextUtils.equals(tag, TAG_DEVICEINFO_COLLECTOR_PROGRESS)) {
-            collector.setListener(null);
-            collector.cancel();
+        if (getActivity() != null) {
+            getActivity().setResult(Activity.RESULT_OK, result);
+            getActivity().finish();
         }
     }
 }
