@@ -15,7 +15,6 @@ public class CardFormActivity extends BaseActivity {
 
     public static final String EXTRA_INITIAL_DATA = "com.everypay.sdk.EXTRA_INITIAL_DATA";
     public static final String EXTRA_CARD = "com.everypay.sdk.EXTRA_CARD";
-    public static final String EXTRA_DEVICE_INFO = "com.everypay.sdk.EXTRA_DEVICE_INFO";
 
     private static final String METHOD_SET = "set";
     public static final int REQUEST_CODE = 13423;

@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity implements SingleChoiceDialo
     private static final String TAG_ACCOUNT_CHOICE_DIALOG = "com.everypay.everypay.TAG_ACCOUNT_CHOICE_DIALOG";
     private static final String TAG_ENVIRONMENT_CHOICE_DIALOG = "com.everypay.everypay.TAG_ENVIRONMENT_CHOICE_DIALOG";
     private static final String TAG_START_FULL_PAYMENT_FLOW = "com.everypay.everypay.TAG_START_FULL_PAYMENT_FLOW";
-    private static final String EXTRA_DEVICE_INFO = "com.everypay.everypay.EXTRA_DEVICE_INFO";
     private static final String STATE_ACCOUNT_ID_CHOICES = "com.everypay.everypay.STATE_ACCOUNT_ID_CHOICES";
     private static final String KEY_STAGING_ENVIRONMENT = "Staging Environment";
     private static final String KEY_DEMO_ENVIRONMENT = "Demo Environment";
