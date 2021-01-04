@@ -30,7 +30,7 @@ public class EveryPay {
     public static final String EVERYPAY_API_STAGING_HOST = "gw-staging.every-pay.com";
     public static final String EVERYPAY_API_URL_DEMO = "https://gw-demo.every-pay.com/";
     public static final String EVERYPAY_API_DEMO_HOST = "gw-demo.every-pay.com";
-    public static final String EVERYPAY_API_URL_LIVE = "https://gw.every-pay.eu";
+    public static final String EVERYPAY_API_URL_LIVE = "https://gw.every-pay.eu/";
     public static final String MERCHANT_API_URL_STAGING = "https://igwshop-staging.every-pay.com/";
     public static final String MERCHANT_API_URL_DEMO = "https://igwshop-demo.every-pay.com/";
 
